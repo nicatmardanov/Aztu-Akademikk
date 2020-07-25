@@ -8,11 +8,13 @@ namespace AZTU_Akademik.Models
         public Arasdirmacilar()
         {
             ArasdirmaSaheleri = new HashSet<ArasdirmaSaheleri>();
+            ArasdirmaciDil = new HashSet<ArasdirmaciDil>();
             ArasdirmaciMeqale = new HashSet<ArasdirmaciMeqale>();
             ArasdirmacilarElmiJurnaldakiVezifeleri = new HashSet<ArasdirmacilarElmiJurnaldakiVezifeleri>();
             IsTecrubesi = new HashSet<IsTecrubesi>();
             Mukafatlar = new HashSet<Mukafatlar>();
             Patentler = new HashSet<Patentler>();
+            Sertifikatlar = new HashSet<Sertifikatlar>();
             TehsilSeviyye = new HashSet<TehsilSeviyye>();
         }
 
@@ -32,11 +34,13 @@ namespace AZTU_Akademik.Models
         public virtual MeslekiIdariDeneyim MeslekiIdariDeneyim { get; set; }
         public virtual Rol Rol { get; set; }
         public virtual ICollection<ArasdirmaSaheleri> ArasdirmaSaheleri { get; set; }
+        public virtual ICollection<ArasdirmaciDil> ArasdirmaciDil { get; set; }
         public virtual ICollection<ArasdirmaciMeqale> ArasdirmaciMeqale { get; set; }
         public virtual ICollection<ArasdirmacilarElmiJurnaldakiVezifeleri> ArasdirmacilarElmiJurnaldakiVezifeleri { get; set; }
         public virtual ICollection<IsTecrubesi> IsTecrubesi { get; set; }
         public virtual ICollection<Mukafatlar> Mukafatlar { get; set; }
         public virtual ICollection<Patentler> Patentler { get; set; }
+        public virtual ICollection<Sertifikatlar> Sertifikatlar { get; set; }
         public virtual ICollection<TehsilSeviyye> TehsilSeviyye { get; set; }
     }
 }

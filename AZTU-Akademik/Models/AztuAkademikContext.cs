@@ -18,6 +18,7 @@ namespace AZTU_Akademik.Models
         public virtual DbSet<AdministrativVezifeler> AdministrativVezifeler { get; set; }
         public virtual DbSet<ArasdirmaSaheleri> ArasdirmaSaheleri { get; set; }
         public virtual DbSet<ArasdirmaciAdministrativVezife> ArasdirmaciAdministrativVezife { get; set; }
+        public virtual DbSet<ArasdirmaciDil> ArasdirmaciDil { get; set; }
         public virtual DbSet<ArasdirmaciMeqale> ArasdirmaciMeqale { get; set; }
         public virtual DbSet<ArasdirmaciPedoqojiAd> ArasdirmaciPedoqojiAd { get; set; }
         public virtual DbSet<Arasdirmacilar> Arasdirmacilar { get; set; }
@@ -42,6 +43,7 @@ namespace AZTU_Akademik.Models
         public virtual DbSet<Sertifikatlar> Sertifikatlar { get; set; }
         public virtual DbSet<TehsilSeviyye> TehsilSeviyye { get; set; }
         public virtual DbSet<Universitetler> Universitetler { get; set; }
+        public virtual DbSet<XariciDil> XariciDil { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -49,8 +51,8 @@ namespace AZTU_Akademik.Models
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=DESKTOP-UTUBGGC\\SQLEXPRESS;Database=Aztu-Akademik;Trusted_Connection=True;");
-
                 optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.LazyLoadOnDisposedContextWarning));
+
             }
         }
 
@@ -114,6 +116,27 @@ namespace AZTU_Akademik.Models
                     .HasForeignKey(d => d.ArasdirmaciId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Arasdirmaci_administrativ_vezife_Arasdirmacilar");
+            });
+
+            modelBuilder.Entity<ArasdirmaciDil>(entity =>
+            {
+                entity.ToTable("Arasdirmaci_Dil");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ArasdirmaciId).HasColumnName("arasdirmaci_id");
+
+                entity.Property(e => e.XariciDilId).HasColumnName("xarici_dil_id");
+
+                entity.HasOne(d => d.Arasdirmaci)
+                    .WithMany(p => p.ArasdirmaciDil)
+                    .HasForeignKey(d => d.ArasdirmaciId)
+                    .HasConstraintName("FK_Arasdirmaci_Dil_Arasdirmacilar");
+
+                entity.HasOne(d => d.XariciDil)
+                    .WithMany(p => p.ArasdirmaciDil)
+                    .HasForeignKey(d => d.XariciDilId)
+                    .HasConstraintName("FK_Arasdirmaci_Dil_Xarici_Dil");
             });
 
             modelBuilder.Entity<ArasdirmaciMeqale>(entity =>
@@ -307,9 +330,8 @@ namespace AZTU_Akademik.Models
                     .HasColumnType("date");
 
                 entity.Property(e => e.ElmlerDoktoruDisertasiyaAd)
-                    .IsRequired()
                     .HasColumnName("elmler_doktoru_disertasiya_ad")
-                    .HasMaxLength(100);
+                    .HasMaxLength(500);
 
                 entity.Property(e => e.ElmlerDoktoruDisertasiyaPdfId).HasColumnName("elmler_doktoru__disertasiya_PDF_ID");
 
@@ -535,7 +557,7 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Sertifikatlar>(entity =>
             {
-                entity.HasNoKey();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.ArasdirmaciId).HasColumnName("Arasdirmaci_ID");
 
@@ -545,7 +567,7 @@ namespace AZTU_Akademik.Models
                     .HasMaxLength(70);
 
                 entity.HasOne(d => d.Arasdirmaci)
-                    .WithMany()
+                    .WithMany(p => p.Sertifikatlar)
                     .HasForeignKey(d => d.ArasdirmaciId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Sertifikatlar_Arasdirmacilar");
@@ -600,6 +622,17 @@ namespace AZTU_Akademik.Models
                 entity.Property(e => e.UniversitetAd)
                     .HasColumnName("Universitet_Ad")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<XariciDil>(entity =>
+            {
+                entity.ToTable("Xarici_Dil");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Ad)
+                    .HasColumnName("ad")
+                    .HasMaxLength(100);
             });
 
             OnModelCreatingPartial(modelBuilder);
