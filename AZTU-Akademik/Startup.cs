@@ -35,13 +35,16 @@ namespace AZTU_Akademik
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             
-            
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 
             services.AddSwaggerGen(options => {
                 options.SwaggerDoc("v1", new OpenApiInfo { Version = "v1", Title = "AZTU-AKADEMIK" });
             });
+
+
+            services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("///").AllowAnyHeader().AllowAnyMethod()));
 
         }
 
@@ -65,6 +68,8 @@ namespace AZTU_Akademik
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {
