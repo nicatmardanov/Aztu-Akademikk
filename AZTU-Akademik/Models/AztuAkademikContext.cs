@@ -26,6 +26,7 @@ namespace AZTU_Akademik.Models
         public virtual DbSet<BakalavriatSiyahi> BakalavriatSiyahi { get; set; }
         public virtual DbSet<DersArasdirmaci> DersArasdirmaci { get; set; }
         public virtual DbSet<Dersler> Dersler { get; set; }
+        public virtual DbSet<DilSeviyye> DilSeviyye { get; set; }
         public virtual DbSet<ElmiJurnaldakiVezifeler> ElmiJurnaldakiVezifeler { get; set; }
         public virtual DbSet<ElmlerDoktorluguSiyahi> ElmlerDoktorluguSiyahi { get; set; }
         public virtual DbSet<ElmlerNamizedlikSiyahi> ElmlerNamizedlikSiyahi { get; set; }
@@ -51,6 +52,7 @@ namespace AZTU_Akademik.Models
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=DESKTOP-UTUBGGC\\SQLEXPRESS;Database=Aztu-Akademik;Trusted_Connection=True;");
+
                 optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.LazyLoadOnDisposedContextWarning));
 
             }
@@ -126,12 +128,19 @@ namespace AZTU_Akademik.Models
 
                 entity.Property(e => e.ArasdirmaciId).HasColumnName("arasdirmaci_id");
 
+                entity.Property(e => e.DilSeviyye).HasColumnName("dil_seviyye");
+
                 entity.Property(e => e.XariciDilId).HasColumnName("xarici_dil_id");
 
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.ArasdirmaciDil)
                     .HasForeignKey(d => d.ArasdirmaciId)
                     .HasConstraintName("FK_Arasdirmaci_Dil_Arasdirmacilar");
+
+                entity.HasOne(d => d.DilSeviyyeNavigation)
+                    .WithMany(p => p.ArasdirmaciDil)
+                    .HasForeignKey(d => d.DilSeviyye)
+                    .HasConstraintName("FK_Arasdirmaci_Dil_Dil_Seviyye");
 
                 entity.HasOne(d => d.XariciDil)
                     .WithMany(p => p.ArasdirmaciDil)
@@ -302,6 +311,19 @@ namespace AZTU_Akademik.Models
                     .HasForeignKey(d => d.KafedraId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Dersler_kafedralar");
+            });
+
+            modelBuilder.Entity<DilSeviyye>(entity =>
+            {
+                entity.ToTable("Dil_Seviyye");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.SeviyyeAd)
+                    .HasColumnName("seviyye_ad")
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<ElmiJurnaldakiVezifeler>(entity =>
