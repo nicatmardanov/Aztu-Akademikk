@@ -16,8 +16,13 @@ namespace AZTU_Akademik.Controllers
     {
         private readonly AztuAkademikContext aztuAkademik = new AztuAkademikContext();
 
-        [HttpGet]
-        public JsonResult Get(int user_id) => Json(aztuAkademik.ArasdirmaciDil.Where(x => x.ArasdirmaciId == user_id).Include(x => x.XariciDil.Ad));
+
+        [HttpGet("AllForeignLanguagesList")]
+        public JsonResult GetAll() => Json(aztuAkademik.XariciDil);
+
+
+        [HttpGet("{id}")]
+        public JsonResult Get(int id) => Json(aztuAkademik.ArasdirmaciDil.Where(x => x.ArasdirmaciId == id).Include(x => x.XariciDil));
 
 
         [HttpPost("AddLanguage")]

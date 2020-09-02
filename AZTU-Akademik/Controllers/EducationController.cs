@@ -36,7 +36,7 @@ namespace AZTU_Akademik.Controllers
             {
                 edu_info = aztuAkademik.TehsilSeviyye.Where(x => x.ArasdirmaciId == id).Include(x => x.Bakalavr).Include(x => x.Magistr).Include(x => x.ElmlerDoktoru).Include(x => x.ElmlerNamizedi).Include(x => x.Arasdirmaci),
                 dissertasion = dos_m,
-                foreign_language=aztuAkademik.ArasdirmaciDil.Where(x=>x.ArasdirmaciId==id).Select(x=>x.XariciDil.Ad),
+                foreign_language=aztuAkademik.ArasdirmaciDil.Where(x=>x.ArasdirmaciId==id).Select(x=> new { x.XariciDil.Ad, x.DilSeviyyeNavigation.SeviyyeAd }),
                 sertifikat = aztuAkademik.Sertifikatlar.Where(x => x.ArasdirmaciId == id)
             });
         }

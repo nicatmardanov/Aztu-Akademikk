@@ -11,6 +11,8 @@ namespace AZTU_Akademik.Models
             ArasdirmaciDil = new HashSet<ArasdirmaciDil>();
             ArasdirmaciMeqale = new HashSet<ArasdirmaciMeqale>();
             ArasdirmacilarElmiJurnaldakiVezifeleri = new HashSet<ArasdirmacilarElmiJurnaldakiVezifeleri>();
+            Elanlar = new HashSet<Elanlar>();
+            Elaqe = new HashSet<Elaqe>();
             IsTecrubesi = new HashSet<IsTecrubesi>();
             Mukafatlar = new HashSet<Mukafatlar>();
             Patentler = new HashSet<Patentler>();
@@ -27,6 +29,7 @@ namespace AZTU_Akademik.Models
         public string ArasdirmaciEmeil { get; set; }
         public string ArasdirmaciPassword { get; set; }
         public int? ArasdirmaciPedoqojiAdId { get; set; }
+        public string CvAdres { get; set; }
         public int? RolId { get; set; }
 
         public virtual ArasdirmaciPedoqojiAd ArasdirmaciPedoqojiAd { get; set; }
@@ -37,6 +40,8 @@ namespace AZTU_Akademik.Models
         public virtual ICollection<ArasdirmaciDil> ArasdirmaciDil { get; set; }
         public virtual ICollection<ArasdirmaciMeqale> ArasdirmaciMeqale { get; set; }
         public virtual ICollection<ArasdirmacilarElmiJurnaldakiVezifeleri> ArasdirmacilarElmiJurnaldakiVezifeleri { get; set; }
+        public virtual ICollection<Elanlar> Elanlar { get; set; }
+        public virtual ICollection<Elaqe> Elaqe { get; set; }
         public virtual ICollection<IsTecrubesi> IsTecrubesi { get; set; }
         public virtual ICollection<Mukafatlar> Mukafatlar { get; set; }
         public virtual ICollection<Patentler> Patentler { get; set; }

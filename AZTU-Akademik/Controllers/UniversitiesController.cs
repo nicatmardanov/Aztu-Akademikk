@@ -16,7 +16,10 @@ namespace AZTU_Akademik.Controllers
         private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
 
         [HttpGet]
-        public JsonResult Get() => Json(aztuAkademik.Universitetler);
+        public JsonResult GetAll() => Json(aztuAkademik.Universitetler);
+
+        [HttpGet("{id}")]
+        public JsonResult Get(int id) => Json(aztuAkademik.Universitetler.FirstOrDefault(x => x.Id == id));
 
 
         [HttpPost]

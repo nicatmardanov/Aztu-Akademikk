@@ -8,6 +8,10 @@ namespace AZTU_Akademik.Models
         public int Id { get; set; }
         public string SertifikatAd { get; set; }
         public int ArasdirmaciId { get; set; }
+        public string Aciqlama { get; set; }
+        public string SertifikatLink { get; set; }
+        public string PdfAdres { get; set; }
+        public bool? IsIndexed { get; set; }
 
         public virtual Arasdirmacilar Arasdirmaci { get; set; }
     }

@@ -18,15 +18,18 @@ namespace AZTU_Akademik.Controllers
 
 
         [HttpGet]
-        public JsonResult GetAll(int id) => Json(aztuAkademik.IsTecrubesi.Where(x => x.ArasdirmaciId == id).OrderByDescending(x => x.Id));
-
-
-        [HttpGet("{id}")]
-        public JsonResult Get(int id)
+        public JsonResult GetAll(int id)
         {
-            return Json(aztuAkademik.IsTecrubesi.FirstOrDefault(x => x.Id == id));
+            var education_level = aztuAkademik.TehsilSeviyye.Where(x => x.ArasdirmaciId == id); 
+
+            return Json(new { academic = new { dos = education_level.Select(x => x.ElmlerDoktoruNavigation), eos = education_level.Select(x => x.ElmlerNamizedi), master = education_level.Select(x => x.Magistr) }, managerial_experience = aztuAkademik.IsTecrubesi.Where(x => x.ArasdirmaciId == id).OrderByDescending(x => x.Id) });
         }
 
+        //[HttpGet("WorkExperience")]
+        //public JsonResult WorkExperience(int id)
+        //{
+        //    return Json(aztuAkademik.IsTecrubesi.FirstOrDefault(x => x.Id == id));
+        //}
 
 
         [HttpPost]

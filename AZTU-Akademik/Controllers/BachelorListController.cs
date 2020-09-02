@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AZTU_Akademik.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AZTU_Akademik.Controllers
 {
@@ -15,6 +16,12 @@ namespace AZTU_Akademik.Controllers
     {
         private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private int User_Id => int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
+
+        [HttpGet("GetAll")]
+        public JsonResult GetAll() => Json(aztuAkademik.BakalavriatSiyahi.Include(x => x.TehsilSeviyye));
+
+        [HttpGet("Get")]
+        public JsonResult Get(int id) => Json(aztuAkademik.TehsilSeviyye.Where(x => x.ArasdirmaciId == id && x.BakalavrId > 0));
 
 
         [HttpGet("Add")]

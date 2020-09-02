@@ -27,6 +27,8 @@ namespace AZTU_Akademik.Models
         public virtual DbSet<DersArasdirmaci> DersArasdirmaci { get; set; }
         public virtual DbSet<Dersler> Dersler { get; set; }
         public virtual DbSet<DilSeviyye> DilSeviyye { get; set; }
+        public virtual DbSet<Elanlar> Elanlar { get; set; }
+        public virtual DbSet<Elaqe> Elaqe { get; set; }
         public virtual DbSet<ElmiJurnaldakiVezifeler> ElmiJurnaldakiVezifeler { get; set; }
         public virtual DbSet<ElmlerDoktorluguSiyahi> ElmlerDoktorluguSiyahi { get; set; }
         public virtual DbSet<ElmlerNamizedlikSiyahi> ElmlerNamizedlikSiyahi { get; set; }
@@ -54,7 +56,6 @@ namespace AZTU_Akademik.Models
                 optionsBuilder.UseSqlServer("Server=DESKTOP-UTUBGGC\\SQLEXPRESS;Database=Aztu-Akademik;Trusted_Connection=True;");
 
                 optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.LazyLoadOnDisposedContextWarning));
-
             }
         }
 
@@ -202,6 +203,10 @@ namespace AZTU_Akademik.Models
                     .HasColumnName("Arasdirmaci_Soyad")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.CvAdres)
+                    .HasColumnName("cv_adres")
+                    .HasMaxLength(500);
+
                 entity.Property(e => e.KafedraId).HasColumnName("Kafedra_ID");
 
                 entity.Property(e => e.MeslekiIdariDeneyimID).HasColumnName("Mesleki_Idari_Deneyim_iD");
@@ -324,6 +329,63 @@ namespace AZTU_Akademik.Models
                 entity.Property(e => e.SeviyyeAd)
                     .HasColumnName("seviyye_ad")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Elanlar>(entity =>
+            {
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Aciqlama).HasColumnName("aciqlama");
+
+                entity.Property(e => e.Ad)
+                    .HasColumnName("ad")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.ArasdirmaciId).HasColumnName("arasdirmaci_id");
+
+                entity.HasOne(d => d.Arasdirmaci)
+                    .WithMany(p => p.Elanlar)
+                    .HasForeignKey(d => d.ArasdirmaciId)
+                    .HasConstraintName("FK_Elanlar_Arasdirmacilar");
+            });
+
+            modelBuilder.Entity<Elaqe>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ArasdirmaciId).HasColumnName("arasdirmaci_id");
+
+                entity.Property(e => e.Email)
+                    .HasColumnName("email")
+                    .HasMaxLength(50)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Facebook)
+                    .HasColumnName("facebook")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Instagram)
+                    .HasColumnName("instagram")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Linkedin)
+                    .HasColumnName("linkedin")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Number)
+                    .HasColumnName("number")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.WebSite)
+                    .HasColumnName("web_site")
+                    .HasMaxLength(100);
+
+                entity.HasOne(d => d.Arasdirmaci)
+                    .WithMany(p => p.Elaqe)
+                    .HasForeignKey(d => d.ArasdirmaciId)
+                    .HasConstraintName("FK_Elaqe_Arasdirmacilar");
             });
 
             modelBuilder.Entity<ElmiJurnaldakiVezifeler>(entity =>
@@ -581,12 +643,22 @@ namespace AZTU_Akademik.Models
             {
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.Aciqlama).HasMaxLength(200);
+
                 entity.Property(e => e.ArasdirmaciId).HasColumnName("Arasdirmaci_ID");
+
+                entity.Property(e => e.IsIndexed).HasColumnName("isIndexed");
+
+                entity.Property(e => e.PdfAdres).HasColumnName("pdf_adres");
 
                 entity.Property(e => e.SertifikatAd)
                     .IsRequired()
                     .HasColumnName("Sertifikat_ad")
                     .HasMaxLength(70);
+
+                entity.Property(e => e.SertifikatLink)
+                    .HasColumnName("sertifikat_link")
+                    .HasMaxLength(500);
 
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.Sertifikatlar)
