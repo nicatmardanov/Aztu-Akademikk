@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json.Serialization;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 //using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace AZTU_Akademik
@@ -70,6 +72,13 @@ namespace AZTU_Akademik
             app.UseAuthorization();
 
             app.UseCors();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Assets")),
+                RequestPath = "/Assets"
+            });
 
             app.UseEndpoints(endpoints =>
             {

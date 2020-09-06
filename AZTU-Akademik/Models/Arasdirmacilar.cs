@@ -30,6 +30,7 @@ namespace AZTU_Akademik.Models
         public string ArasdirmaciPassword { get; set; }
         public int? ArasdirmaciPedoqojiAdId { get; set; }
         public string CvAdres { get; set; }
+        public string ProfilShekil { get; set; }
         public int? RolId { get; set; }
 
         public virtual ArasdirmaciPedoqojiAd ArasdirmaciPedoqojiAd { get; set; }

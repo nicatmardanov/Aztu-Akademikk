@@ -9,6 +9,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using AZTU_Akademik.Classes;
+using Microsoft.EntityFrameworkCore;
 
 namespace AZTU_Akademik.Controllers
 {
@@ -25,7 +26,8 @@ namespace AZTU_Akademik.Controllers
             if (!_user.ArasdirmaciEmeil.Contains("@aztu.edu.az"))
                 return Json(new { res = 0 });
 
-            var valid_user = aztuAkademik.Arasdirmacilar.FirstOrDefault(x => x.ArasdirmaciEmeil == _user.ArasdirmaciEmeil && x.ArasdirmaciPassword == _user.ArasdirmaciPassword);
+            var valid_user = aztuAkademik.Arasdirmacilar.Include(x=>x.Rol).FirstOrDefault(x => x.ArasdirmaciEmeil == _user.ArasdirmaciEmeil && x.ArasdirmaciPassword == _user.ArasdirmaciPassword);
+
 
             if (valid_user != null)
             {

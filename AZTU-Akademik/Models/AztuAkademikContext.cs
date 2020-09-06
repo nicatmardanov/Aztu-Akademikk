@@ -211,6 +211,10 @@ namespace AZTU_Akademik.Models
 
                 entity.Property(e => e.MeslekiIdariDeneyimID).HasColumnName("Mesleki_Idari_Deneyim_iD");
 
+                entity.Property(e => e.ProfilShekil)
+                    .HasColumnName("profil_shekil")
+                    .HasMaxLength(500);
+
                 entity.Property(e => e.RolId).HasColumnName("rol_id");
 
                 entity.Property(e => e.TehsilSeviyyesiId).HasColumnName("Tehsil_seviyyesi_ID");
