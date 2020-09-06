@@ -18,11 +18,5 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Assets\CV\" />
-    <Folder Include="Assets\Certificate\" />
-    <Folder Include="Assets\ProfilePicture\" />
-  </ItemGroup>
-
 
 </Project>
