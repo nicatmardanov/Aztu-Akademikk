@@ -15,9 +15,9 @@ namespace AZTU_Akademik.Controllers
     public class EducationController : Controller
     {
         private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
-        private int User_Id => int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
+        private int User_Id => 1005;//int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public JsonResult GetAll()
         {
 
@@ -37,6 +37,18 @@ namespace AZTU_Akademik.Controllers
                 foreign_language = aztuAkademik.ArasdirmaciDil.Where(x => x.ArasdirmaciId == User_Id).Select(x => new { x.XariciDil.Ad, x.DilSeviyyeNavigation.SeviyyeAd }),
                 sertifikat = aztuAkademik.Sertifikatlar.Where(x => x.ArasdirmaciId == User_Id)
             });
+        }
+
+
+
+        [HttpGet("Get")]
+        public JsonResult Get(string token)
+        {
+            var Identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            IList<Claim> claims = Identity.Claims.ToList();
+
+            return Json(User.Identity.IsAuthenticated);
         }
     }
 }
