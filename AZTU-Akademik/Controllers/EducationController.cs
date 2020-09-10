@@ -15,7 +15,7 @@ namespace AZTU_Akademik.Controllers
     public class EducationController : Controller
     {
         private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
-        private int User_Id => 1005;//int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
+        private int User_Id => int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
         [HttpGet("GetAll")]
         public JsonResult GetAll()
