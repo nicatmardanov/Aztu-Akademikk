@@ -37,6 +37,7 @@ namespace AZTU_Akademik.Models
         public virtual DbSet<Jurnallar> Jurnallar { get; set; }
         public virtual DbSet<Kafedralar> Kafedralar { get; set; }
         public virtual DbSet<MagistranturaSiyahisi> MagistranturaSiyahisi { get; set; }
+        public virtual DbSet<MeqaleNov> MeqaleNov { get; set; }
         public virtual DbSet<Meqaleler> Meqaleler { get; set; }
         public virtual DbSet<MeslekiIdariDeneyim> MeslekiIdariDeneyim { get; set; }
         public virtual DbSet<Mukafatlar> Mukafatlar { get; set; }
@@ -56,6 +57,7 @@ namespace AZTU_Akademik.Models
                 optionsBuilder.UseSqlServer("Server=DESKTOP-UTUBGGC\\SQLEXPRESS;Database=Aztu-Akademik;Trusted_Connection=True;");
 
                 optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.LazyLoadOnDisposedContextWarning));
+
             }
         }
 
@@ -539,11 +541,26 @@ namespace AZTU_Akademik.Models
                 entity.Property(e => e.MagistrUniversitetId).HasColumnName("Magistr_Universitet_ID");
             });
 
+            modelBuilder.Entity<MeqaleNov>(entity =>
+            {
+                entity.ToTable("Meqale_Nov");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.MeqaleNovAd)
+                    .HasColumnName("Meqale_Nov_Ad")
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<Meqaleler>(entity =>
             {
                 entity.Property(e => e.MeqaleAd)
                     .HasColumnName("Meqale_Ad")
-                    .HasMaxLength(50);
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.MeqaleHaqqinda).HasColumnName("Meqale_Haqqinda");
 
                 entity.Property(e => e.MeqaleIl)
                     .HasColumnName("Meqale_il")
@@ -551,9 +568,7 @@ namespace AZTU_Akademik.Models
 
                 entity.Property(e => e.MeqaleJurnalId).HasColumnName("Meqale_jurnal_ID");
 
-                entity.Property(e => e.MeqaleNovId)
-                    .HasColumnName("Meqale_nov_Id")
-                    .HasMaxLength(20);
+                entity.Property(e => e.MeqaleNovId).HasColumnName("Meqale_nov_Id");
 
                 entity.Property(e => e.Olke).HasMaxLength(60);
 
@@ -565,6 +580,11 @@ namespace AZTU_Akademik.Models
                     .WithMany(p => p.Meqaleler)
                     .HasForeignKey(d => d.MeqaleJurnalId)
                     .HasConstraintName("FK_Meqale_Jurnallar");
+
+                entity.HasOne(d => d.MeqaleNov)
+                    .WithMany(p => p.Meqaleler)
+                    .HasForeignKey(d => d.MeqaleNovId)
+                    .HasConstraintName("FK_Meqaleler_Meqale_Nov");
 
                 entity.HasOne(d => d.Universitet)
                     .WithMany(p => p.Meqaleler)

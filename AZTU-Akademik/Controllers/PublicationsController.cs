@@ -22,6 +22,7 @@ namespace AZTU_Akademik.Controllers
         {
             var researcher_publications = aztuAkademik.ArasdirmaciMeqale.Where(x => x.ArasdirmaciId == id);
             return Json(researcher_publications.Include(x => x.Meqale).ThenInclude(x => x.Universitet)
+                .Include(x=>x.Meqale).ThenInclude(x=>x.MeqaleNov)
                 .Include(x => x.Meqale).ThenInclude(x => x.MeqaleJurnal).Select(x => x.Meqale));
         }
 
