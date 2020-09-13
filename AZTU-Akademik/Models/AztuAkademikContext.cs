@@ -56,6 +56,7 @@ namespace AZTU_Akademik.Models
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=DESKTOP-UTUBGGC\\SQLEXPRESS;Database=Aztu-Akademik;Trusted_Connection=True;");
+
                 optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.LazyLoadOnDisposedContextWarning));
 
             }
@@ -68,6 +69,13 @@ namespace AZTU_Akademik.Models
                 entity.ToTable("A_Saheleri_Adlari");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.KafedraId).HasColumnName("Kafedra_Id");
+
+                entity.HasOne(d => d.Kafedra)
+                    .WithMany(p => p.ASaheleriAdlari)
+                    .HasForeignKey(d => d.KafedraId)
+                    .HasConstraintName("FK_A_Saheleri_Adlari_kafedralar");
             });
 
             modelBuilder.Entity<AdministrativVezifeler>(entity =>
@@ -90,19 +98,12 @@ namespace AZTU_Akademik.Models
 
                 entity.Property(e => e.ArasdirmaciId).HasColumnName("Arasdirmaci_Id");
 
-                entity.Property(e => e.KafedraId).HasColumnName("Kafedra_ID");
-
                 entity.Property(e => e.SaheId).HasColumnName("Sahe_Id");
 
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.ArasdirmaSaheleri)
                     .HasForeignKey(d => d.ArasdirmaciId)
                     .HasConstraintName("FK_Arasdirma_Saheleri_Arasdirmacilar");
-
-                entity.HasOne(d => d.Kafedra)
-                    .WithMany(p => p.ArasdirmaSaheleri)
-                    .HasForeignKey(d => d.KafedraId)
-                    .HasConstraintName("FK_Arasdirma_Saheleri_kafedralar");
 
                 entity.HasOne(d => d.Sahe)
                     .WithMany(p => p.ArasdirmaSaheleri)

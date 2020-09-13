@@ -11,8 +11,10 @@ namespace AZTU_Akademik.Models
         }
 
         public int Id { get; set; }
+        public int? KafedraId { get; set; }
         public string Ad { get; set; }
 
+        public virtual Kafedralar Kafedra { get; set; }
         public virtual ICollection<ArasdirmaSaheleri> ArasdirmaSaheleri { get; set; }
     }
 }

@@ -8,10 +8,8 @@ namespace AZTU_Akademik.Models
         public int Id { get; set; }
         public int? SaheId { get; set; }
         public int? ArasdirmaciId { get; set; }
-        public int? KafedraId { get; set; }
 
         public virtual Arasdirmacilar Arasdirmaci { get; set; }
-        public virtual Kafedralar Kafedra { get; set; }
         public virtual ASaheleriAdlari Sahe { get; set; }
     }
 }
