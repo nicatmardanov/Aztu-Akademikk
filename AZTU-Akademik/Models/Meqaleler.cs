@@ -20,6 +20,7 @@ namespace AZTU_Akademik.Models
         public int? UniversitetId { get; set; }
         public int? SaheId { get; set; }
         public int? MeqaleJurnalId { get; set; }
+        public bool? IndeksMeqale { get; set; }
 
         public virtual Jurnallar MeqaleJurnal { get; set; }
         public virtual MeqaleNov MeqaleNov { get; set; }

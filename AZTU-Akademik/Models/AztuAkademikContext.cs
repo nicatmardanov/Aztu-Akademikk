@@ -15,6 +15,7 @@ namespace AZTU_Akademik.Models
         {
         }
 
+        public virtual DbSet<ASaheleriAdlari> ASaheleriAdlari { get; set; }
         public virtual DbSet<AdministrativVezifeler> AdministrativVezifeler { get; set; }
         public virtual DbSet<ArasdirmaSaheleri> ArasdirmaSaheleri { get; set; }
         public virtual DbSet<ArasdirmaciAdministrativVezife> ArasdirmaciAdministrativVezife { get; set; }
@@ -55,7 +56,6 @@ namespace AZTU_Akademik.Models
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=DESKTOP-UTUBGGC\\SQLEXPRESS;Database=Aztu-Akademik;Trusted_Connection=True;");
-
                 optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.LazyLoadOnDisposedContextWarning));
 
             }
@@ -63,6 +63,13 @@ namespace AZTU_Akademik.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ASaheleriAdlari>(entity =>
+            {
+                entity.ToTable("A_Saheleri_Adlari");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+            });
+
             modelBuilder.Entity<AdministrativVezifeler>(entity =>
             {
                 entity.ToTable("Administrativ_vezifeler");
@@ -85,9 +92,7 @@ namespace AZTU_Akademik.Models
 
                 entity.Property(e => e.KafedraId).HasColumnName("Kafedra_ID");
 
-                entity.Property(e => e.SaheAd)
-                    .HasColumnName("Sahe_ad")
-                    .HasMaxLength(50);
+                entity.Property(e => e.SaheId).HasColumnName("Sahe_Id");
 
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.ArasdirmaSaheleri)
@@ -98,6 +103,11 @@ namespace AZTU_Akademik.Models
                     .WithMany(p => p.ArasdirmaSaheleri)
                     .HasForeignKey(d => d.KafedraId)
                     .HasConstraintName("FK_Arasdirma_Saheleri_kafedralar");
+
+                entity.HasOne(d => d.Sahe)
+                    .WithMany(p => p.ArasdirmaSaheleri)
+                    .HasForeignKey(d => d.SaheId)
+                    .HasConstraintName("FK_Arasdirma_Saheleri_A_Saheleri_Adlari");
             });
 
             modelBuilder.Entity<ArasdirmaciAdministrativVezife>(entity =>
@@ -339,9 +349,7 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Elanlar>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Aciqlama).HasColumnName("aciqlama");
 
@@ -383,6 +391,10 @@ namespace AZTU_Akademik.Models
                 entity.Property(e => e.Number)
                     .HasColumnName("number")
                     .HasMaxLength(100);
+
+                entity.Property(e => e.ScopusLink)
+                    .HasColumnName("scopus_link")
+                    .HasMaxLength(500);
 
                 entity.Property(e => e.WebSite)
                     .HasColumnName("web_site")
@@ -487,11 +499,11 @@ namespace AZTU_Akademik.Models
                 entity.Property(e => e.IsVezife)
                     .IsRequired()
                     .HasColumnName("Is_vezife")
-                    .HasMaxLength(50);
+                    .HasMaxLength(250);
 
                 entity.Property(e => e.IsYeri)
                     .HasColumnName("Is_yeri")
-                    .HasColumnType("text");
+                    .HasMaxLength(300);
 
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.IsTecrubesi)
@@ -556,6 +568,8 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Meqaleler>(entity =>
             {
+                entity.Property(e => e.IndeksMeqale).HasColumnName("Indeks_Meqale");
+
                 entity.Property(e => e.MeqaleAd)
                     .HasColumnName("Meqale_Ad")
                     .HasMaxLength(500);
@@ -670,8 +684,6 @@ namespace AZTU_Akademik.Models
                 entity.Property(e => e.Aciqlama).HasMaxLength(200);
 
                 entity.Property(e => e.ArasdirmaciId).HasColumnName("Arasdirmaci_ID");
-
-                entity.Property(e => e.IsIndexed).HasColumnName("isIndexed");
 
                 entity.Property(e => e.PdfAdres).HasColumnName("pdf_adres");
 

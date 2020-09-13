@@ -11,7 +11,6 @@ namespace AZTU_Akademik.Models
         public string Aciqlama { get; set; }
         public string SertifikatLink { get; set; }
         public string PdfAdres { get; set; }
-        public bool? IsIndexed { get; set; }
 
         public virtual Arasdirmacilar Arasdirmaci { get; set; }
     }
