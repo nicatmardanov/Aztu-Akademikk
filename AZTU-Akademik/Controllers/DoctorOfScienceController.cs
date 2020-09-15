@@ -61,6 +61,9 @@ namespace AZTU_Akademik.Controllers
 
             if (d_list != null)
             {
+                d_list.TehsilSeviyye.FirstOrDefault().ElmlerDoktoru = null;
+                await aztuAkademik.SaveChangesAsync();
+
                 aztuAkademik.ElmlerDoktorluguSiyahi.Remove(d_list);
                 await aztuAkademik.SaveChangesAsync();
 

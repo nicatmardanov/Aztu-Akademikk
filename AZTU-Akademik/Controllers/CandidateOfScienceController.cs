@@ -60,6 +60,10 @@ namespace AZTU_Akademik.Controllers
 
             if (c_list != null)
             {
+                c_list.TehsilSeviyye.FirstOrDefault().ElmlerNamizediId = null;
+                await aztuAkademik.SaveChangesAsync();
+
+
                 aztuAkademik.ElmlerNamizedlikSiyahi.Remove(c_list);
                 await aztuAkademik.SaveChangesAsync();
 

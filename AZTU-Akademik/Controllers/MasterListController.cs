@@ -60,6 +60,10 @@ namespace AZTU_Akademik.Controllers
 
             if (m_list != null)
             {
+
+                m_list.TehsilSeviyye.FirstOrDefault().MagistrId = null;
+                await aztuAkademik.SaveChangesAsync();
+
                 aztuAkademik.MagistranturaSiyahisi.Remove(m_list);
                 await aztuAkademik.SaveChangesAsync();
 

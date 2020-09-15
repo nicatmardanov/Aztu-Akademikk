@@ -18,7 +18,7 @@ namespace AZTU_Akademik.Controllers
         private int User_Id => int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
         [HttpGet("GetAll")]
-        public JsonResult GetAll()
+        public async Task<JsonResult> GetAll()
         {
 
             List<string> dissertation_list = new List<string>();
@@ -26,14 +26,19 @@ namespace AZTU_Akademik.Controllers
             var dos_m = aztuAkademik.TehsilSeviyye.Where(x => x.ArasdirmaciId == User_Id).Include(x => x.ElmlerDoktoruNavigation).Select(x => x.ElmlerDoktoruNavigation.ElmlerDoktoruDisertasiyaAd);
             var eos_m = aztuAkademik.TehsilSeviyye.Where(x => x.ArasdirmaciId == User_Id).Include(x => x.ElmlerNamizedi).Select(x => x.ElmlerNamizedi.ElmlerNamizediDisertasiyaAd);
             var master_m = aztuAkademik.TehsilSeviyye.Where(x => x.ArasdirmaciId == User_Id).Include(x => x.Magistr).Select(x => x.Magistr.MagistrDisertasiyaAd);
-           
+
+
+            dos_m = Valid(dos_m);
+            eos_m = Valid(eos_m);
+            master_m = Valid(master_m);
+
 
             return Json(new
             {
                 edu = aztuAkademik.TehsilSeviyye.Where(x => x.ArasdirmaciId == User_Id).Include(x => x.Bakalavr).Include(x => x.Magistr).Include(x => x.ElmlerNamizedi).Include(x => x.ElmlerDoktoruNavigation).Include(x => x.Arasdirmaci),
                 dos_dissertasion = dos_m,
-                eos_dissertation= eos_m,
-                master_dissertation=master_m,
+                eos_dissertation = eos_m,
+                master_dissertation = master_m,
                 foreign_language = aztuAkademik.ArasdirmaciDil.Where(x => x.ArasdirmaciId == User_Id).Select(x => new { x.XariciDil.Ad, x.DilSeviyyeNavigation.SeviyyeAd }),
                 sertifikat = aztuAkademik.Sertifikatlar.Where(x => x.ArasdirmaciId == User_Id)
             });
@@ -50,5 +55,13 @@ namespace AZTU_Akademik.Controllers
 
             return Json(User.Identity.IsAuthenticated);
         }
+
+
+
+        private IQueryable<string> Valid(IQueryable<string> list)
+        {
+            return !string.IsNullOrEmpty(list.SingleOrDefault()) ? list : Enumerable.Empty<string>().AsQueryable();
+        }
+
     }
 }

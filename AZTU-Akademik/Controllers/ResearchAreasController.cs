@@ -18,12 +18,12 @@ namespace AZTU_Akademik.Controllers
         private int User_Id => int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
         [HttpGet("id")]
-        public IEnumerable<ArasdirmaSaheleri> GetAll(int id) => aztuAkademik.ArasdirmaSaheleri.Where(x => x.ArasdirmaciId == id).Include(x=>x.Kafedra).OrderByDescending(x => x.Id).AsNoTracking();
+        public IEnumerable<ArasdirmaSaheleri> GetAll(int id) => aztuAkademik.ArasdirmaSaheleri.Where(x => x.ArasdirmaciId == id).Include(x=>x.Sahe).ThenInclude(x=>x.Kafedra).OrderByDescending(x => x.Id).AsNoTracking();
 
         [HttpGet("r_id")]
         public JsonResult Get(int r_id)
         {
-            return Json(aztuAkademik.ArasdirmaSaheleri.Include(x=>x.Kafedra).FirstOrDefault(x => x.Id == r_id));
+            return Json(aztuAkademik.ArasdirmaSaheleri.Include(x => x.Sahe).ThenInclude(x => x.Kafedra).FirstOrDefault(x => x.Id == r_id));
 
         }
 
