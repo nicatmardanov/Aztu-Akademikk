@@ -15,9 +15,14 @@ namespace AZTU_Akademik.Controllers
     public class PublicationsController : Controller
     {
         private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
-        private int User_Id => 1005;
+        private int User_Id => int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
-        [HttpGet]
+        [HttpGet("AllPublications")]
+        public JsonResult AllPublications() => Json(aztuAkademik.ArasdirmaciMeqale.Include(x => x.Meqale).ThenInclude(x => x.Universitet)
+                .Include(x => x.Meqale).ThenInclude(x => x.MeqaleNov)
+                .Include(x => x.Meqale).ThenInclude(x => x.MeqaleJurnal).Select(x => x.Meqale));
+
+        [HttpGet("GetAll")]
         public JsonResult GetAll(int id)
         {
             var researcher_publications = aztuAkademik.ArasdirmaciMeqale.Where(x => x.ArasdirmaciId == id);
@@ -26,7 +31,7 @@ namespace AZTU_Akademik.Controllers
                 .Include(x => x.Meqale).ThenInclude(x => x.MeqaleJurnal).Select(x => x.Meqale));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("Get")]
         public async Task<JsonResult> Get(int id)
         {
             return Json(await aztuAkademik.Meqaleler.Include(x => x.Universitet).Include(x => x.MeqaleJurnal).FirstOrDefaultAsync(x => x.Id == id));
