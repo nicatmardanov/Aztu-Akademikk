@@ -75,6 +75,7 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Kafedra)
                     .WithMany(p => p.ASaheleriAdlari)
                     .HasForeignKey(d => d.KafedraId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_A_Saheleri_Adlari_kafedralar");
             });
 
@@ -103,11 +104,13 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.ArasdirmaSaheleri)
                     .HasForeignKey(d => d.ArasdirmaciId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirma_Saheleri_Arasdirmacilar");
 
                 entity.HasOne(d => d.Sahe)
                     .WithMany(p => p.ArasdirmaSaheleri)
                     .HasForeignKey(d => d.SaheId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirma_Saheleri_A_Saheleri_Adlari");
             });
 
@@ -124,13 +127,13 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.AdministrativVezife)
                     .WithMany()
                     .HasForeignKey(d => d.AdministrativVezifeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmaci_administrativ_vezife_Administrativ_vezifeler");
 
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany()
                     .HasForeignKey(d => d.ArasdirmaciId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmaci_administrativ_vezife_Arasdirmacilar");
             });
 
@@ -149,16 +152,19 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.ArasdirmaciDil)
                     .HasForeignKey(d => d.ArasdirmaciId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmaci_Dil_Arasdirmacilar");
 
                 entity.HasOne(d => d.DilSeviyyeNavigation)
                     .WithMany(p => p.ArasdirmaciDil)
                     .HasForeignKey(d => d.DilSeviyye)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmaci_Dil_Dil_Seviyye");
 
                 entity.HasOne(d => d.XariciDil)
                     .WithMany(p => p.ArasdirmaciDil)
                     .HasForeignKey(d => d.XariciDilId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmaci_Dil_Xarici_Dil");
             });
 
@@ -175,11 +181,13 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.ArasdirmaciMeqale)
                     .HasForeignKey(d => d.ArasdirmaciId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmaci_Meqale_Arasdirmacilar");
 
                 entity.HasOne(d => d.Meqale)
                     .WithMany(p => p.ArasdirmaciMeqale)
                     .HasForeignKey(d => d.MeqaleId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmaci_Meqale_Meqaleler");
             });
 
@@ -235,21 +243,25 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.ArasdirmaciPedoqojiAd)
                     .WithMany(p => p.Arasdirmacilar)
                     .HasForeignKey(d => d.ArasdirmaciPedoqojiAdId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmacilar_Arasdirmaci_Pedoqoji_Ad");
 
                 entity.HasOne(d => d.Kafedra)
                     .WithMany(p => p.Arasdirmacilar)
                     .HasForeignKey(d => d.KafedraId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmacilar_kafedralar");
 
                 entity.HasOne(d => d.MeslekiIdariDeneyim)
                     .WithMany(p => p.Arasdirmacilar)
                     .HasForeignKey(d => d.MeslekiIdariDeneyimID)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmacilar_Mesleki_Idari_Deneyim");
 
                 entity.HasOne(d => d.Rol)
                     .WithMany(p => p.Arasdirmacilar)
                     .HasForeignKey(d => d.RolId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmacilar_Rol");
             });
 
@@ -264,11 +276,13 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.ArasdirmacilarElmiJurnaldakiVezifeleri)
                     .HasForeignKey(d => d.ArasdirmaciId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmacilar_Elmi_jurnaldaki_vezifeleri_Arasdirmacilar");
 
                 entity.HasOne(d => d.ElmiJurnaldakiVezife)
                     .WithMany(p => p.ArasdirmacilarElmiJurnaldakiVezifeleri)
                     .HasForeignKey(d => d.ElmiJurnaldakiVezifeId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Arasdirmacilar_Elmi_jurnaldaki_vezifeleri_Elmi_jurnaldaki_vezifeler");
             });
 
@@ -308,13 +322,13 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany()
                     .HasForeignKey(d => d.ArasdirmaciId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Ders_arasdirmaci_Arasdirmacilar");
 
                 entity.HasOne(d => d.Ders)
                     .WithMany()
                     .HasForeignKey(d => d.DersId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Ders_arasdirmaci_Dersler");
             });
 
@@ -331,7 +345,7 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Kafedra)
                     .WithMany(p => p.Dersler)
                     .HasForeignKey(d => d.KafedraId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Dersler_kafedralar");
             });
 
@@ -363,6 +377,7 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.Elanlar)
                     .HasForeignKey(d => d.ArasdirmaciId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Elanlar_Arasdirmacilar");
             });
 
@@ -379,6 +394,10 @@ namespace AZTU_Akademik.Models
 
                 entity.Property(e => e.Facebook)
                     .HasColumnName("facebook")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.GoogleScholarLink)
+                    .HasColumnName("google_scholar_link")
                     .HasMaxLength(500);
 
                 entity.Property(e => e.Instagram)
@@ -404,6 +423,7 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.Elaqe)
                     .HasForeignKey(d => d.ArasdirmaciId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Elaqe_Arasdirmacilar");
             });
 
@@ -509,6 +529,7 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.IsTecrubesi)
                     .HasForeignKey(d => d.ArasdirmaciId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Is_tecrubesi_Arasdirmacilar");
             });
 
@@ -594,16 +615,19 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.MeqaleJurnal)
                     .WithMany(p => p.Meqaleler)
                     .HasForeignKey(d => d.MeqaleJurnalId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Meqale_Jurnallar");
 
                 entity.HasOne(d => d.MeqaleNov)
                     .WithMany(p => p.Meqaleler)
                     .HasForeignKey(d => d.MeqaleNovId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Meqaleler_Meqale_Nov");
 
                 entity.HasOne(d => d.Universitet)
                     .WithMany(p => p.Meqaleler)
                     .HasForeignKey(d => d.UniversitetId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Meqale_Universitetler");
             });
 
@@ -623,14 +647,13 @@ namespace AZTU_Akademik.Models
                 entity.Property(e => e.ArasdirmaciId).HasColumnName("Arasdirmaci_ID");
 
                 entity.Property(e => e.MukafatAd)
-                    .IsRequired()
                     .HasColumnName("Mukafat_ad")
                     .HasMaxLength(50);
 
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.Mukafatlar)
                     .HasForeignKey(d => d.ArasdirmaciId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Mukafatlar_Arasdirmacilar");
             });
 
@@ -647,7 +670,7 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.Patentler)
                     .HasForeignKey(d => d.ArasdirmaciId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Patentler_Arasdirmacilar");
             });
 
@@ -689,7 +712,6 @@ namespace AZTU_Akademik.Models
                 entity.Property(e => e.PdfAdres).HasColumnName("pdf_adres");
 
                 entity.Property(e => e.SertifikatAd)
-                    .IsRequired()
                     .HasColumnName("Sertifikat_ad")
                     .HasMaxLength(70);
 
@@ -700,7 +722,7 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.Sertifikatlar)
                     .HasForeignKey(d => d.ArasdirmaciId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Sertifikatlar_Arasdirmacilar");
             });
 
@@ -723,26 +745,31 @@ namespace AZTU_Akademik.Models
                 entity.HasOne(d => d.Arasdirmaci)
                     .WithMany(p => p.TehsilSeviyye)
                     .HasForeignKey(d => d.ArasdirmaciId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Tehsil_seviyye_Arasdirmacilar");
 
                 entity.HasOne(d => d.Bakalavr)
                     .WithMany(p => p.TehsilSeviyye)
                     .HasForeignKey(d => d.BakalavrId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Tehsil_seviyye_Bakalavriat_siyahi");
 
                 entity.HasOne(d => d.ElmlerDoktoruNavigation)
                     .WithMany(p => p.TehsilSeviyye)
                     .HasForeignKey(d => d.ElmlerDoktoru)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Tehsil_seviyye_Elmler_doktorlugu_siyahi");
 
                 entity.HasOne(d => d.ElmlerNamizedi)
                     .WithMany(p => p.TehsilSeviyye)
                     .HasForeignKey(d => d.ElmlerNamizediId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Tehsil_seviyye_elmler_namizedlik_siyahi1");
 
                 entity.HasOne(d => d.Magistr)
                     .WithMany(p => p.TehsilSeviyye)
                     .HasForeignKey(d => d.MagistrId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Tehsil_seviyye_Magistrantura_siyahisi");
             });
 

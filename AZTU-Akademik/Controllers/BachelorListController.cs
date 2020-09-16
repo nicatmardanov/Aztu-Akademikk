@@ -60,10 +60,6 @@ namespace AZTU_Akademik.Controllers
 
             if (b_list != null)
             {
-                b_list.TehsilSeviyye.FirstOrDefault().BakalavrId = null;
-                await aztuAkademik.SaveChangesAsync();
-
-
                 aztuAkademik.BakalavriatSiyahi.Remove(b_list);
                 await aztuAkademik.SaveChangesAsync();
 

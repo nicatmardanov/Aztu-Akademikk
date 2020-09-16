@@ -7,7 +7,7 @@ namespace AZTU_Akademik.Models
     {
         public int Id { get; set; }
         public string PatentAd { get; set; }
-        public int ArasdirmaciId { get; set; }
+        public int? ArasdirmaciId { get; set; }
 
         public virtual Arasdirmacilar Arasdirmaci { get; set; }
     }
