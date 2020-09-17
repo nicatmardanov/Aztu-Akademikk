@@ -14,7 +14,7 @@ namespace AZTU_Akademik.Controllers
     {
 
         [HttpGet]
-        public JsonResult Get() => User.Identity.IsAuthenticated ? Json(new { isAuth = true, role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role), id = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier) }) : Json(new { isAuth = false, role = false, id = false });
+        public JsonResult Get() => User.Identity.IsAuthenticated ? Json(new { isAuth = true, role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value, id = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value }) : Json(new { isAuth = false, role = false, id = false });
 
     }
 }
