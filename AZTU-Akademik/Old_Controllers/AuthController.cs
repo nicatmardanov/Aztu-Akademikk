@@ -12,7 +12,9 @@ namespace AZTU_Akademik.Controllers
     [ApiController]
     public class AuthController : Controller
     {
+
         [HttpGet]
         public JsonResult Get() => User.Identity.IsAuthenticated ? Json(new { isAuth = true, role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value, id = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value }) : Json(new { isAuth = false, role = false, id = false });
+
     }
 }
