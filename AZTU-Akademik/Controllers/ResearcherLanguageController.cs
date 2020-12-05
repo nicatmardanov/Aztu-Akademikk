@@ -12,10 +12,8 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DissertationController : Controller
+    public class ResearcherLanguageController : Controller
     {
-
-
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
         {
@@ -32,83 +30,78 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
-
         //GET
-        [HttpGet("Dissertation")]
-        public JsonResult Dissertation(int user_id) => Json(aztuAkademik.ResearcherEducation.Include(x=>x.Dissertation).Where(x=>x.ResearcherId==user_id).Select(x=>x.Dissertation));
+        [HttpGet("ResearcherLanguages")]
+        public JsonResult ResearcherLanguages(int user_id) => Json(aztuAkademik.ResearcherLanguage.
+            Include(x => x.Researcher).Include(x => x.Language).Include(x => x.Level).Include(x => x.File).
+            Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue));
 
-        
-        [HttpGet("AddDissertation")]
-        public JsonResult AddDissertation(int research_education_id) => Json(research_education_id);
 
 
         //POST
         [HttpPost]
-        public async Task Post(Dissertation _dissertation)
+        public async Task Post(ResearcherLanguage _researcherLanguage)
         {
-
             if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
             {
                 File _file = new File
                 {
-                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 0),
-                    Type = 1,
+                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 1),
+                    Type = 2,
                     CreateDate = GetDate,
                     StatusId = 1,
                     UserId = User_Id
                 };
 
-
                 await aztuAkademik.File.AddAsync(_file);
                 await aztuAkademik.SaveChangesAsync();
 
+                _researcherLanguage.CreateDate = GetDate;
+                _researcherLanguage.FileId = _file.Id;
+                _researcherLanguage.ResearcherId = User_Id;
 
 
-                _dissertation.FileId = _file.Id;
-                _dissertation.CreateDate = GetDate;
-
-                await aztuAkademik.Dissertation.AddAsync(_dissertation);
                 await aztuAkademik.SaveChangesAsync();
             }
-
         }
-
 
         //PUT
         [HttpPut]
-        public async Task<int> Put([FromQuery] Dissertation _dissertation, [FromQuery] bool fileChange)
+        public async Task<int> Put([FromQuery]ResearcherLanguage _researcherLanguage, [FromQuery] bool fileChange)
         {
             if (ModelState.IsValid)
             {
                 if (fileChange)
                 {
-                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == _dissertation.FileId);
+                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == _researcherLanguage.FileId);
                     if (!string.IsNullOrEmpty(_file.Name))
                         System.IO.File.Delete(_file.Name[1..]);
 
-                    _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 0);
-
+                    _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 1);
                 }
-                _dissertation.UpdateDate = GetDate;
-                aztuAkademik.Entry(_dissertation).Property(x => x.CreateDate).IsModified = false;
-                aztuAkademik.Entry(_dissertation).State = EntityState.Modified;
+
+                _researcherLanguage.UpdateDate = GetDate;
+                aztuAkademik.Entry(_researcherLanguage).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(_researcherLanguage).State = EntityState.Modified;
 
                 await aztuAkademik.SaveChangesAsync();
+                
                 return 1;
             }
+
             return 0;
         }
 
-        //DELETE
+        //Delete
         [HttpDelete]
         public async Task Delete(int id)
         {
-            aztuAkademik.Dissertation.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
-            aztuAkademik.Dissertation.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
+            aztuAkademik.ResearcherLanguage.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
+            aztuAkademik.ResearcherLanguage.FirstOrDefault(x => x.Id == id).StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
         }
 
 
     }
-}
+} 

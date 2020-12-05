@@ -13,7 +13,14 @@ namespace AZTU_Akademik.Controllers
     public class SignUpController : Controller
     {
 
-        readonly AztuAkademikContext aztuAkademik = new AztuAkademikContext();
+        readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
+        private DateTime GetDate
+        {
+            get
+            {
+                return DateTime.UtcNow.AddHours(4);
+            }
+        }
 
         //POST
 
@@ -26,6 +33,7 @@ namespace AZTU_Akademik.Controllers
 
 
             _user.RoleId = 0;
+            _user.CreateDate = GetDate;
 
 
             await aztuAkademik.User.AddAsync(_user);

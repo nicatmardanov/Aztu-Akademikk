@@ -12,10 +12,8 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DissertationController : Controller
+    public class CertificateController : Controller
     {
-
-
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
         {
@@ -34,25 +32,21 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("Dissertation")]
-        public JsonResult Dissertation(int user_id) => Json(aztuAkademik.ResearcherEducation.Include(x=>x.Dissertation).Where(x=>x.ResearcherId==user_id).Select(x=>x.Dissertation));
-
-        
-        [HttpGet("AddDissertation")]
-        public JsonResult AddDissertation(int research_education_id) => Json(research_education_id);
+        [HttpGet("Certificate")]
+        public JsonResult Certificate(int user_id) => Json(aztuAkademik.Certificate.
+            Include(x=>x.File).Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue));
 
 
         //POST
         [HttpPost]
-        public async Task Post(Dissertation _dissertation)
+        public async Task Post(Certificate _certificate)
         {
-
             if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
             {
                 File _file = new File
                 {
-                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 0),
-                    Type = 1,
+                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 2),
+                    Type = 3,
                     CreateDate = GetDate,
                     StatusId = 1,
                     UserId = User_Id
@@ -62,37 +56,35 @@ namespace AZTU_Akademik.Controllers
                 await aztuAkademik.File.AddAsync(_file);
                 await aztuAkademik.SaveChangesAsync();
 
+                _certificate.CreateDate = GetDate;
+                _certificate.ResearcherId = User_Id;
+                _certificate.FileId = _file.Id;
 
-
-                _dissertation.FileId = _file.Id;
-                _dissertation.CreateDate = GetDate;
-
-                await aztuAkademik.Dissertation.AddAsync(_dissertation);
+                await aztuAkademik.Certificate.AddAsync(_certificate);
                 await aztuAkademik.SaveChangesAsync();
             }
-
         }
-
 
         //PUT
         [HttpPut]
-        public async Task<int> Put([FromQuery] Dissertation _dissertation, [FromQuery] bool fileChange)
+        public async Task<int> Put([FromQuery]Certificate _certificate, bool fileChange)
         {
             if (ModelState.IsValid)
             {
                 if (fileChange)
                 {
-                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == _dissertation.FileId);
+                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == _certificate.FileId);
                     if (!string.IsNullOrEmpty(_file.Name))
                         System.IO.File.Delete(_file.Name[1..]);
 
-                    _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 0);
-
+                    _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 2);
                 }
-                _dissertation.UpdateDate = GetDate;
-                aztuAkademik.Entry(_dissertation).Property(x => x.CreateDate).IsModified = false;
-                aztuAkademik.Entry(_dissertation).State = EntityState.Modified;
 
+                _certificate.UpdateDate = GetDate;
+                aztuAkademik.Entry(_certificate).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(_certificate).State = EntityState.Modified;
+
+                
                 await aztuAkademik.SaveChangesAsync();
                 return 1;
             }
@@ -103,12 +95,9 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            aztuAkademik.Dissertation.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
-            aztuAkademik.Dissertation.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
-
+            aztuAkademik.Certificate.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
+            aztuAkademik.Certificate.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
         }
-
-
     }
 }

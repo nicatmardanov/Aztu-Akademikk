@@ -22,9 +22,11 @@ namespace AZTU_Akademik.Classes
 
             switch (type)
             {
-                case 0: folder_path += "Certificate"; break;
-                case 1: folder_path += "CV"; break;
-                case 2: folder_path += "ProfilePicture"; break;
+                case 0: folder_path += "Dissertation"; break;
+                case 1: folder_path += "Language"; break;
+                case 2: folder_path += "Certificate"; break;
+                case 3: folder_path += "ContactType"; break;
+                case 4: folder_path += "ProfilePicture"; break;
             }
 
 

@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 using AZTU_Akademik.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ForeignLanguageController : Controller
+    public class LanguageLevelController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
@@ -30,50 +29,50 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+
         //GET
-        [HttpGet("Language")]
-        public JsonResult Language(int id) => Json(aztuAkademik.Language.FirstOrDefault(x=> x.Id==id && !x.DeleteDate.HasValue));
+        [HttpGet("Level")]
+        public JsonResult Level(short id) => Json(aztuAkademik.LanguageLevels.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
-        [HttpGet("AllLanguages")]
-        public JsonResult AllLanguages() => Json(aztuAkademik.Language.Where(x => !x.DeleteDate.HasValue));
-
+        [HttpGet("AllLevels")]
+        public JsonResult AllLevels() => Json(aztuAkademik.LanguageLevels.Where(x => !x.DeleteDate.HasValue));
 
 
         //POST
         [HttpPost]
-        public async Task Post(Language _language)
+        public async Task Post(LanguageLevels _languageLevels)
         {
-            _language.CreateDate = GetDate;
-            await aztuAkademik.Language.AddAsync(_language);
+            _languageLevels.CreateDate = GetDate;
+
+            await aztuAkademik.LanguageLevels.AddAsync(_languageLevels);
             await aztuAkademik.SaveChangesAsync();
         }
 
 
         //PUT
         [HttpPut]
-        public async Task<int> Put(Language _language)
+        public async Task<int> Put(LanguageLevels _languageLevels)
         {
             if (ModelState.IsValid)
             {
-                aztuAkademik.Attach(_language);
-                aztuAkademik.Entry(_language).Property(x => x.CreateDate).IsModified = false;
-                _language.UpdateDate = GetDate;
+                aztuAkademik.Attach(_languageLevels);
+                aztuAkademik.Entry(_languageLevels).Property(x => x.CreateDate).IsModified = false;
+                _languageLevels.UpdateDate = GetDate;
 
                 await aztuAkademik.SaveChangesAsync();
                 
                 return 1;
             }
-
             return 0;
         }
 
 
-        //DELETE
+        //Delete
         [HttpDelete]
         public async Task Delete(short id)
         {
-            aztuAkademik.Language.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
-            aztuAkademik.Language.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
+            aztuAkademik.LanguageLevels.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
+            aztuAkademik.LanguageLevels.FirstOrDefault(x => x.Id == id).StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
         }
 

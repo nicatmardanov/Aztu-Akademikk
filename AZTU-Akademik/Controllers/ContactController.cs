@@ -12,7 +12,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ForeignLanguageController : Controller
+    public class ContactController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
@@ -30,50 +30,52 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+
         //GET
-        [HttpGet("Language")]
-        public JsonResult Language(int id) => Json(aztuAkademik.Language.FirstOrDefault(x=> x.Id==id && !x.DeleteDate.HasValue));
-
-        [HttpGet("AllLanguages")]
-        public JsonResult AllLanguages() => Json(aztuAkademik.Language.Where(x => !x.DeleteDate.HasValue));
-
+        [HttpGet("Contact")]
+        public JsonResult Contact(int user_id) => Json(aztuAkademik.Contact.Where(x => x.ResearcherId == user_id).Include(x => x.Type));
 
 
         //POST
         [HttpPost]
-        public async Task Post(Language _language)
+        public async Task Post(List<Contact> _contact)
         {
-            _language.CreateDate = GetDate;
-            await aztuAkademik.Language.AddAsync(_language);
+            _contact.ForEach(x =>
+            {
+                x.CreateDate = GetDate;
+                x.ResearcherId = User_Id;
+            });
+
+            await aztuAkademik.Contact.AddRangeAsync(_contact);
             await aztuAkademik.SaveChangesAsync();
         }
 
-
         //PUT
         [HttpPut]
-        public async Task<int> Put(Language _language)
+        public async Task<int> Put(Contact _contact)
         {
-            if (ModelState.IsValid)
+            if(ModelState.IsValid)
             {
-                aztuAkademik.Attach(_language);
-                aztuAkademik.Entry(_language).Property(x => x.CreateDate).IsModified = false;
-                _language.UpdateDate = GetDate;
+                _contact.UpdateDate = GetDate;
+                aztuAkademik.Entry(_contact).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(_contact).State = EntityState.Modified;
 
                 await aztuAkademik.SaveChangesAsync();
-                
+                await aztuAkademik.SaveChangesAsync();
+
                 return 1;
             }
-
             return 0;
         }
 
 
         //DELETE
         [HttpDelete]
-        public async Task Delete(short id)
+        public async Task Delete(int id)
         {
-            aztuAkademik.Language.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
-            aztuAkademik.Language.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
+            aztuAkademik.Contact.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
+            aztuAkademik.Contact.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
+
             await aztuAkademik.SaveChangesAsync();
         }
 
