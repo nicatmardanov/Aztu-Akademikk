@@ -13,7 +13,7 @@ namespace AZTU_Akademik.Models
             ResearcherLanguage = new HashSet<ResearcherLanguage>();
         }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public byte? Type { get; set; }
         public DateTime? CreateDate { get; set; }

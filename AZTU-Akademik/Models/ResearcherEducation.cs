@@ -10,7 +10,7 @@ namespace AZTU_Akademik.Models
             Dissertation = new HashSet<Dissertation>();
         }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public DateTime? CreateDate { get; set; }
@@ -25,7 +25,9 @@ namespace AZTU_Akademik.Models
         public int? ProfessionId { get; set; }
         public byte? StatusId { get; set; }
 
+        public virtual Country Country { get; set; }
         public virtual EducationForm Form { get; set; }
+        public virtual Language Language { get; set; }
         public virtual EducationLevel Level { get; set; }
         public virtual EducationOrganization Organization { get; set; }
         public virtual Profession Profession { get; set; }

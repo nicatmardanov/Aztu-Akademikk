@@ -48,6 +48,8 @@ namespace AZTU_Akademik.Models
         public short? CitizenshipId { get; set; }
         public byte? RoleId { get; set; }
 
+        public virtual Country Citizenship { get; set; }
+        public virtual Country Nationality { get; set; }
         public virtual ICollection<Announcement> Announcement { get; set; }
         public virtual ICollection<Article> Article { get; set; }
         public virtual ICollection<Certificate> Certificate { get; set; }

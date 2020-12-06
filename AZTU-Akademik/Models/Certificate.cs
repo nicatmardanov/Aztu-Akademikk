@@ -15,7 +15,7 @@ namespace AZTU_Akademik.Models
         public DateTime? DeleteDate { get; set; }
         public byte? StatusId { get; set; }
         public int? ResearcherId { get; set; }
-        public int? FileId { get; set; }
+        public long? FileId { get; set; }
 
         public virtual File File { get; set; }
         public virtual User Researcher { get; set; }

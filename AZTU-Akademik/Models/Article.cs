@@ -23,7 +23,7 @@ namespace AZTU_Akademik.Models
         public DateTime? DeleteDate { get; set; }
         public byte? StatusId { get; set; }
         public int? CreatorId { get; set; }
-        public int? FileId { get; set; }
+        public long? FileId { get; set; }
         public int? JournalId { get; set; }
 
         public virtual User Creator { get; set; }

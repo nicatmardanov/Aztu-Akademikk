@@ -10,8 +10,8 @@ namespace AZTU_Akademik.Models
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public DateTime? DeleteDate { get; set; }
-        public int? EducationId { get; set; }
-        public int? FileId { get; set; }
+        public long? EducationId { get; set; }
+        public long? FileId { get; set; }
         public byte? StatusId { get; set; }
 
         public virtual ResearcherEducation Education { get; set; }

@@ -39,8 +39,9 @@ namespace AZTU_Akademik.Controllers
         [HttpPost]
         public async Task Post(ContactType _type)
         {
-            string icon_url = await Classes.FileSave.Save(Request.Form.Files[0], 3);
-            _type.Icon = icon_url;
+            if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
+                _type.Icon = await Classes.FileSave.Save(Request.Form.Files[0], 3);
+
             _type.CreateDate = GetDate;
 
             await aztuAkademik.ContactType.AddAsync(_type);

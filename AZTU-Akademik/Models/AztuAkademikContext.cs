@@ -63,8 +63,8 @@ namespace AZTU_Akademik.Models
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=DESKTOP-UTUBGGC\\SQLEXPRESS;Database=Aztu-Akademik;Trusted_Connection=True;");
-
                 optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.LazyLoadOnDisposedContextWarning));
+
             }
         }
 
@@ -695,6 +695,14 @@ namespace AZTU_Akademik.Models
             {
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.CreateDate)
+                    .HasColumnName("create_date")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("delete_date")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.EndDate)
                     .HasColumnName("end_date")
                     .HasColumnType("datetime");
@@ -709,6 +717,12 @@ namespace AZTU_Akademik.Models
 
                 entity.Property(e => e.StartDate)
                     .HasColumnName("start_date")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.StatusId).HasColumnName("status_id");
+
+                entity.Property(e => e.UpdateDate)
+                    .HasColumnName("update_date")
                     .HasColumnType("datetime");
 
                 entity.HasOne(d => d.Organization)
@@ -1260,10 +1274,20 @@ namespace AZTU_Akademik.Models
                     .HasColumnName("update_date")
                     .HasColumnType("datetime");
 
+                entity.HasOne(d => d.Country)
+                    .WithMany(p => p.ResearcherEducation)
+                    .HasForeignKey(d => d.CountryId)
+                    .HasConstraintName("FK_ResearcherEducation_Country");
+
                 entity.HasOne(d => d.Form)
                     .WithMany(p => p.ResearcherEducation)
                     .HasForeignKey(d => d.FormId)
                     .HasConstraintName("FK_ResearcherEducation_EducationForm");
+
+                entity.HasOne(d => d.Language)
+                    .WithMany(p => p.ResearcherEducation)
+                    .HasForeignKey(d => d.LanguageId)
+                    .HasConstraintName("FK_ResearcherEducation_Language");
 
                 entity.HasOne(d => d.Level)
                     .WithMany(p => p.ResearcherEducation)
@@ -1517,6 +1541,16 @@ namespace AZTU_Akademik.Models
                 entity.Property(e => e.UpdateDate)
                     .HasColumnName("update_date")
                     .HasColumnType("datetime");
+
+                entity.HasOne(d => d.Citizenship)
+                    .WithMany(p => p.UserCitizenship)
+                    .HasForeignKey(d => d.CitizenshipId)
+                    .HasConstraintName("FK_User_Country1");
+
+                entity.HasOne(d => d.Nationality)
+                    .WithMany(p => p.UserNationality)
+                    .HasForeignKey(d => d.NationalityId)
+                    .HasConstraintName("FK_User_Country");
             });
 
             OnModelCreatingPartial(modelBuilder);

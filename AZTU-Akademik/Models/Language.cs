@@ -7,6 +7,7 @@ namespace AZTU_Akademik.Models
     {
         public Language()
         {
+            ResearcherEducation = new HashSet<ResearcherEducation>();
             ResearcherLanguage = new HashSet<ResearcherLanguage>();
         }
 
@@ -18,6 +19,7 @@ namespace AZTU_Akademik.Models
         public DateTime? DeleteDate { get; set; }
         public byte? StatusId { get; set; }
 
+        public virtual ICollection<ResearcherEducation> ResearcherEducation { get; set; }
         public virtual ICollection<ResearcherLanguage> ResearcherLanguage { get; set; }
     }
 }
