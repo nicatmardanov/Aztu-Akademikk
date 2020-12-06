@@ -31,7 +31,9 @@
 
   <ItemGroup>
     <Folder Include="Assets\Certificate\" />
-    <Folder Include="Assets\CV\" />
+    <Folder Include="Assets\Dissertation\" />
+    <Folder Include="Assets\Language\" />
+    <Folder Include="Assets\ContactType\" />
     <Folder Include="Assets\ProfilePicture\" />
   </ItemGroup>
 

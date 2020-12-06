@@ -57,8 +57,8 @@ namespace AZTU_Akademik.Controllers
             if(ModelState.IsValid)
             {
                 _contact.UpdateDate = GetDate;
-                aztuAkademik.Entry(_contact).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_contact).State = EntityState.Modified;
+                aztuAkademik.Entry(_contact).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
                 await aztuAkademik.SaveChangesAsync();

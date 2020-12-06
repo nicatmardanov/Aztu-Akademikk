@@ -58,8 +58,8 @@ namespace AZTU_Akademik.Controllers
             {
                 _relResearcherResearcherArea.UpdateDate = GetDate;
                 _relResearcherResearcherArea.ResearcherId = User_Id;
-                aztuAkademik.Entry(_relResearcherResearcherArea).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_relResearcherResearcherArea).State = EntityState.Modified;
+                aztuAkademik.Entry(_relResearcherResearcherArea).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
                 await aztuAkademik.SaveChangesAsync();

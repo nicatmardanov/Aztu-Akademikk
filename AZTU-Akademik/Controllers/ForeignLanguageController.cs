@@ -55,9 +55,10 @@ namespace AZTU_Akademik.Controllers
         {
             if (ModelState.IsValid)
             {
-                aztuAkademik.Attach(_language);
-                aztuAkademik.Entry(_language).Property(x => x.CreateDate).IsModified = false;
                 _language.UpdateDate = GetDate;
+                aztuAkademik.Attach(_language);
+                aztuAkademik.Entry(_language).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                aztuAkademik.Entry(_language).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
                 

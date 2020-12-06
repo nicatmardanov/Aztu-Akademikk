@@ -63,8 +63,8 @@ namespace AZTU_Akademik.Controllers
 
                 }
                 _type.UpdateDate = GetDate;
-                aztuAkademik.Entry(_type).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_type).State = EntityState.Modified;
+                aztuAkademik.Entry(_type).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
                 return 1;

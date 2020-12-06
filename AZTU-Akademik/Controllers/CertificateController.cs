@@ -78,11 +78,12 @@ namespace AZTU_Akademik.Controllers
                         System.IO.File.Delete(_file.Name[1..]);
 
                     _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 2);
+                    _file.UpdateDate = GetDate;
                 }
 
                 _certificate.UpdateDate = GetDate;
-                aztuAkademik.Entry(_certificate).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_certificate).State = EntityState.Modified;
+                aztuAkademik.Entry(_certificate).Property(x => x.CreateDate).IsModified = false;
 
                 
                 await aztuAkademik.SaveChangesAsync();

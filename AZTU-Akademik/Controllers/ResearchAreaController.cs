@@ -56,8 +56,8 @@ namespace AZTU_Akademik.Controllers
             if (ModelState.IsValid)
             {
                 _researchArea.UpdateDate = GetDate;
-                aztuAkademik.Entry(_researchArea).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_researchArea).State = EntityState.Modified;
+                aztuAkademik.Entry(_researchArea).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
                 await aztuAkademik.SaveChangesAsync();
