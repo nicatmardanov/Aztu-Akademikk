@@ -38,8 +38,8 @@ namespace AZTU_Akademik.Controllers
         public JsonResult Dissertation(int user_id) => Json(aztuAkademik.ResearcherEducation.Include(x=>x.Dissertation).Where(x=>x.ResearcherId==user_id).Select(x=>x.Dissertation));
 
         
-        [HttpGet("AddDissertation")]
-        public JsonResult AddDissertation(int research_education_id) => Json(research_education_id);
+        //[HttpGet("AddDissertation")]
+        //public JsonResult AddDissertation(int research_education_id) => Json(research_education_id);
 
 
         //POST
