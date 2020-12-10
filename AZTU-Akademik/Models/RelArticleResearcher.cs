@@ -5,7 +5,7 @@ namespace AZTU_Akademik.Models
 {
     public partial class RelArticleResearcher
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public int? ArticleId { get; set; }
         public int? IntAuthorId { get; set; }
         public int? ExtAuthorId { get; set; }

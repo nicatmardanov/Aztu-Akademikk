@@ -986,9 +986,7 @@ namespace AZTU_Akademik.Models
 
                 entity.Property(e => e.StatusId).HasColumnName("status_id");
 
-                entity.Property(e => e.Type)
-                    .HasColumnName("type")
-                    .HasMaxLength(50);
+                entity.Property(e => e.Type).HasColumnName("type");
 
                 entity.Property(e => e.UpdateDate)
                     .HasColumnName("update_date")
@@ -1027,9 +1025,7 @@ namespace AZTU_Akademik.Models
 
                 entity.Property(e => e.StatusId).HasColumnName("status_id");
 
-                entity.Property(e => e.Type)
-                    .HasColumnName("type")
-                    .HasMaxLength(50);
+                entity.Property(e => e.Type).HasColumnName("type");
 
                 entity.Property(e => e.UpdateDate)
                     .HasColumnName("update_date")
