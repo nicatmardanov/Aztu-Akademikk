@@ -63,8 +63,8 @@ namespace AZTU_Akademik.Models
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=DESKTOP-UTUBGGC\\SQLEXPRESS;Database=Aztu-Akademik;Trusted_Connection=True;");
-                optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.LazyLoadOnDisposedContextWarning));
 
+                optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.LazyLoadOnDisposedContextWarning));
             }
         }
 
@@ -1001,6 +1001,11 @@ namespace AZTU_Akademik.Models
                     .WithMany(p => p.RelPatentResearcher)
                     .HasForeignKey(d => d.IntAuthorId)
                     .HasConstraintName("FK_Rel_PatentResearcher_User");
+
+                entity.HasOne(d => d.Patent)
+                    .WithMany(p => p.RelPatentResearcher)
+                    .HasForeignKey(d => d.PatentId)
+                    .HasConstraintName("FK_Rel_PatentResearcher_Patent");
             });
 
             modelBuilder.Entity<RelProjectResearcher>(entity =>

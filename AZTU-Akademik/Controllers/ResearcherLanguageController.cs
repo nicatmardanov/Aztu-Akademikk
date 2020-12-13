@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AZTU_Akademik.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ResearcherLanguageController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -32,6 +34,7 @@ namespace AZTU_Akademik.Controllers
 
         //GET
         [HttpGet("ResearcherLanguages")]
+        [AllowAnonymous]
         public JsonResult ResearcherLanguages(int user_id) => Json(aztuAkademik.ResearcherLanguage.
             Include(x => x.Researcher).Include(x => x.Language).Include(x => x.Level).Include(x => x.File).
             Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue));
@@ -84,6 +87,7 @@ namespace AZTU_Akademik.Controllers
                 _researcherLanguage.UpdateDate = GetDate;
                 aztuAkademik.Entry(_researcherLanguage).State = EntityState.Modified;
                 aztuAkademik.Entry(_researcherLanguage).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(_researcherLanguage).Property(x => x.ResearcherId).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
                 

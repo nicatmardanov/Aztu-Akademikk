@@ -27,6 +27,7 @@ namespace AZTU_Akademik.Classes
                 case 2: folder_path += "Certificate"; break;
                 case 3: folder_path += "ContactType"; break;
                 case 4: folder_path += "ProfilePicture"; break;
+                case 5: folder_path += "Article"; break;
             }
 
 

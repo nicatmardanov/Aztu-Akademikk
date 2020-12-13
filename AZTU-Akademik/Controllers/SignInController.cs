@@ -32,11 +32,13 @@ namespace AZTU_Akademik.Controllers
             {
                 //var tokenStr = GenerateJSONWebToken(valid_user);
 
+                string userRole = valid_user.RoleId == 0 ? "User" : "Admin";
+
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                 claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, valid_user.Email));
                 claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, valid_user.Id.ToString()));
                 claimsIdentity.AddClaim(new Claim("FullName", valid_user.FirstName + " " + valid_user.LastName));
-                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, valid_user.RoleId.ToString()));
+                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, userRole));
 
                 AuthenticationProperties authProperty = new AuthenticationProperties
                 {

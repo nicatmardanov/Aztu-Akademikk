@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AZTU_Akademik.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ResearcherDegreeController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -33,6 +35,7 @@ namespace AZTU_Akademik.Controllers
 
         //GET
         [HttpGet("DegreeForUser")]
+        [AllowAnonymous]
         public JsonResult DegreeForUser(int user_id) => Json(aztuAkademik.RelResearcherDegree.Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
             Include(x => x.Degree).Include(x => x.Researcher));
 
@@ -41,6 +44,7 @@ namespace AZTU_Akademik.Controllers
         public async Task Post(RelResearcherDegree _relResearcherDegree)
         {
             _relResearcherDegree.CreateDate = GetDate;
+            _relResearcherDegree.ResearcherId = User_Id;
 
             await aztuAkademik.RelResearcherDegree.AddAsync(_relResearcherDegree);
             await aztuAkademik.SaveChangesAsync();

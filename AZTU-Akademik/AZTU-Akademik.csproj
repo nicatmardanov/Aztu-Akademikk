@@ -34,6 +34,7 @@
     <Folder Include="Assets\Dissertation\" />
     <Folder Include="Assets\Language\" />
     <Folder Include="Assets\ContactType\" />
+    <Folder Include="Assets\Article\" />
     <Folder Include="Assets\ProfilePicture\" />
   </ItemGroup>
 

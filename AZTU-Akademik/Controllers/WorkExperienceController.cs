@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AZTU_Akademik.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WorkExperienceController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -33,10 +35,12 @@ namespace AZTU_Akademik.Controllers
 
         //GET
         [HttpGet("PedagogicalExperience")]
+        [AllowAnonymous]
         public JsonResult PedagogicalExperience(int user_id) => Json(aztuAkademik.ResearcherPosition.Where(x => x.ResearcherId == user_id).
             Include(x => x.Researcher).Include(x => x.Organization).Include(x => x.Position).Include(x => x.Department));
 
         [HttpGet("ManagementExperience")]
+        [AllowAnonymous]
         public JsonResult ManagementExperience(int user_id) => Json(aztuAkademik.ManagementExperience.Where(x => x.ResearcherId == user_id).
             Include(x => x.Researcher).Include(x => x.Organization));
 

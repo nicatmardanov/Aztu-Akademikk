@@ -5,6 +5,11 @@ namespace AZTU_Akademik.Models
 {
     public partial class Patent
     {
+        public Patent()
+        {
+            RelPatentResearcher = new HashSet<RelPatentResearcher>();
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime? ApplyDate { get; set; }
@@ -18,5 +23,6 @@ namespace AZTU_Akademik.Models
 
         public virtual EducationOrganization Organization { get; set; }
         public virtual User Researcher { get; set; }
+        public virtual ICollection<RelPatentResearcher> RelPatentResearcher { get; set; }
     }
 }

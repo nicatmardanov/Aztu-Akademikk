@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AZTU_Akademik.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles ="Admin")]
     public class ResearchAreaController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -33,9 +35,11 @@ namespace AZTU_Akademik.Controllers
 
         //GET
         [HttpGet("ResearchArea")]
+        [AllowAnonymous]
         public JsonResult ResearchArea(int id) => Json(aztuAkademik.ResearchArea.FirstOrDefault(x => x.Id == id));
 
         [HttpGet("AllResearchAreas")]
+        [AllowAnonymous]
         public JsonResult AllResearchAreas() => Json(aztuAkademik.ResearchArea);
 
 

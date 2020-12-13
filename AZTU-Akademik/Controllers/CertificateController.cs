@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AZTU_Akademik.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CertificateController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -33,6 +35,7 @@ namespace AZTU_Akademik.Controllers
 
         //GET
         [HttpGet("Certificate")]
+        [AllowAnonymous]
         public JsonResult Certificate(int user_id) => Json(aztuAkademik.Certificate.
             Include(x=>x.File).Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue));
 
@@ -84,6 +87,7 @@ namespace AZTU_Akademik.Controllers
                 _certificate.UpdateDate = GetDate;
                 aztuAkademik.Entry(_certificate).State = EntityState.Modified;
                 aztuAkademik.Entry(_certificate).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(_certificate).Property(x => x.ResearcherId).IsModified = false;
 
                 
                 await aztuAkademik.SaveChangesAsync();

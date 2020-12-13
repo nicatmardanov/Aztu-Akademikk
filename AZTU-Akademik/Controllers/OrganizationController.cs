@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AZTU_Akademik.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class OrganizationController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -32,11 +34,13 @@ namespace AZTU_Akademik.Controllers
 
         //GET
         [HttpGet("Organization")]
+        [AllowAnonymous]
         public JsonResult Organization(int id) => Json(aztuAkademik.EducationOrganization.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
         [HttpGet("AllOrganizations")]
+        [AllowAnonymous]
         public JsonResult AllOrganizations() => Json(aztuAkademik.EducationOrganization.Where(x => !x.DeleteDate.HasValue));
-        
+
 
 
         //POST

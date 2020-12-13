@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AZTU_Akademik.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DissertationController : Controller
     {
 
@@ -35,6 +37,7 @@ namespace AZTU_Akademik.Controllers
 
         //GET
         [HttpGet("Dissertation")]
+        [AllowAnonymous]
         public JsonResult Dissertation(int user_id) => Json(aztuAkademik.ResearcherEducation.Include(x=>x.Dissertation).Where(x=>x.ResearcherId==user_id).Select(x=>x.Dissertation));
 
         

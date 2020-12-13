@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AZTU_Akademik.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class LanguageLevelController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -32,9 +34,11 @@ namespace AZTU_Akademik.Controllers
 
         //GET
         [HttpGet("Level")]
+        [AllowAnonymous]
         public JsonResult Level(short id) => Json(aztuAkademik.LanguageLevels.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
         [HttpGet("AllLevels")]
+        [AllowAnonymous]
         public JsonResult AllLevels() => Json(aztuAkademik.LanguageLevels.Where(x => !x.DeleteDate.HasValue));
 
 
@@ -61,7 +65,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_languageLevels).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
-                
+
                 return 1;
             }
             return 0;

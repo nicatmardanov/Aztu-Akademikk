@@ -103,6 +103,7 @@ namespace AZTU_Akademik
             //});
 
 
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(

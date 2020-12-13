@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AZTU_Akademik.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ForeignLanguageController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -32,9 +34,11 @@ namespace AZTU_Akademik.Controllers
 
         //GET
         [HttpGet("Language")]
+        [AllowAnonymous]
         public JsonResult Language(int id) => Json(aztuAkademik.Language.FirstOrDefault(x=> x.Id==id && !x.DeleteDate.HasValue));
 
         [HttpGet("AllLanguages")]
+        [AllowAnonymous]
         public JsonResult AllLanguages() => Json(aztuAkademik.Language.Where(x => !x.DeleteDate.HasValue));
 
 

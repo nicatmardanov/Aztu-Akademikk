@@ -17,5 +17,6 @@ namespace AZTU_Akademik.Models
 
         public virtual ExternalResearcher ExtAuthor { get; set; }
         public virtual User IntAuthor { get; set; }
+        public virtual Patent Patent { get; set; }
     }
 }

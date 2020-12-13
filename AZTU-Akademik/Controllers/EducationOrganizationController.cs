@@ -14,7 +14,7 @@ namespace AZTU_Akademik.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
-    public class ContactTypeController : Controller
+    public class EducationOrganizationController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
@@ -34,43 +34,38 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("Type")]
+        [HttpGet("EducationOrganization")]
         [AllowAnonymous]
-        public JsonResult Type(short id) => Json(aztuAkademik.ContactType.FirstOrDefault(x => x.Id == id));
+        public JsonResult EducationOrganization(int id) => Json(aztuAkademik.EducationOrganization.Include(x => x.Type).FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+
+        [HttpGet("AllEducationOrganizations")]
+        [AllowAnonymous]
+        public JsonResult AllEducationOrganizations() => Json(aztuAkademik.EducationOrganization.Where(x => !x.DeleteDate.HasValue).Include(x => x.Type));
 
         //POST
         [HttpPost]
-        public async Task Post(ContactType _type)
+        public async Task Post(EducationOrganization _educationOrganization)
         {
-            if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
-                _type.Icon = await Classes.FileSave.Save(Request.Form.Files[0], 3);
+            _educationOrganization.CreateDate = GetDate;
 
-            _type.CreateDate = GetDate;
-
-            await aztuAkademik.ContactType.AddAsync(_type);
+            await aztuAkademik.EducationOrganization.AddAsync(_educationOrganization);
             await aztuAkademik.SaveChangesAsync();
         }
 
 
         //PUT
         [HttpPut]
-        public async Task<int> Put([FromQuery]ContactType _type, [FromQuery] bool fileChange)
+        public async Task<int> Put(EducationOrganization _educationOrganization)
         {
             if (ModelState.IsValid)
             {
-                if (fileChange)
-                {
-                    if (!string.IsNullOrEmpty(_type.Icon))
-                        System.IO.File.Delete(_type.Icon[1..]);
+                _educationOrganization.UpdateDate = GetDate;
 
-                    _type.Icon = await Classes.FileSave.Save(Request.Form.Files[0], 3);
-
-                }
-                _type.UpdateDate = GetDate;
-                aztuAkademik.Entry(_type).State = EntityState.Modified;
-                aztuAkademik.Entry(_type).Property(x => x.CreateDate).IsModified = false;
-
+                aztuAkademik.Attach(_educationOrganization);
+                aztuAkademik.Entry(_educationOrganization).State = EntityState.Modified;
+                aztuAkademik.Entry(_educationOrganization).Property(x => x.CreateDate).IsModified = false;
                 await aztuAkademik.SaveChangesAsync();
+
                 return 1;
             }
             return 0;
@@ -81,13 +76,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            aztuAkademik.ContactType.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
-            aztuAkademik.ContactType.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
+            aztuAkademik.EducationOrganization.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
+            aztuAkademik.EducationOrganization.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
         }
 
 
     }
-
 }

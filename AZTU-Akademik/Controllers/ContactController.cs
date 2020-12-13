@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AZTU_Akademik.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ContactController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -33,6 +35,7 @@ namespace AZTU_Akademik.Controllers
 
         //GET
         [HttpGet("Contact")]
+        [AllowAnonymous]
         public JsonResult Contact(int user_id) => Json(aztuAkademik.Contact.Where(x => x.ResearcherId == user_id).Include(x => x.Type));
 
 
@@ -59,6 +62,7 @@ namespace AZTU_Akademik.Controllers
                 _contact.UpdateDate = GetDate;
                 aztuAkademik.Entry(_contact).State = EntityState.Modified;
                 aztuAkademik.Entry(_contact).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(_contact).Property(x => x.ResearcherId).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
                 await aztuAkademik.SaveChangesAsync();

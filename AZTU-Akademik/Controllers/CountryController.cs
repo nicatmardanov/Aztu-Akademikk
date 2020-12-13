@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AZTU_Akademik.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles ="Admin")]
     public class CountryController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -31,10 +33,12 @@ namespace AZTU_Akademik.Controllers
 
         //GET
         [HttpGet("Country")]
+        [AllowAnonymous]
         public JsonResult Country(short id) => Json(aztuAkademik.Country.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
 
         [HttpGet("AllCountries")]
+        [AllowAnonymous]
         public JsonResult AllCountries() => Json(aztuAkademik.Country.Where(x => !x.DeleteDate.HasValue));
 
 

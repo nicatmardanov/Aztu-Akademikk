@@ -13,7 +13,7 @@ namespace AZTU_Akademik.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
-    public class OrganizationTypeController : Controller
+    public class EducationOrganizationTypeController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
@@ -33,9 +33,13 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("OrganizationType")]
+        [HttpGet("EducationOrganizationType")]
         [AllowAnonymous]
-        public JsonResult OrganizationType(byte id) => Json(aztuAkademik.EducationOrganizationType.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+        public JsonResult EducationOrganizationType(byte id) => Json(aztuAkademik.EducationOrganizationType.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+
+        [HttpGet("AllEducationOrganizationTypes")]
+        [AllowAnonymous]
+        public JsonResult AllEducationOrganizationTypes() => Json(aztuAkademik.EducationOrganizationType.Where(x => !x.DeleteDate.HasValue));
 
 
         //POST
@@ -43,10 +47,10 @@ namespace AZTU_Akademik.Controllers
         public async Task Post(EducationOrganizationType _educationOrganizationType)
         {
             _educationOrganizationType.CreateDate = GetDate;
-
             await aztuAkademik.EducationOrganizationType.AddAsync(_educationOrganizationType);
             await aztuAkademik.SaveChangesAsync();
         }
+
 
         //PUT
         [HttpPut]
@@ -61,10 +65,13 @@ namespace AZTU_Akademik.Controllers
 
                 await aztuAkademik.SaveChangesAsync();
 
+
                 return 1;
             }
+
             return 0;
         }
+
 
         //DELETE
         [HttpDelete]
@@ -72,6 +79,7 @@ namespace AZTU_Akademik.Controllers
         {
             aztuAkademik.EducationOrganizationType.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
             aztuAkademik.EducationOrganizationType.FirstOrDefault(x => x.Id == id).StatusId = 0;
+
             await aztuAkademik.SaveChangesAsync();
         }
 
