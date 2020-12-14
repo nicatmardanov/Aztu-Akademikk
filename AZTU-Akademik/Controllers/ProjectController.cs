@@ -133,26 +133,42 @@ namespace AZTU_Akademik.Controllers
         }
 
 
-        ////PUT
-        //[HttpPut]
-        //public async Task<int> Put([FromQuery] Project _project, [FromQuery] int[] intAuthors, [FromQuery] int[] extAuthors, int[] leadAuthors)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _project.UpdateDate = GetDate;
-        //        aztuAkademik.Attach(_project);
-        //        aztuAkademik.Entry(_project).State = EntityState.Modified;
-        //        aztuAkademik.Entry(_project).Property(x => x.CreateDate).IsModified = false;
-        //        aztuAkademik.Entry(_project).Property(x => x.ResearcherId).IsModified = false;
+        //PUT
+        [HttpPut]
+        public async Task<int> Put([FromQuery] Project _project, [FromQuery] List<RelProjectResearcher> _relProjectResearchers, [FromQuery] long[] _deletedResearchers)
+        {
+            if (ModelState.IsValid)
+            {
+
+                aztuAkademik.Attach(_project);
+                aztuAkademik.Entry(_project).State = EntityState.Modified;
+                aztuAkademik.Entry(_project).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(_project).Property(x => x.ResearcherId).IsModified = false;
 
 
+                var entry = aztuAkademik.RelProjectResearcher.Where(x => _deletedResearchers.Contains(x.Id));
+                aztuAkademik.RelProjectResearcher.RemoveRange(entry);
 
+                _relProjectResearchers.ForEach(x =>
+                {
+                    x.UpdateDate = GetDate;
+                    x.ProjectId = _project.Id;
 
-        //        await aztuAkademik.SaveChangesAsync();
-        //    }
+                    if (x.Id == 0)
+                        x.CreateDate = GetDate;
 
-        //    return 0;
-        //}
+                    else
+                        x.CreateDate = aztuAkademik.Project.FirstOrDefault(y => y.Id == x.Id).CreateDate;
+
+                });
+
+                aztuAkademik.RelProjectResearcher.UpdateRange(_relProjectResearchers);
+                await aztuAkademik.SaveChangesAsync();
+
+                return 1;
+            }
+            return 0;
+        }
 
 
 

@@ -66,8 +66,42 @@ namespace AZTU_Akademik.Controllers
 
 
         //PUT
-        //////////
-        ///
+        [HttpPut]
+        public async Task<int> Put([FromQuery] Thesis _thesis, [FromQuery] List<RelThesisResearcher> _relThesisResearchers, [FromQuery] long[] _deletedResearchers)
+        {
+            if (ModelState.IsValid)
+            {
+
+                aztuAkademik.Attach(_thesis);
+                aztuAkademik.Entry(_thesis).State = EntityState.Modified;
+                aztuAkademik.Entry(_thesis).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(_thesis).Property(x => x.CreatorId).IsModified = false;
+                aztuAkademik.Entry(_thesis).Property(x => x.PublisherId).IsModified = false;
+
+
+                var entry = aztuAkademik.RelThesisResearcher.Where(x => _deletedResearchers.Contains(x.Id));
+                aztuAkademik.RelThesisResearcher.RemoveRange(entry);
+
+                _relThesisResearchers.ForEach(x =>
+                {
+                    x.UpdateDate = GetDate;
+                    x.ThesisId = _thesis.Id;
+
+                    if (x.Id == 0)
+                        x.CreateDate = GetDate;
+
+                    else
+                        x.CreateDate = aztuAkademik.Project.FirstOrDefault(y => y.Id == x.Id).CreateDate;
+
+                });
+
+                aztuAkademik.RelThesisResearcher.UpdateRange(_relThesisResearchers);
+                await aztuAkademik.SaveChangesAsync();
+
+                return 1;
+            }
+            return 0;
+        }
 
 
         //DELETE

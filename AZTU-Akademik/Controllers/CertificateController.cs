@@ -70,7 +70,7 @@ namespace AZTU_Akademik.Controllers
 
         //PUT
         [HttpPut]
-        public async Task<int> Put([FromQuery]Certificate _certificate, bool fileChange)
+        public async Task<int> Put([FromQuery]Certificate _certificate, [FromQuery] bool fileChange)
         {
             if (ModelState.IsValid)
             {

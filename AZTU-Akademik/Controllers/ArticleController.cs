@@ -90,8 +90,52 @@ namespace AZTU_Akademik.Controllers
         }
 
         //PUT
-        //////////
-        ///
+        [HttpPut]
+        public async Task<int> Put([FromQuery] Article _article, [FromQuery] List<RelArticleResearcher> _relArticleResearchers, [FromQuery] long[] _deletedResearchers, [FromQuery] bool fileChange)
+        {
+            if (ModelState.IsValid)
+            {
+                if (fileChange)
+                {
+                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == _article.FileId);
+                    if (!string.IsNullOrEmpty(_file.Name))
+                        System.IO.File.Delete(_file.Name[1..]);
+
+                    _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 5);
+                    _file.UpdateDate = GetDate;
+                }
+
+
+                aztuAkademik.Attach(_article);
+                aztuAkademik.Entry(_article).State = EntityState.Modified;
+                aztuAkademik.Entry(_article).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(_article).Property(x => x.CreatorId).IsModified = false;
+                aztuAkademik.Entry(_article).Property(x => x.FileId).IsModified = false;
+
+                
+                
+                var entry = aztuAkademik.RelArticleResearcher.Where(x => _deletedResearchers.Contains(x.Id));
+                aztuAkademik.RelArticleResearcher.RemoveRange(_relArticleResearchers);
+
+                _relArticleResearchers.ForEach(x =>
+                {
+                    x.UpdateDate = GetDate;
+                    x.ArticleId = _article.Id;
+
+                    if (x.Id == 0)
+                        x.CreateDate = GetDate;
+
+                    else
+                        x.CreateDate = aztuAkademik.Project.FirstOrDefault(y => y.Id == x.Id).CreateDate;
+                });
+
+                aztuAkademik.RelArticleResearcher.UpdateRange(_relArticleResearchers);
+                await aztuAkademik.SaveChangesAsync();
+
+                return 1;
+            }
+            return 0;
+        }
 
 
         //DELETE

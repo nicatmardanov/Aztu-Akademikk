@@ -68,8 +68,42 @@ namespace AZTU_Akademik.Controllers
 
 
         //PUT
-        //////////
-        ///
+        [HttpPut]
+        public async Task<int> Put([FromQuery] Textbook _textbook, [FromQuery] List<RelTextbookResearcher> _relTextbookResearchers, [FromQuery] long[] _deletedResearchers)
+        {
+            if (ModelState.IsValid)
+            {
+
+                aztuAkademik.Attach(_textbook);
+                aztuAkademik.Entry(_textbook).State = EntityState.Modified;
+                aztuAkademik.Entry(_textbook).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(_textbook).Property(x => x.CreatorId).IsModified = false;
+                aztuAkademik.Entry(_textbook).Property(x => x.PublisherId).IsModified = false;
+
+
+                var entry = aztuAkademik.RelTextbookResearcher.Where(x => _deletedResearchers.Contains(x.Id));
+                aztuAkademik.RelTextbookResearcher.RemoveRange(entry);
+
+                _relTextbookResearchers.ForEach(x =>
+                {
+                    x.UpdateDate = GetDate;
+                    x.TextbookId = _textbook.Id;
+
+                    if (x.Id == 0)
+                        x.CreateDate = GetDate;
+
+                    else
+                        x.CreateDate = aztuAkademik.Project.FirstOrDefault(y => y.Id == x.Id).CreateDate;
+
+                });
+
+                aztuAkademik.RelTextbookResearcher.UpdateRange(_relTextbookResearchers);
+                await aztuAkademik.SaveChangesAsync();
+
+                return 1;
+            }
+            return 0;
+        }
 
 
         //DELETE

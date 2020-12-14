@@ -13,7 +13,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles ="Admin")]
     public class ForeignLanguageController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();

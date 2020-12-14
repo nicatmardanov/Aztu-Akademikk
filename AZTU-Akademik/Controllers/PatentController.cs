@@ -66,8 +66,43 @@ namespace AZTU_Akademik.Controllers
 
 
         //PUT
-        //////////
-        ///
+        [HttpPut]
+        public async Task<int> Put([FromQuery] Patent _patent, [FromQuery] List<RelPatentResearcher> _relPatentResearchers, long[] _deletedResearchers)
+        {
+            if (ModelState.IsValid)
+            {
+
+                aztuAkademik.Attach(_patent);
+                aztuAkademik.Entry(_patent).State = EntityState.Modified;
+                aztuAkademik.Entry(_patent).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(_patent).Property(x => x.ResearcherId).IsModified = false;
+
+
+                var entry = aztuAkademik.RelPatentResearcher.Where(x => _deletedResearchers.Contains(x.Id));
+                aztuAkademik.RelPatentResearcher.RemoveRange(entry);
+
+                _relPatentResearchers.ForEach(x =>
+                {
+                    x.UpdateDate = GetDate;
+                    x.PatentId = _patent.Id;
+
+                    if (x.Id == 0)
+                        x.CreateDate = GetDate;
+
+                    else
+                        x.CreateDate = aztuAkademik.Patent.FirstOrDefault(y => y.Id == x.Id).CreateDate;
+                   
+                });
+
+                aztuAkademik.RelPatentResearcher.UpdateRange(_relPatentResearchers);
+                await aztuAkademik.SaveChangesAsync();
+
+                return 1;
+            }
+            return 0;
+        }
+
+
 
 
         //DELETE
