@@ -32,6 +32,15 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public TextbookController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
 
         //GET
         [HttpGet("Textbook")]
@@ -62,6 +71,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.RelTextbookResearcher.AddRangeAsync(_relTextbookResearchers);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Textbook", "", _textbook.Id, 1, User_Id, IpAdress, AInformation);
         }
 
 
@@ -99,6 +109,7 @@ namespace AZTU_Akademik.Controllers
 
                 aztuAkademik.RelTextbookResearcher.UpdateRange(_relTextbookResearchers);
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("Textbook", "", _textbook.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -115,6 +126,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Textbook.FirstOrDefaultAsync(x => x.Id == textbookId).Result.RelTextbookResearcher.ToList().ForEach(x => x.DeleteDate = GetDate);
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Textbook", "", textbookId, 3, User_Id, IpAdress, AInformation);
         }
 
 

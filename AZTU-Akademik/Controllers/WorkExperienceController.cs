@@ -32,6 +32,15 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public WorkExperienceController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
 
         //GET
         [HttpGet("PedagogicalExperience")]
@@ -56,6 +65,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.ResearcherPosition.AddAsync(_researcherPosition);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("ResearcherPosition", "", _researcherPosition.Id, 1, User_Id, IpAdress, AInformation);
         }
 
         [HttpPost("ManagementExperience")]
@@ -66,6 +76,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.ManagementExperience.AddAsync(_managementExperience);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("ManagementExperience", "", _managementExperience.Id, 1, User_Id, IpAdress, AInformation);
         }
 
 
@@ -85,6 +96,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_researcherPosition).Property(x => x.ResearcherId).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("ResearcherPosition", "", _researcherPosition.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -103,6 +115,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_managementExperience).Property(x => x.ResearcherId).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("ManagementExperience", "", _managementExperience.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -119,6 +132,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.ResearcherPosition.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
             aztuAkademik.ResearcherPosition.FirstOrDefault(x => x.Id == id).StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("ResearcherPosition", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
         [HttpDelete("ManagementExperience")]
@@ -127,6 +141,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.ManagementExperience.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
             aztuAkademik.ManagementExperience.FirstOrDefault(x => x.Id == id).StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("ManagementExperience", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
 

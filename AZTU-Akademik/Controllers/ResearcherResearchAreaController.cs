@@ -14,7 +14,7 @@ namespace AZTU_Akademik.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class Researcher_ResearchAreaController : Controller
+    public class ResearcherResearchAreaController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
@@ -32,6 +32,14 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public ResearcherResearchAreaController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
 
         //GET
         [HttpGet("Area")]
@@ -50,6 +58,7 @@ namespace AZTU_Akademik.Controllers
             });
             await aztuAkademik.RelResearcherResearcherArea.AddRangeAsync(_relResearcherResearcherArea);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("RelResearcherResearcherArea", "", _relResearcherResearcherArea.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation);
         }
 
 
@@ -66,6 +75,7 @@ namespace AZTU_Akademik.Controllers
 
                 await aztuAkademik.SaveChangesAsync();
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("RelResearcherResearcherArea", "", _relResearcherResearcherArea.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -80,6 +90,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.RelResearcherResearcherArea.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("RelResearcherResearcherArea", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
 

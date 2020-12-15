@@ -31,6 +31,15 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public EducationLevelController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
 
         //GET
         [HttpGet("EducationLevel")]
@@ -44,6 +53,8 @@ namespace AZTU_Akademik.Controllers
             _educationLevel.CreateDate = GetDate;
             await aztuAkademik.EducationLevel.AddAsync(_educationLevel);
             await aztuAkademik.SaveChangesAsync();
+
+            await Classes.TLog.Log("EducationLevel", "", _educationLevel.Id, 1, User_Id, IpAdress, AInformation);
         }
 
         //PUT
@@ -58,6 +69,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_educationLevel).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("EducationLevel", "", _educationLevel.Id, 2, User_Id, IpAdress, AInformation);
                 return 1;
             }
 
@@ -73,6 +85,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.EducationLevel.FirstOrDefault(x => x.Id == id).StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("EducationLevel", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
     }

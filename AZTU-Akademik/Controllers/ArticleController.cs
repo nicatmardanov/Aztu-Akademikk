@@ -32,6 +32,14 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public ArticleController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
 
         //GET
         [HttpGet("Article")]
@@ -87,6 +95,9 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.RelArticleResearcher.AddRangeAsync(_relArticleResearchers);
             await aztuAkademik.SaveChangesAsync();
+
+            await Classes.TLog.Log("Article", "", _article.Id, 1, User_Id, IpAdress, AInformation);
+
         }
 
         //PUT
@@ -112,8 +123,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_article).Property(x => x.CreatorId).IsModified = false;
                 aztuAkademik.Entry(_article).Property(x => x.FileId).IsModified = false;
 
-                
-                
+
+
                 var entry = aztuAkademik.RelArticleResearcher.Where(x => _deletedResearchers.Contains(x.Id));
                 aztuAkademik.RelArticleResearcher.RemoveRange(_relArticleResearchers);
 
@@ -132,6 +143,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.RelArticleResearcher.UpdateRange(_relArticleResearchers);
                 await aztuAkademik.SaveChangesAsync();
 
+                await Classes.TLog.Log("Article", "", _article.Id, 2, User_Id, IpAdress, AInformation);
                 return 1;
             }
             return 0;
@@ -147,6 +159,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Article.FirstOrDefaultAsync(x => x.Id == articleId).Result.RelArticleResearcher.ToList().ForEach(x => x.DeleteDate = GetDate);
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Article", "", articleId, 3, User_Id, IpAdress, AInformation);
         }
 
 

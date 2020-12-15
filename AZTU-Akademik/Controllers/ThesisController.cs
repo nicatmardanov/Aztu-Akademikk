@@ -32,6 +32,16 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public ThesisController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
+
         //GET
         [HttpGet("Thesis")]
         [AllowAnonymous]
@@ -60,6 +70,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.RelThesisResearcher.AddRangeAsync(_relThesisResearcher);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Thesis", "", _thesis.Id, 1, User_Id, IpAdress, AInformation);
         }
 
 
@@ -97,6 +108,7 @@ namespace AZTU_Akademik.Controllers
 
                 aztuAkademik.RelThesisResearcher.UpdateRange(_relThesisResearchers);
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("Thesis", "", _thesis.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -113,6 +125,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Thesis.FirstOrDefaultAsync(x => x.Id == thesisId).Result.RelThesisResearcher.ToList().ForEach(x => x.DeleteDate = GetDate);
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Thesis", "", thesisId, 3, User_Id, IpAdress, AInformation);
         }
 
 

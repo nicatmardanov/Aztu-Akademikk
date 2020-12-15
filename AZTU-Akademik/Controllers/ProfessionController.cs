@@ -32,6 +32,16 @@ namespace AZTU_Akademik.Controllers
         }
 
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public ProfessionController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
+
         //GET
         [HttpGet("Profession")]
         [AllowAnonymous]
@@ -49,6 +59,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.Profession.AddAsync(_profession);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Profession", "", _profession.Id, 1, User_Id, IpAdress, AInformation);
         }
 
 
@@ -64,7 +75,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_profession).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
-
+                await Classes.TLog.Log("Profession", "", _profession.Id, 2, User_Id, IpAdress, AInformation);
                 return 1;
             }
             return 0;
@@ -78,6 +89,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Profession.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
             aztuAkademik.Profession.FirstOrDefault(x => x.Id == id).StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Profession", "", id, 3, User_Id, IpAdress, AInformation);
         }
     }
 }

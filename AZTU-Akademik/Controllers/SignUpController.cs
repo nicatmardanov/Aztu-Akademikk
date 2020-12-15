@@ -22,14 +22,31 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private int User_Id
+        {
+            get
+            {
+                return int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            }
+        }
+
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public SignUpController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
         //POST
 
         [HttpPost]
-        public async Task<JsonResult> Post(User _user)
+        public async Task<int> Post(User _user)
         {
 
             if (!_user.Email.Contains("@aztu.edu.az"))
-                return Json(new { res = 0 });
+                return 0;
 
 
             _user.RoleId = 0;
@@ -38,7 +55,9 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.User.AddAsync(_user);
             await aztuAkademik.SaveChangesAsync();
-            return Json(new { res = 1 });
+            await Classes.TLog.Log("User", "", _user.Id, 1, User_Id, IpAdress, AInformation);
+
+            return 1;
         }
     }
 }

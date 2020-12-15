@@ -32,12 +32,22 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public CertificateController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
+
 
         //GET
         [HttpGet("Certificate")]
         [AllowAnonymous]
         public JsonResult Certificate(int user_id) => Json(aztuAkademik.Certificate.
-            Include(x=>x.File).Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue));
+            Include(x => x.File).Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue));
 
 
         //POST
@@ -65,6 +75,10 @@ namespace AZTU_Akademik.Controllers
 
                 await aztuAkademik.Certificate.AddAsync(_certificate);
                 await aztuAkademik.SaveChangesAsync();
+
+                await Classes.TLog.Log("Certificate", "", _certificate.Id, 1, User_Id, IpAdress, AInformation);
+                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation);
+
             }
         }
 
@@ -82,6 +96,7 @@ namespace AZTU_Akademik.Controllers
 
                     _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 2);
                     _file.UpdateDate = GetDate;
+                    await Classes.TLog.Log("File", "", _file.Id, 2, User_Id, IpAdress, AInformation);
                 }
 
                 _certificate.UpdateDate = GetDate;
@@ -89,8 +104,9 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_certificate).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_certificate).Property(x => x.ResearcherId).IsModified = false;
 
-                
+
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("Certificate", "", _certificate.Id, 2, User_Id, IpAdress, AInformation);
                 return 1;
             }
             return 0;
@@ -103,6 +119,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Certificate.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
             aztuAkademik.Certificate.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Certificate", "", id, 3, User_Id, IpAdress, AInformation);
         }
     }
 }

@@ -32,6 +32,16 @@ namespace AZTU_Akademik.Controllers
         }
 
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public OrganizationController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
+
         //GET
         [HttpGet("Organization")]
         [AllowAnonymous]
@@ -51,6 +61,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.EducationOrganization.AddAsync(_educationOrganization);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("EducationOrganization", "", _educationOrganization.Id, 1, User_Id, IpAdress, AInformation);
         }
 
         //PUT
@@ -65,6 +76,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_educationOrganization).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("EducationOrganization", "", _educationOrganization.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -78,6 +90,7 @@ namespace AZTU_Akademik.Controllers
         {
             aztuAkademik.EducationOrganization.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
             aztuAkademik.EducationOrganization.FirstOrDefault(x => x.Id == id).StatusId = 0;
+            await Classes.TLog.Log("EducationOrganization", "", id, 3, User_Id, IpAdress, AInformation);
             await aztuAkademik.SaveChangesAsync();
         }
 

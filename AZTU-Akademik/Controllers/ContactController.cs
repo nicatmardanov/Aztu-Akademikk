@@ -32,6 +32,15 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public ContactController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
 
         //GET
         [HttpGet("Contact")]
@@ -51,13 +60,14 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.Contact.AddRangeAsync(_contact);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Contact", "", _contact.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation);
         }
 
         //PUT
         [HttpPut]
         public async Task<int> Put(Contact _contact)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _contact.UpdateDate = GetDate;
                 aztuAkademik.Entry(_contact).State = EntityState.Modified;
@@ -66,6 +76,7 @@ namespace AZTU_Akademik.Controllers
 
                 await aztuAkademik.SaveChangesAsync();
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("Contact", "", _contact.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -81,6 +92,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Contact.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Contact", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
     }

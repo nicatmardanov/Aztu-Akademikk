@@ -11,7 +11,7 @@ namespace AZTU_Akademik.Models
         public string Description { get; set; }
         public string AdditionalInformation { get; set; }
         public DateTime? CreateDate { get; set; }
-        public int? RefId { get; set; }
+        public long? RefId { get; set; }
         public int? UserId { get; set; }
         public byte? OperationId { get; set; }
 

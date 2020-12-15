@@ -13,7 +13,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     public class ForeignLanguageController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -32,10 +32,19 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public ForeignLanguageController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
         //GET
         [HttpGet("Language")]
         [AllowAnonymous]
-        public JsonResult Language(int id) => Json(aztuAkademik.Language.FirstOrDefault(x=> x.Id==id && !x.DeleteDate.HasValue));
+        public JsonResult Language(int id) => Json(aztuAkademik.Language.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
         [HttpGet("AllLanguages")]
         [AllowAnonymous]
@@ -50,6 +59,7 @@ namespace AZTU_Akademik.Controllers
             _language.CreateDate = GetDate;
             await aztuAkademik.Language.AddAsync(_language);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Language", "", _language.Id, 1, User_Id, IpAdress, AInformation);
         }
 
 
@@ -65,7 +75,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_language).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
-                
+                await Classes.TLog.Log("Language", "", _language.Id, 2, User_Id, IpAdress, AInformation);
+
                 return 1;
             }
 
@@ -80,6 +91,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Language.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
             aztuAkademik.Language.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Language", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
     }

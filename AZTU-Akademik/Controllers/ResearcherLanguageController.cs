@@ -32,6 +32,15 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public ResearcherLanguageController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
         //GET
         [HttpGet("ResearcherLanguages")]
         [AllowAnonymous]
@@ -65,6 +74,9 @@ namespace AZTU_Akademik.Controllers
 
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("ResearcherLanguage", "", _researcherLanguage.Id, 1, User_Id, IpAdress, AInformation);
+                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation);
+
             }
         }
 
@@ -82,6 +94,7 @@ namespace AZTU_Akademik.Controllers
 
                     _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 1);
                     _file.UpdateDate = GetDate;
+                    await Classes.TLog.Log("File", "", _file.Id, 2, User_Id, IpAdress, AInformation);
                 }
 
                 _researcherLanguage.UpdateDate = GetDate;
@@ -90,7 +103,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_researcherLanguage).Property(x => x.ResearcherId).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
-                
+                await Classes.TLog.Log("ResearcherLanguage", "", _researcherLanguage.Id, 2, User_Id, IpAdress, AInformation);
                 return 1;
             }
 
@@ -105,8 +118,9 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.ResearcherLanguage.FirstOrDefault(x => x.Id == id).StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("ResearcherLanguage", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
 
     }
-} 
+}

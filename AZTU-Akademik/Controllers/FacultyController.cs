@@ -31,6 +31,15 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public FacultyController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
         //GET
         [HttpGet("Faculty")]
         [AllowAnonymous]
@@ -50,6 +59,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.Faculty.AddAsync(_faculty);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Faculty", "", _faculty.Id, 1, User_Id, IpAdress, AInformation);
         }
 
         //PUT
@@ -64,6 +74,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_faculty).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("Faculty", "", _faculty.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -78,6 +89,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Faculty.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
             aztuAkademik.Faculty.FirstOrDefault(x => x.Id == id).StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Faculty", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
     }

@@ -12,7 +12,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     public class EducationDegreeController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -29,6 +29,15 @@ namespace AZTU_Akademik.Controllers
             {
                 return int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
             }
+        }
+
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public EducationDegreeController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
         }
 
 
@@ -50,6 +59,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.EducationDegree.AddAsync(_educationDegree);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("EducationDegree", "", _educationDegree.Id, 1, User_Id, IpAdress, AInformation);
         }
 
         //PUT
@@ -64,6 +74,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_educationDegree).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("EducationDegree", "", _educationDegree.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -79,6 +90,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.EducationDegree.FirstOrDefault(x => x.Id == id).StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("EducationDegree", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
 

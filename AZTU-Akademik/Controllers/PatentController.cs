@@ -32,14 +32,23 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public PatentController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
         //GET
         [HttpGet("Patent")]
         [AllowAnonymous]
         public JsonResult Patent(int user_id) => Json(aztuAkademik.RelPatentResearcher.Where(x => (x.IntAuthorId == user_id || x.ExtAuthorId == user_id) && !x.DeleteDate.HasValue).
             OrderByDescending(x => x.Id).
-            Include(x=>x.Patent).ThenInclude(x=>x.Researcher).
-            Include(x=>x.Patent).ThenInclude(x=>x.Organization).
-            Include(x=>x.IntAuthor).Include(x=>x.ExtAuthor).ThenInclude(x=>x.Organization));
+            Include(x => x.Patent).ThenInclude(x => x.Researcher).
+            Include(x => x.Patent).ThenInclude(x => x.Organization).
+            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization));
 
 
 
@@ -62,6 +71,8 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.RelPatentResearcher.AddRangeAsync(_relPatentResearcher);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Patent", "", _patent.Id, 1, User_Id, IpAdress, AInformation);
+            await Classes.TLog.Log("RelPatentResearcher", "", _relPatentResearcher.Select(x=>x.Id).ToArray(), 1, User_Id, IpAdress, AInformation);
         }
 
 
@@ -91,11 +102,12 @@ namespace AZTU_Akademik.Controllers
 
                     else
                         x.CreateDate = aztuAkademik.Patent.FirstOrDefault(y => y.Id == x.Id).CreateDate;
-                   
+
                 });
 
                 aztuAkademik.RelPatentResearcher.UpdateRange(_relPatentResearchers);
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("Patent", "", _patent.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -114,6 +126,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Patent.FirstOrDefaultAsync(x => x.Id == patentId).Result.RelPatentResearcher.ToList().ForEach(x => x.DeleteDate = GetDate);
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Patent", "", patentId, 3, User_Id, IpAdress, AInformation);
         }
 
 

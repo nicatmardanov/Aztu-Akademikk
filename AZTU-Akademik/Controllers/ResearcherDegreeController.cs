@@ -33,6 +33,16 @@ namespace AZTU_Akademik.Controllers
         }
 
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public ResearcherDegreeController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
+
         //GET
         [HttpGet("DegreeForUser")]
         [AllowAnonymous]
@@ -48,6 +58,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.RelResearcherDegree.AddAsync(_relResearcherDegree);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("RelResearcherDegree", "", _relResearcherDegree.Id, 1, User_Id, IpAdress, AInformation);
         }
 
 
@@ -65,6 +76,7 @@ namespace AZTU_Akademik.Controllers
 
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("RelResearcherDegree", "", _relResearcherDegree.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -79,6 +91,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.RelResearcherDegree.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("RelResearcherDegree", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
     }

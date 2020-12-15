@@ -13,7 +13,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     public class ResearchAreaController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -32,6 +32,14 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public ResearchAreaController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
 
         //GET
         [HttpGet("ResearchArea")]
@@ -51,6 +59,7 @@ namespace AZTU_Akademik.Controllers
             _researchArea.ForEach(x => x.CreateDate = GetDate);
             await aztuAkademik.ResearchArea.AddRangeAsync(_researchArea);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("ResearchArea", "", _researchArea.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation);
         }
 
         //PUT
@@ -66,6 +75,7 @@ namespace AZTU_Akademik.Controllers
                 await aztuAkademik.SaveChangesAsync();
                 await aztuAkademik.SaveChangesAsync();
 
+                await Classes.TLog.Log("ResearchArea", "", _researchArea.Id, 2, User_Id, IpAdress, AInformation);
                 return 1;
             }
             return 0;
@@ -79,6 +89,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.ResearchArea.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("ResearchArea", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
     }

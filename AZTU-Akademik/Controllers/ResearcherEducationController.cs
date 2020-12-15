@@ -32,6 +32,15 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public ResearcherEducationController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
 
         //GET
         [HttpGet("ResearcherEducation")]
@@ -50,6 +59,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.ResearcherEducation.AddAsync(_researcherEducation);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("ResearcherEducation", "", _researcherEducation.Id, 1, User_Id, IpAdress, AInformation);
         }
 
         //PUT
@@ -65,6 +75,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_researcherEducation).Property(x => x.ResearcherId).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("ResearcherEducation", "", _researcherEducation.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -79,6 +90,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.ResearcherEducation.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
             aztuAkademik.ResearcherEducation.FirstOrDefault(x => x.Id == id).StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("ResearcherEducation", "", id, 3, User_Id, IpAdress, AInformation);
         }
     }
 }

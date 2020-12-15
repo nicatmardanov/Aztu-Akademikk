@@ -34,13 +34,22 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public DissertationController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
 
         //GET
         [HttpGet("Dissertation")]
         [AllowAnonymous]
-        public JsonResult Dissertation(int user_id) => Json(aztuAkademik.ResearcherEducation.Include(x=>x.Dissertation).Where(x=>x.ResearcherId==user_id).Select(x=>x.Dissertation));
+        public JsonResult Dissertation(int user_id) => Json(aztuAkademik.ResearcherEducation.Include(x => x.Dissertation).Where(x => x.ResearcherId == user_id).Select(x => x.Dissertation));
 
-        
+
         //[HttpGet("AddDissertation")]
         //public JsonResult AddDissertation(int research_education_id) => Json(research_education_id);
 
@@ -72,6 +81,8 @@ namespace AZTU_Akademik.Controllers
 
                 await aztuAkademik.Dissertation.AddAsync(_dissertation);
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("Dissertation", "", _dissertation.Id, 1, User_Id, IpAdress, AInformation);
+                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation);
             }
 
         }
@@ -91,13 +102,14 @@ namespace AZTU_Akademik.Controllers
 
                     _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 0);
                     _file.UpdateDate = GetDate;
-
+                    await Classes.TLog.Log("File", "", _file.Id, 2, User_Id, IpAdress, AInformation);
                 }
                 _dissertation.UpdateDate = GetDate;
                 aztuAkademik.Entry(_dissertation).State = EntityState.Modified;
                 aztuAkademik.Entry(_dissertation).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("Dissertation", "", _dissertation.Id, 2, User_Id, IpAdress, AInformation);
                 return 1;
             }
             return 0;
@@ -111,6 +123,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Dissertation.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Dissertation", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
 

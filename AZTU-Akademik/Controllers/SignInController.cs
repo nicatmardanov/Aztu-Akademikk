@@ -15,15 +15,32 @@ namespace AZTU_Akademik.Controllers
     [ApiController]
     public class SignInController : Controller
     {
+        readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
+
+        private DateTime GetDate
+        {
+            get
+            {
+                return DateTime.UtcNow.AddHours(4);
+            }
+        }
+
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public SignInController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
 
         //POST
         [HttpPost]
-        public async Task<JsonResult> Post(User _user)
+        public async Task<int> Post(User _user)
         {
-            AztuAkademikContext aztuAkademik = new AztuAkademikContext();
-
             if (!_user.Email.Contains("@aztu.edu.az"))
-                return Json(new { res = 0 });
+                return 0;
 
             var valid_user = aztuAkademik.User.FirstOrDefault(x => x.Email == _user.Email && x.Password == _user.Password);
 
@@ -51,11 +68,12 @@ namespace AZTU_Akademik.Controllers
                 var principial = new ClaimsPrincipal(claimsIdentity);
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principial, authProperty);
+                await Classes.TLog.Log("User", "", _user.Id, 4, _user.Id, IpAdress, AInformation);
 
-                return Json(1);
+                return 1;
             }
 
-            return Json(0);
+            return 0;
 
         }
 

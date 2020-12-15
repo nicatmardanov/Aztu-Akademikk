@@ -32,6 +32,15 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public ResearcherInformationController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
 
         //GET
         [HttpGet]
@@ -62,6 +71,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_user).Property(x => x.StatusId).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("User", "", _user.Id, 2, User_Id, IpAdress, AInformation);
             }
         }
 
@@ -77,6 +87,7 @@ namespace AZTU_Akademik.Controllers
                     _user.ImageAddress = await Classes.FileSave.Save(Request.Form.Files[0], 4);
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("User", "Only Image", _user.Id, 2, User_Id, IpAdress, AInformation);
             }
         }
 
@@ -90,6 +101,7 @@ namespace AZTU_Akademik.Controllers
                 _user.ImageAddress = string.Empty;
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("User", "Only Image", _user.Id, 3, User_Id, IpAdress, AInformation);
             }
         }
 
@@ -102,6 +114,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("User", "", id, 3, User_Id, IpAdress, AInformation);
         }
     }
 }

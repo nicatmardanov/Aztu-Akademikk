@@ -32,6 +32,16 @@ namespace AZTU_Akademik.Controllers
         }
 
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public AnnouncementController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
+
         //GET
         [HttpGet("Announcements")]
         [AllowAnonymous]
@@ -46,6 +56,7 @@ namespace AZTU_Akademik.Controllers
             _announcement.ResearcherId = User_Id;
             await aztuAkademik.Announcement.AddAsync(_announcement);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Announcement", "", (ulong)_announcement.Id, 1, User_Id, IpAdress, AInformation);
         }
 
         //PUT
@@ -61,6 +72,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_announcement).Property(x => x.ResearcherId).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("Announcement", "", (ulong)_announcement.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -76,6 +88,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Announcement.FirstOrDefault(x => x.Id == id).StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Announcement", "", (ulong)id, 3, User_Id, IpAdress, AInformation);
         }
 
 

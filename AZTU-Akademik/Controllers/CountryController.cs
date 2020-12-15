@@ -12,7 +12,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     public class CountryController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -29,6 +29,15 @@ namespace AZTU_Akademik.Controllers
             {
                 return int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
             }
+        }
+
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public CountryController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
         }
 
         //GET
@@ -50,6 +59,7 @@ namespace AZTU_Akademik.Controllers
             _country.CreateDate = GetDate;
             await aztuAkademik.Country.AddAsync(_country);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Country", "", _country.Id, 1, User_Id, IpAdress, AInformation);
         }
 
 
@@ -65,6 +75,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_country).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("Country", "", _country.Id, 2, User_Id, IpAdress, AInformation);
                 return 1;
             }
 
@@ -80,6 +91,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Country.FirstOrDefault(x => x.Id == id).StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Country", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
     }

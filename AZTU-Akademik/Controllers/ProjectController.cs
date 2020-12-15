@@ -33,6 +33,16 @@ namespace AZTU_Akademik.Controllers
         }
 
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public ProjectController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
+
         //GET
         [HttpGet("Project")]
         [AllowAnonymous]
@@ -66,6 +76,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.RelProjectResearcher.AddRangeAsync(_relProjectResearcher);
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("Project", "", _project.Id, 1, User_Id, IpAdress, AInformation);
 
 
             //bool condition = intAuthors.Length > extAuthors.Length;
@@ -164,6 +175,7 @@ namespace AZTU_Akademik.Controllers
 
                 aztuAkademik.RelProjectResearcher.UpdateRange(_relProjectResearchers);
                 await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("Project", "", _project.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -181,6 +193,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Project.FirstOrDefaultAsync(x => x.Id == projectId).Result.RelProjectResearcher.ToList().ForEach(x => x.DeleteDate = GetDate);
 
             await aztuAkademik.SaveChangesAsync();
+                await Classes.TLog.Log("Project", "", projectId, 3, User_Id, IpAdress, AInformation);
         }
 
 

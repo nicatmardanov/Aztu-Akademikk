@@ -31,6 +31,15 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
+        private string IpAdress { get; }
+        private string AInformation { get; }
+
+        public LanguageLevelController(IHttpContextAccessor accessor)
+        {
+            IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
+            AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
 
         //GET
         [HttpGet("Level")]
@@ -50,6 +59,8 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.LanguageLevels.AddAsync(_languageLevels);
             await aztuAkademik.SaveChangesAsync();
+
+            await Classes.TLog.Log("LanguageLevels", "", _languageLevels.Id, 1, User_Id, IpAdress, AInformation);
         }
 
 
@@ -66,6 +77,8 @@ namespace AZTU_Akademik.Controllers
 
                 await aztuAkademik.SaveChangesAsync();
 
+                await Classes.TLog.Log("LanguageLevels", "", _languageLevels.Id, 2, User_Id, IpAdress, AInformation);
+
                 return 1;
             }
             return 0;
@@ -79,6 +92,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.LanguageLevels.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
             aztuAkademik.LanguageLevels.FirstOrDefault(x => x.Id == id).StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("LanguageLevels", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
     }
