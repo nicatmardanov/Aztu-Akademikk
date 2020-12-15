@@ -56,7 +56,7 @@ namespace AZTU_Akademik.Controllers
             _announcement.ResearcherId = User_Id;
             await aztuAkademik.Announcement.AddAsync(_announcement);
             await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Announcement", "", (ulong)_announcement.Id, 1, User_Id, IpAdress, AInformation);
+            await Classes.TLog.Log("Announcement", "", _announcement.Id, 1, User_Id, IpAdress, AInformation);
         }
 
         //PUT
@@ -72,7 +72,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_announcement).Property(x => x.ResearcherId).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Announcement", "", (ulong)_announcement.Id, 2, User_Id, IpAdress, AInformation);
+                await Classes.TLog.Log("Announcement", "", _announcement.Id, 2, User_Id, IpAdress, AInformation);
 
                 return 1;
             }
@@ -88,7 +88,7 @@ namespace AZTU_Akademik.Controllers
             aztuAkademik.Announcement.FirstOrDefault(x => x.Id == id).StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Announcement", "", (ulong)id, 3, User_Id, IpAdress, AInformation);
+            await Classes.TLog.Log("Announcement", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
 
