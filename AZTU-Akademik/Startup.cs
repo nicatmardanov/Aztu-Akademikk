@@ -39,20 +39,6 @@ namespace AZTU_Akademik
 
             services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("///").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
 
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //.AddJwtBearer(options =>
-            //{
-            //    options.TokenValidationParameters = new TokenValidationParameters
-            //    {
-            //        ValidateIssuer = true,
-            //        ValidateAudience = true,
-            //        ValidateLifetime = true,
-            //        ValidateIssuerSigningKey = true,
-            //        ValidIssuer = Configuration["Jwt:Issuer"],
-            //        ValidAudience = Configuration["Jwt:Issuer"],
-            //        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-            //    };
-            //});
 
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -93,7 +79,6 @@ namespace AZTU_Akademik
 
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             //app.UseMvc(routes =>
             //{

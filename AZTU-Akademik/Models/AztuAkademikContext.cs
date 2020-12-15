@@ -63,9 +63,6 @@ namespace AZTU_Akademik.Models
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=DESKTOP-UTUBGGC\\SQLEXPRESS;Database=Aztu-Akademik;Trusted_Connection=True;");
-                optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.LazyLoadOnDisposedContextWarning));
-
-
             }
         }
 
@@ -1522,9 +1519,15 @@ namespace AZTU_Akademik.Models
                     .HasColumnName("image_address")
                     .IsUnicode(false);
 
+                entity.Property(e => e.IsOnline).HasColumnName("is_online");
+
                 entity.Property(e => e.LastName)
                     .HasColumnName("last_name")
                     .HasMaxLength(100);
+
+                entity.Property(e => e.LastSeen)
+                    .HasColumnName("last_seen")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.NationalityId).HasColumnName("nationality_id");
 

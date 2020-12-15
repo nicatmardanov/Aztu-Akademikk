@@ -40,6 +40,8 @@ namespace AZTU_Akademik.Models
         public string ImageAddress { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public bool? IsOnline { get; set; }
+        public DateTime? LastSeen { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public DateTime? DeleteDate { get; set; }

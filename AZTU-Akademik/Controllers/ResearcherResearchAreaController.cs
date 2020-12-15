@@ -49,9 +49,9 @@ namespace AZTU_Akademik.Controllers
 
         //Post
         [HttpPost]
-        public async Task Post(List<RelResearcherResearcherArea> _relResearcherResearcherArea)
+        public async Task Post(IQueryable<RelResearcherResearcherArea> _relResearcherResearcherArea)
         {
-            _relResearcherResearcherArea.ForEach(x =>
+            await _relResearcherResearcherArea.ForEachAsync(x =>
             {
                 x.CreateDate = GetDate;
                 x.ResearcherId = User_Id;

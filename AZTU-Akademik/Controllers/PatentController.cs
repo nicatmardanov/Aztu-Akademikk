@@ -54,7 +54,7 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task Post([FromQuery] Patent _patent, [FromQuery] List<RelPatentResearcher> _relPatentResearcher)
+        public async Task Post([FromQuery] Patent _patent, [FromQuery] IQueryable<RelPatentResearcher> _relPatentResearcher)
         {
             _patent.CreateDate = GetDate;
             _patent.ResearcherId = User_Id;
@@ -62,7 +62,7 @@ namespace AZTU_Akademik.Controllers
             await aztuAkademik.SaveChangesAsync();
 
 
-            _relPatentResearcher.ForEach(x =>
+            await _relPatentResearcher.ForEachAsync(x =>
             {
                 x.CreateDate = GetDate;
                 x.PatentId = _patent.Id;
@@ -72,13 +72,13 @@ namespace AZTU_Akademik.Controllers
             await aztuAkademik.RelPatentResearcher.AddRangeAsync(_relPatentResearcher);
             await aztuAkademik.SaveChangesAsync();
             await Classes.TLog.Log("Patent", "", _patent.Id, 1, User_Id, IpAdress, AInformation);
-            await Classes.TLog.Log("RelPatentResearcher", "", _relPatentResearcher.Select(x=>x.Id).ToArray(), 1, User_Id, IpAdress, AInformation);
+            await Classes.TLog.Log("RelPatentResearcher", "", _relPatentResearcher.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation);
         }
 
 
         //PUT
         [HttpPut]
-        public async Task<int> Put([FromQuery] Patent _patent, [FromQuery] List<RelPatentResearcher> _relPatentResearchers, long[] _deletedResearchers)
+        public async Task<int> Put([FromQuery] Patent _patent, [FromQuery] IQueryable<RelPatentResearcher> _relPatentResearchers, long[] _deletedResearchers)
         {
             if (ModelState.IsValid)
             {
@@ -91,17 +91,24 @@ namespace AZTU_Akademik.Controllers
 
                 var entry = aztuAkademik.RelPatentResearcher.Where(x => _deletedResearchers.Contains(x.Id));
                 aztuAkademik.RelPatentResearcher.RemoveRange(entry);
+                await Classes.TLog.Log("RelPatentResearcher", "", _deletedResearchers, 3, User_Id, IpAdress, AInformation);
 
-                _relPatentResearchers.ForEach(x =>
+                await _relPatentResearchers.ForEachAsync(async x =>
                 {
-                    x.UpdateDate = GetDate;
                     x.PatentId = _patent.Id;
 
                     if (x.Id == 0)
+                    {
                         x.CreateDate = GetDate;
+                        await Classes.TLog.Log("RelPatentResearcher", "", x.Id, 1, User_Id, IpAdress, AInformation);
+                    }
 
                     else
+                    {
                         x.CreateDate = aztuAkademik.Patent.FirstOrDefault(y => y.Id == x.Id).CreateDate;
+                        x.UpdateDate = GetDate;
+                        await Classes.TLog.Log("RelPatentResearcher", "", x.Id, 2, User_Id, IpAdress, AInformation);
+                    }
 
                 });
 
@@ -123,7 +130,7 @@ namespace AZTU_Akademik.Controllers
         {
             aztuAkademik.Patent.FirstOrDefaultAsync(x => x.Id == patentId).Result.DeleteDate = GetDate;
             aztuAkademik.Patent.FirstOrDefaultAsync(x => x.Id == patentId).Result.StatusId = 0;
-            aztuAkademik.Patent.FirstOrDefaultAsync(x => x.Id == patentId).Result.RelPatentResearcher.ToList().ForEach(x => x.DeleteDate = GetDate);
+            await aztuAkademik.Patent.FirstOrDefaultAsync(x => x.Id == patentId).Result.RelPatentResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate);
 
             await aztuAkademik.SaveChangesAsync();
             await Classes.TLog.Log("Patent", "", patentId, 3, User_Id, IpAdress, AInformation);

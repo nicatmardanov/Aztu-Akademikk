@@ -54,7 +54,7 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task Post([FromQuery] Textbook _textbook, [FromQuery] List<RelTextbookResearcher> _relTextbookResearchers)
+        public async Task Post([FromQuery] Textbook _textbook, [FromQuery] IQueryable<RelTextbookResearcher> _relTextbookResearchers)
         {
             _textbook.CreateDate = GetDate;
             _textbook.CreatorId = User_Id;
@@ -62,7 +62,7 @@ namespace AZTU_Akademik.Controllers
             await aztuAkademik.SaveChangesAsync();
 
 
-            _relTextbookResearchers.ForEach(x =>
+            await _relTextbookResearchers.ForEachAsync(x =>
             {
                 x.CreateDate = GetDate;
                 x.TextbookId = _textbook.Id;
@@ -72,6 +72,7 @@ namespace AZTU_Akademik.Controllers
             await aztuAkademik.RelTextbookResearcher.AddRangeAsync(_relTextbookResearchers);
             await aztuAkademik.SaveChangesAsync();
             await Classes.TLog.Log("Textbook", "", _textbook.Id, 1, User_Id, IpAdress, AInformation);
+            await Classes.TLog.Log("RelTextbookResearcher", "", _relTextbookResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation);
         }
 
 
@@ -79,7 +80,7 @@ namespace AZTU_Akademik.Controllers
 
         //PUT
         [HttpPut]
-        public async Task<int> Put([FromQuery] Textbook _textbook, [FromQuery] List<RelTextbookResearcher> _relTextbookResearchers, [FromQuery] long[] _deletedResearchers)
+        public async Task<int> Put([FromQuery] Textbook _textbook, [FromQuery] IQueryable<RelTextbookResearcher> _relTextbookResearchers, [FromQuery] long[] _deletedResearchers)
         {
             if (ModelState.IsValid)
             {
@@ -93,17 +94,24 @@ namespace AZTU_Akademik.Controllers
 
                 var entry = aztuAkademik.RelTextbookResearcher.Where(x => _deletedResearchers.Contains(x.Id));
                 aztuAkademik.RelTextbookResearcher.RemoveRange(entry);
+                await Classes.TLog.Log("RelTextbookResearcher", "", _deletedResearchers, 3, User_Id, IpAdress, AInformation);
 
-                _relTextbookResearchers.ForEach(x =>
+                await _relTextbookResearchers.ForEachAsync(async x =>
                 {
-                    x.UpdateDate = GetDate;
                     x.TextbookId = _textbook.Id;
 
                     if (x.Id == 0)
+                    {
                         x.CreateDate = GetDate;
+                        await Classes.TLog.Log("RelTextbookResearcher", "", x.Id, 1, User_Id, IpAdress, AInformation);
+                    }
 
                     else
+                    {
                         x.CreateDate = aztuAkademik.Project.FirstOrDefault(y => y.Id == x.Id).CreateDate;
+                        x.UpdateDate = GetDate;
+                        await Classes.TLog.Log("RelTextbookResearcher", "", x.Id, 2, User_Id, IpAdress, AInformation);
+                    }
 
                 });
 
@@ -123,7 +131,7 @@ namespace AZTU_Akademik.Controllers
         {
             aztuAkademik.Textbook.FirstOrDefaultAsync(x => x.Id == textbookId).Result.DeleteDate = GetDate;
             aztuAkademik.Textbook.FirstOrDefaultAsync(x => x.Id == textbookId).Result.StatusId = 0;
-            aztuAkademik.Textbook.FirstOrDefaultAsync(x => x.Id == textbookId).Result.RelTextbookResearcher.ToList().ForEach(x => x.DeleteDate = GetDate);
+            await aztuAkademik.Textbook.FirstOrDefaultAsync(x => x.Id == textbookId).Result.RelTextbookResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate);
 
             await aztuAkademik.SaveChangesAsync();
             await Classes.TLog.Log("Textbook", "", textbookId, 3, User_Id, IpAdress, AInformation);

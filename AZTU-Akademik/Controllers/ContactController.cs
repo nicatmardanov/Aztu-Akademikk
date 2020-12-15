@@ -50,13 +50,13 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task Post(List<Contact> _contact)
+        public async Task Post(IQueryable<Contact> _contact)
         {
-            _contact.ForEach(x =>
-            {
-                x.CreateDate = GetDate;
-                x.ResearcherId = User_Id;
-            });
+            await _contact.ForEachAsync(x =>
+             {
+                 x.CreateDate = GetDate;
+                 x.ResearcherId = User_Id;
+             });
 
             await aztuAkademik.Contact.AddRangeAsync(_contact);
             await aztuAkademik.SaveChangesAsync();
