@@ -37,12 +37,13 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task<int> Post(User _user)
+        public async Task<int> Post([FromQuery] string email, [FromQuery] string password)
         {
-            if (!_user.Email.Contains("@aztu.edu.az"))
+            var valid_user = aztuAkademik.User.FirstOrDefault(x => x.Email == email && x.Password == password);
+            
+            if (!valid_user.Email.Contains("@aztu.edu.az"))
                 return 0;
 
-            var valid_user = aztuAkademik.User.FirstOrDefault(x => x.Email == _user.Email && x.Password == _user.Password);
 
 
             if (valid_user != null)
