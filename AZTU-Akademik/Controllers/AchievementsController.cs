@@ -39,7 +39,7 @@ namespace AZTU_Akademik.Controllers
             {
 
 
-                var indexOf = client.DownloadString("https://google.com").IndexOf("gsc_rsb_st");
+                var indexOf = client.DownloadString("https://scholar.google.com/citations?user=UWPeriIAAAAJ&hl=en&oi=ao").IndexOf("gsc_rsb_st");
 
                 System.Text.StringBuilder htmlCode = new System.Text.StringBuilder();
 

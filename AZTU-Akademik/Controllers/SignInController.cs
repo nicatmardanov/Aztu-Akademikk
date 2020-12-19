@@ -65,10 +65,16 @@ namespace AZTU_Akademik.Controllers
                     IssuedUtc = DateTime.UtcNow
                 };
 
+
+                
                 var principial = new ClaimsPrincipal(claimsIdentity);
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principial, authProperty);
-                await Classes.TLog.Log("User", "", _user.Id, 4, _user.Id, IpAdress, AInformation);
+                
+                valid_user.LastSeen = GetDate;
+                await aztuAkademik.SaveChangesAsync();
+
+                await Classes.TLog.Log("User", "", valid_user.Id, 4, valid_user.Id, IpAdress, AInformation);
 
                 return 1;
             }

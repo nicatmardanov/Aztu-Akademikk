@@ -17,9 +17,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-//using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace AZTU_Akademik
 {
@@ -86,8 +83,6 @@ namespace AZTU_Akademik
             //        name: "default",
             //        template: "{controller=Home}/{action=Index}/{id?}");
             //});
-
-
 
             app.UseStaticFiles(new StaticFileOptions
             {
