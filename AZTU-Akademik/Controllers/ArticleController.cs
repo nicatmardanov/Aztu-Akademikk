@@ -164,10 +164,11 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int articleId)
         {
-            aztuAkademik.Article.FirstOrDefaultAsync(x => x.Id == articleId).Result.DeleteDate = GetDate;
-            aztuAkademik.Article.FirstOrDefaultAsync(x => x.Id == articleId).Result.StatusId = 0;
+            Article article = await aztuAkademik.Article.Include(x=>x.RelArticleResearcher).FirstOrDefaultAsync(x => x.Id == articleId);
+            article.DeleteDate = GetDate;
+            article.StatusId = 0;
 
-            await aztuAkademik.Article.FirstOrDefaultAsync(x => x.Id == articleId).Result.RelArticleResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate);
+            await article.RelArticleResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate);
             await aztuAkademik.SaveChangesAsync();
             await Classes.TLog.Log("Article", "", articleId, 3, User_Id, IpAdress, AInformation);
         }

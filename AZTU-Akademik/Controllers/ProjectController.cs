@@ -196,9 +196,10 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int projectId)
         {
-            aztuAkademik.Project.FirstOrDefaultAsync(x => x.Id == projectId).Result.DeleteDate = GetDate;
-            aztuAkademik.Project.FirstOrDefaultAsync(x => x.Id == projectId).Result.StatusId = 0;
-            await aztuAkademik.Project.FirstOrDefaultAsync(x => x.Id == projectId).Result.RelProjectResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate);
+            Project project = await aztuAkademik.Project.Include(x=>x.RelProjectResearcher).FirstOrDefaultAsync(x => x.Id == projectId);
+            project.DeleteDate = GetDate;
+            project.StatusId = 0;
+            await project.RelProjectResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate);
 
             await aztuAkademik.SaveChangesAsync();
                 await Classes.TLog.Log("Project", "", projectId, 3, User_Id, IpAdress, AInformation);

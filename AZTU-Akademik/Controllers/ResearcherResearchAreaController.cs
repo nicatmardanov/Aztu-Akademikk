@@ -86,8 +86,9 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            aztuAkademik.RelResearcherResearcherArea.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
-            aztuAkademik.RelResearcherResearcherArea.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
+            RelResearcherResearcherArea relResearcherResearcherArea = await aztuAkademik.RelResearcherResearcherArea.FirstOrDefaultAsync(x => x.Id == id);
+            relResearcherResearcherArea.DeleteDate = GetDate;
+            relResearcherResearcherArea.StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
             await Classes.TLog.Log("RelResearcherResearcherArea", "", id, 3, User_Id, IpAdress, AInformation);

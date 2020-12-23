@@ -7,6 +7,7 @@ using AZTU_Akademik.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AZTU_Akademik.Controllers
 {
@@ -89,8 +90,9 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(short id)
         {
-            aztuAkademik.LanguageLevels.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
-            aztuAkademik.LanguageLevels.FirstOrDefault(x => x.Id == id).StatusId = 0;
+            LanguageLevels languageLevels = await aztuAkademik.LanguageLevels.FirstOrDefaultAsync(x => x.Id == id);
+            languageLevels.DeleteDate = GetDate;
+            languageLevels.StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
             await Classes.TLog.Log("LanguageLevels", "", id, 3, User_Id, IpAdress, AInformation);
         }

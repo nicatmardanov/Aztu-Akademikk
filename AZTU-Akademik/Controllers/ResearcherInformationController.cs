@@ -110,8 +110,9 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete("UserDelete")]
         public async Task UserDelete(int id)
         {
-            aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
-            aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
+            User user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == id);
+            user.DeleteDate = GetDate;
+            user.StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
             await Classes.TLog.Log("User", "", id, 3, User_Id, IpAdress, AInformation);

@@ -7,6 +7,7 @@ using AZTU_Akademik.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AZTU_Akademik.Controllers
 {
@@ -86,8 +87,9 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            aztuAkademik.Faculty.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
-            aztuAkademik.Faculty.FirstOrDefault(x => x.Id == id).StatusId = 0;
+            Faculty faculty = await aztuAkademik.Faculty.FirstOrDefaultAsync(x => x.Id == id);
+            faculty.DeleteDate = GetDate;
+            faculty.StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
             await Classes.TLog.Log("Faculty", "", id, 3, User_Id, IpAdress, AInformation);
         }

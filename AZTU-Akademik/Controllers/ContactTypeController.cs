@@ -93,8 +93,9 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            aztuAkademik.ContactType.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
-            aztuAkademik.ContactType.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
+            ContactType contactType = await aztuAkademik.ContactType.FirstOrDefaultAsync(x => x.Id == id);
+            contactType.DeleteDate = GetDate;
+            contactType.StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
             await Classes.TLog.Log("ContactType", "", id, 3, User_Id, IpAdress, AInformation);

@@ -129,19 +129,21 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete("PedagogicalExperience")]
         public async Task PedagogicalExperienceDelete(int id)
         {
-            aztuAkademik.ResearcherPosition.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
-            aztuAkademik.ResearcherPosition.FirstOrDefault(x => x.Id == id).StatusId = 0;
+            ResearcherPosition researcherPosition = await aztuAkademik.ResearcherPosition.FirstOrDefaultAsync(x => x.Id == id);
+            researcherPosition.DeleteDate = GetDate;
+            researcherPosition.StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("ResearcherPosition", "", id, 3, User_Id, IpAdress, AInformation);
+            await Classes.TLog.Log("ResearcherPosition", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
         [HttpDelete("ManagementExperience")]
         public async Task ManagementExperienceDelete(int id)
         {
-            aztuAkademik.ManagementExperience.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
-            aztuAkademik.ManagementExperience.FirstOrDefault(x => x.Id == id).StatusId = 0;
+            ManagementExperience managementExperience = await aztuAkademik.ManagementExperience.FirstOrDefaultAsync(x => x.Id == id);
+            managementExperience.DeleteDate = GetDate;
+            managementExperience.StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("ManagementExperience", "", id, 3, User_Id, IpAdress, AInformation);
+            await Classes.TLog.Log("ManagementExperience", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
 

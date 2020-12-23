@@ -114,11 +114,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            aztuAkademik.ResearcherLanguage.FirstOrDefault(x => x.Id == id).DeleteDate = GetDate;
-            aztuAkademik.ResearcherLanguage.FirstOrDefault(x => x.Id == id).StatusId = 0;
+            ResearcherLanguage researcherLanguage = await aztuAkademik.ResearcherLanguage.FirstOrDefaultAsync(x => x.Id == id);
+            researcherLanguage.DeleteDate = GetDate;
+            researcherLanguage.StatusId = 0;
 
             await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("ResearcherLanguage", "", id, 3, User_Id, IpAdress, AInformation);
+            await Classes.TLog.Log("ResearcherLanguage", "", id, 3, User_Id, IpAdress, AInformation);
         }
 
 

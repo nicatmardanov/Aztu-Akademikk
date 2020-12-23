@@ -128,9 +128,10 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int patentId)
         {
-            aztuAkademik.Patent.FirstOrDefaultAsync(x => x.Id == patentId).Result.DeleteDate = GetDate;
-            aztuAkademik.Patent.FirstOrDefaultAsync(x => x.Id == patentId).Result.StatusId = 0;
-            await aztuAkademik.Patent.FirstOrDefaultAsync(x => x.Id == patentId).Result.RelPatentResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate);
+            Patent patent = await aztuAkademik.Patent.Include(x=>x.RelPatentResearcher).FirstOrDefaultAsync(x => x.Id == patentId);
+            patent.DeleteDate = GetDate;
+            patent.StatusId = 0;
+            await patent.RelPatentResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate);
 
             await aztuAkademik.SaveChangesAsync();
             await Classes.TLog.Log("Patent", "", patentId, 3, User_Id, IpAdress, AInformation);

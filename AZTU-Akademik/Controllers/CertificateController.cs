@@ -116,8 +116,9 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            aztuAkademik.Certificate.FirstOrDefaultAsync(x => x.Id == id).Result.DeleteDate = GetDate;
-            aztuAkademik.Certificate.FirstOrDefaultAsync(x => x.Id == id).Result.StatusId = 0;
+            Certificate certificate = await aztuAkademik.Certificate.FirstOrDefaultAsync(x => x.Id == id);
+            certificate.DeleteDate = GetDate;
+            certificate.StatusId = 0;
             await aztuAkademik.SaveChangesAsync();
             await Classes.TLog.Log("Certificate", "", id, 3, User_Id, IpAdress, AInformation);
         }

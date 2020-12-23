@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AZTU_Akademik.Controllers
 {
@@ -39,7 +40,7 @@ namespace AZTU_Akademik.Controllers
         [HttpPost]
         public async Task<int> Post([FromQuery] string email, [FromQuery] string password)
         {
-            var valid_user = aztuAkademik.User.FirstOrDefault(x => x.Email == email && x.Password == password);
+            User valid_user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
             
             if (!valid_user.Email.Contains("@aztu.edu.az"))
                 return 0;
