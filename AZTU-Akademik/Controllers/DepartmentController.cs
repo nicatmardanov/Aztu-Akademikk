@@ -59,9 +59,9 @@ namespace AZTU_Akademik.Controllers
         {
             _department.CreateDate = GetDate;
 
-            await aztuAkademik.Department.AddAsync(_department);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Department", "", _department.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.Department.AddAsync(_department).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Department", "", _department.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
         }
 
@@ -76,8 +76,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_department).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 aztuAkademik.Entry(_department).Property(x => x.CreateDate).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Department", "", _department.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Department", "", _department.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -89,11 +89,11 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            Department department = await aztuAkademik.Department.FirstOrDefaultAsync(x => x.Id == id);
+            Department department = await aztuAkademik.Department.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             department.DeleteDate = GetDate;
             department.StatusId = 0;
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Department", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Department", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
     }
 }

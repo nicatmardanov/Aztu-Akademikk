@@ -56,9 +56,9 @@ namespace AZTU_Akademik.Controllers
             _relResearcherDegree.CreateDate = GetDate;
             _relResearcherDegree.ResearcherId = User_Id;
 
-            await aztuAkademik.RelResearcherDegree.AddAsync(_relResearcherDegree);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("RelResearcherDegree", "", _relResearcherDegree.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.RelResearcherDegree.AddAsync(_relResearcherDegree).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("RelResearcherDegree", "", _relResearcherDegree.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
@@ -75,8 +75,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_relResearcherDegree).Property(x => x.ResearcherId).IsModified = false;
 
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("RelResearcherDegree", "", _relResearcherDegree.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("RelResearcherDegree", "", _relResearcherDegree.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -87,12 +87,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            RelResearcherDegree relResearcherDegree = await aztuAkademik.RelResearcherDegree.FirstOrDefaultAsync(x => x.Id == id);
+            RelResearcherDegree relResearcherDegree = await aztuAkademik.RelResearcherDegree.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             relResearcherDegree.DeleteDate = GetDate;
             relResearcherDegree.StatusId = 0;
 
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("RelResearcherDegree", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("RelResearcherDegree", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
     }

@@ -58,9 +58,9 @@ namespace AZTU_Akademik.Controllers
         {
             _profession.CreateDate = GetDate;
 
-            await aztuAkademik.Profession.AddAsync(_profession);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Profession", "", _profession.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.Profession.AddAsync(_profession).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Profession", "", _profession.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
@@ -72,11 +72,11 @@ namespace AZTU_Akademik.Controllers
             {
                 _profession.UpdateDate = GetDate;
                 aztuAkademik.Attach(_profession);
-                aztuAkademik.Entry(_profession).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                aztuAkademik.Entry(_profession).State = EntityState.Modified;
                 aztuAkademik.Entry(_profession).Property(x => x.CreateDate).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Profession", "", _profession.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Profession", "", _profession.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 return 1;
             }
             return 0;
@@ -87,11 +87,11 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            Profession profession = await aztuAkademik.Profession.FirstOrDefaultAsync(x => x.Id == id);
+            Profession profession = await aztuAkademik.Profession.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             profession.DeleteDate = GetDate;
             profession.StatusId = 0;
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Profession", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Profession", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
     }
 }

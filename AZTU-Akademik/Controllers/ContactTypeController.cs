@@ -53,13 +53,13 @@ namespace AZTU_Akademik.Controllers
         public async Task Post(ContactType _type)
         {
             if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
-                _type.Icon = await Classes.FileSave.Save(Request.Form.Files[0], 3);
+                _type.Icon = await Classes.FileSave.Save(Request.Form.Files[0], 3).ConfigureAwait(false);
 
             _type.CreateDate = GetDate;
 
-            await aztuAkademik.ContactType.AddAsync(_type);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("ContactType", "", _type.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.ContactType.AddAsync(_type).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("ContactType", "", _type.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
@@ -74,15 +74,15 @@ namespace AZTU_Akademik.Controllers
                     if (!string.IsNullOrEmpty(_type.Icon))
                         System.IO.File.Delete(_type.Icon[1..]);
 
-                    _type.Icon = await Classes.FileSave.Save(Request.Form.Files[0], 3);
+                    _type.Icon = await Classes.FileSave.Save(Request.Form.Files[0], 3).ConfigureAwait(false);
 
                 }
                 _type.UpdateDate = GetDate;
                 aztuAkademik.Entry(_type).State = EntityState.Modified;
                 aztuAkademik.Entry(_type).Property(x => x.CreateDate).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("ContactType", "", _type.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("ContactType", "", _type.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 return 1;
             }
             return 0;
@@ -93,12 +93,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            ContactType contactType = await aztuAkademik.ContactType.FirstOrDefaultAsync(x => x.Id == id);
+            ContactType contactType = await aztuAkademik.ContactType.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             contactType.DeleteDate = GetDate;
             contactType.StatusId = 0;
 
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("ContactType", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("ContactType", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 

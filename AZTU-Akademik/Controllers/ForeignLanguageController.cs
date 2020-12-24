@@ -57,9 +57,9 @@ namespace AZTU_Akademik.Controllers
         public async Task Post(Language _language)
         {
             _language.CreateDate = GetDate;
-            await aztuAkademik.Language.AddAsync(_language);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Language", "", _language.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.Language.AddAsync(_language).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Language", "", _language.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
@@ -74,8 +74,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_language).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 aztuAkademik.Entry(_language).Property(x => x.CreateDate).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Language", "", _language.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Language", "", _language.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -88,12 +88,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(short id)
         {
-            Language language = await aztuAkademik.Language.FirstOrDefaultAsync(x => x.Id == id);
+            Language language = await aztuAkademik.Language.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             language.DeleteDate = GetDate;
             language.StatusId = 0;
             
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Language", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Language", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
     }

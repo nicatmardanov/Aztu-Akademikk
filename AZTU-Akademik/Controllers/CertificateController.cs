@@ -58,7 +58,7 @@ namespace AZTU_Akademik.Controllers
             {
                 File _file = new File
                 {
-                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 2),
+                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 2).ConfigureAwait(false),
                     Type = 3,
                     CreateDate = GetDate,
                     StatusId = 1,
@@ -66,18 +66,18 @@ namespace AZTU_Akademik.Controllers
                 };
 
 
-                await aztuAkademik.File.AddAsync(_file);
-                await aztuAkademik.SaveChangesAsync();
+                await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
                 _certificate.CreateDate = GetDate;
                 _certificate.ResearcherId = User_Id;
                 _certificate.FileId = _file.Id;
 
-                await aztuAkademik.Certificate.AddAsync(_certificate);
-                await aztuAkademik.SaveChangesAsync();
+                await aztuAkademik.Certificate.AddAsync(_certificate).ConfigureAwait(false);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
-                await Classes.TLog.Log("Certificate", "", _certificate.Id, 1, User_Id, IpAdress, AInformation);
-                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation);
+                await Classes.TLog.Log("Certificate", "", _certificate.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
             }
         }
@@ -90,13 +90,13 @@ namespace AZTU_Akademik.Controllers
             {
                 if (fileChange)
                 {
-                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == _certificate.FileId);
+                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == _certificate.FileId).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(_file.Name))
                         System.IO.File.Delete(_file.Name[1..]);
 
-                    _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 2);
+                    _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 2).ConfigureAwait(false);
                     _file.UpdateDate = GetDate;
-                    await Classes.TLog.Log("File", "", _file.Id, 2, User_Id, IpAdress, AInformation);
+                    await Classes.TLog.Log("File", "", _file.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 }
 
                 _certificate.UpdateDate = GetDate;
@@ -105,8 +105,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_certificate).Property(x => x.ResearcherId).IsModified = false;
 
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Certificate", "", _certificate.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Certificate", "", _certificate.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 return 1;
             }
             return 0;
@@ -116,11 +116,11 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            Certificate certificate = await aztuAkademik.Certificate.FirstOrDefaultAsync(x => x.Id == id);
+            Certificate certificate = await aztuAkademik.Certificate.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             certificate.DeleteDate = GetDate;
             certificate.StatusId = 0;
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Certificate", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Certificate", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
     }
 }

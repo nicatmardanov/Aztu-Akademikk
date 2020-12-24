@@ -58,9 +58,9 @@ namespace AZTU_Akademik.Controllers
         {
             _educationDegree.CreateDate = GetDate;
 
-            await aztuAkademik.EducationDegree.AddAsync(_educationDegree);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("EducationDegree", "", _educationDegree.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.EducationDegree.AddAsync(_educationDegree).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("EducationDegree", "", _educationDegree.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
         //PUT
@@ -74,8 +74,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_educationDegree).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 aztuAkademik.Entry(_educationDegree).Property(x => x.CreateDate).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("EducationDegree", "", _educationDegree.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("EducationDegree", "", _educationDegree.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -87,12 +87,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            EducationDegree educationDegree = await aztuAkademik.EducationDegree.FirstOrDefaultAsync(x => x.Id == id);
+            EducationDegree educationDegree = await aztuAkademik.EducationDegree.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             educationDegree.DeleteDate = GetDate;
             educationDegree.StatusId = 0;
 
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("EducationDegree", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("EducationDegree", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 

@@ -57,9 +57,9 @@ namespace AZTU_Akademik.Controllers
         {
             _position.CreateDate = GetDate;
 
-            await aztuAkademik.Position.AddAsync(_position);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Position", "", _position.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.Position.AddAsync(_position).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Position", "", _position.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
         //PUT
@@ -73,8 +73,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_position).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 aztuAkademik.Entry(_position).Property(x => x.CreateDate).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Position", "", _position.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Position", "", _position.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -85,12 +85,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            Position position = await aztuAkademik.Position.FirstOrDefaultAsync(x => x.Id == id);
+            Position position = await aztuAkademik.Position.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             position.DeleteDate = GetDate;
             position.StatusId = 0;
 
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Position", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Position", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
     }

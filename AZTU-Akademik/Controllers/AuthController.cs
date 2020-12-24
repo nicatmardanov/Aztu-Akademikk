@@ -54,10 +54,10 @@ namespace AZTU_Akademik.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 AztuAkademikContext aztuAkademik = new AztuAkademikContext();
-                var _user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == UserId);
+                var _user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == UserId).ConfigureAwait(false);
 
                 _user.LastSeen = GetDate;
-                await aztuAkademik.SaveChangesAsync();
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
                 Json(new { isAuth = true, role = UserRole, id = UserId, fullName = UserFullName });
             }
 

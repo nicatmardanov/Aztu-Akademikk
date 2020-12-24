@@ -55,10 +55,10 @@ namespace AZTU_Akademik.Controllers
             {
                 x.CreateDate = GetDate;
                 x.ResearcherId = User_Id;
-            });
-            await aztuAkademik.RelResearcherResearcherArea.AddRangeAsync(_relResearcherResearcherArea);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("RelResearcherResearcherArea", "", _relResearcherResearcherArea.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation);
+            }).ConfigureAwait(false);
+            await aztuAkademik.RelResearcherResearcherArea.AddRangeAsync(_relResearcherResearcherArea).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("RelResearcherResearcherArea", "", _relResearcherResearcherArea.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
@@ -73,9 +73,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_relResearcherResearcherArea).State = EntityState.Modified;
                 aztuAkademik.Entry(_relResearcherResearcherArea).Property(x => x.CreateDate).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("RelResearcherResearcherArea", "", _relResearcherResearcherArea.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("RelResearcherResearcherArea", "", _relResearcherResearcherArea.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -86,12 +85,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            RelResearcherResearcherArea relResearcherResearcherArea = await aztuAkademik.RelResearcherResearcherArea.FirstOrDefaultAsync(x => x.Id == id);
+            RelResearcherResearcherArea relResearcherResearcherArea = await aztuAkademik.RelResearcherResearcherArea.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             relResearcherResearcherArea.DeleteDate = GetDate;
             relResearcherResearcherArea.StatusId = 0;
 
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("RelResearcherResearcherArea", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("RelResearcherResearcherArea", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 

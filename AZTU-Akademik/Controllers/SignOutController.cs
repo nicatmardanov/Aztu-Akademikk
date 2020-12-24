@@ -14,6 +14,6 @@ namespace AZTU_Akademik.Controllers
     public class SignOutController : Controller
     {
         [HttpGet]
-        public async Task SignOut() => await HttpContext.SignOutAsync();
+        public async Task SignOut() => await HttpContext.SignOutAsync().ConfigureAwait(false);
     }
 }

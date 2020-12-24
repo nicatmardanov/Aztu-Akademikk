@@ -58,24 +58,24 @@ namespace AZTU_Akademik.Controllers
             {
                 File _file = new File
                 {
-                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 1),
+                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 1).ConfigureAwait(false),
                     Type = 2,
                     CreateDate = GetDate,
                     StatusId = 1,
                     UserId = User_Id
                 };
 
-                await aztuAkademik.File.AddAsync(_file);
-                await aztuAkademik.SaveChangesAsync();
+                await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
                 _researcherLanguage.CreateDate = GetDate;
                 _researcherLanguage.FileId = _file.Id;
                 _researcherLanguage.ResearcherId = User_Id;
 
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("ResearcherLanguage", "", _researcherLanguage.Id, 1, User_Id, IpAdress, AInformation);
-                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("ResearcherLanguage", "", _researcherLanguage.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
             }
         }
@@ -88,13 +88,13 @@ namespace AZTU_Akademik.Controllers
             {
                 if (fileChange)
                 {
-                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == _researcherLanguage.FileId);
+                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == _researcherLanguage.FileId).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(_file.Name))
                         System.IO.File.Delete(_file.Name[1..]);
 
-                    _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 1);
+                    _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 1).ConfigureAwait(false);
                     _file.UpdateDate = GetDate;
-                    await Classes.TLog.Log("File", "", _file.Id, 2, User_Id, IpAdress, AInformation);
+                    await Classes.TLog.Log("File", "", _file.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 }
 
                 _researcherLanguage.UpdateDate = GetDate;
@@ -102,8 +102,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_researcherLanguage).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_researcherLanguage).Property(x => x.ResearcherId).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("ResearcherLanguage", "", _researcherLanguage.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("ResearcherLanguage", "", _researcherLanguage.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 return 1;
             }
 
@@ -114,12 +114,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            ResearcherLanguage researcherLanguage = await aztuAkademik.ResearcherLanguage.FirstOrDefaultAsync(x => x.Id == id);
+            ResearcherLanguage researcherLanguage = await aztuAkademik.ResearcherLanguage.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             researcherLanguage.DeleteDate = GetDate;
             researcherLanguage.StatusId = 0;
 
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("ResearcherLanguage", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("ResearcherLanguage", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 

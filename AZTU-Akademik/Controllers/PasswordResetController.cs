@@ -26,8 +26,10 @@ namespace AZTU_Akademik.Controllers
         [HttpGet]
         public async Task<JsonResult> Get([FromQuery] string hash, [FromQuery] string email)
         {
-            User user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email);
-            PasswordReset passwordReset = await aztuAkademik.PasswordReset.LastOrDefaultAsync(x => x.Hash == hash && x.UserId == user.Id && GetDate.Subtract(x.CreateDate.Value).Days >= 0 && GetDate.Subtract(x.CreateDate.Value).Days < 1);
+            User user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email).ConfigureAwait(false);
+            PasswordReset passwordReset = await aztuAkademik.PasswordReset.
+                LastOrDefaultAsync(x => x.Hash == hash && x.UserId == user.Id && 
+                GetDate.Subtract(x.CreateDate.Value).Days >= 0 && GetDate.Subtract(x.CreateDate.Value).Days < 1).ConfigureAwait(false);
 
 
             if (user == null && passwordReset == null)
@@ -42,7 +44,7 @@ namespace AZTU_Akademik.Controllers
         [HttpPost]
         public async Task<byte> Post(string email)
         {
-            User user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email);
+            User user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email).ConfigureAwait(false);
             if (user == null)
                 return 0;
 
@@ -57,7 +59,7 @@ namespace AZTU_Akademik.Controllers
 
             //Email.SendEmail();
 
-            await aztuAkademik.SaveChangesAsync();
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             return 1;
         }
 
@@ -65,8 +67,10 @@ namespace AZTU_Akademik.Controllers
         [HttpPut("PasswordChange")]
         public async Task<byte> PasswordChange([FromQuery] string hash, [FromQuery] string email, [FromQuery] string newPassword)
         {
-            User user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email);
-            PasswordReset passwordReset = await aztuAkademik.PasswordReset.LastOrDefaultAsync(x => x.Hash == hash && x.UserId == user.Id && GetDate.Subtract(x.CreateDate.Value).Days >= 0 && GetDate.Subtract(x.CreateDate.Value).Days < 1);
+            User user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email).ConfigureAwait(false);
+            PasswordReset passwordReset = await aztuAkademik.PasswordReset.
+                LastOrDefaultAsync(x => x.Hash == hash && x.UserId == user.Id && 
+                GetDate.Subtract(x.CreateDate.Value).Days >= 0 && GetDate.Subtract(x.CreateDate.Value).Days < 1).ConfigureAwait(false);
 
             if (user == null && passwordReset == null)
                 return 0;
@@ -75,7 +79,7 @@ namespace AZTU_Akademik.Controllers
             user.UpdateDate = GetDate;
             passwordReset.DeleteDate = GetDate;
 
-            await aztuAkademik.SaveChangesAsync();
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
             return 1;
         }

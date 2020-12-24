@@ -58,10 +58,10 @@ namespace AZTU_Akademik.Controllers
         {
             _languageLevels.CreateDate = GetDate;
 
-            await aztuAkademik.LanguageLevels.AddAsync(_languageLevels);
-            await aztuAkademik.SaveChangesAsync();
+            await aztuAkademik.LanguageLevels.AddAsync(_languageLevels).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
-            await Classes.TLog.Log("LanguageLevels", "", _languageLevels.Id, 1, User_Id, IpAdress, AInformation);
+            await Classes.TLog.Log("LanguageLevels", "", _languageLevels.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
@@ -76,9 +76,9 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_languageLevels).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 aztuAkademik.Entry(_languageLevels).Property(x => x.CreateDate).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
-                await Classes.TLog.Log("LanguageLevels", "", _languageLevels.Id, 2, User_Id, IpAdress, AInformation);
+                await Classes.TLog.Log("LanguageLevels", "", _languageLevels.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -90,11 +90,11 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(short id)
         {
-            LanguageLevels languageLevels = await aztuAkademik.LanguageLevels.FirstOrDefaultAsync(x => x.Id == id);
+            LanguageLevels languageLevels = await aztuAkademik.LanguageLevels.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             languageLevels.DeleteDate = GetDate;
             languageLevels.StatusId = 0;
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("LanguageLevels", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("LanguageLevels", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
     }

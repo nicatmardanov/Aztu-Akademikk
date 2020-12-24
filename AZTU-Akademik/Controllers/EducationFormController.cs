@@ -52,9 +52,9 @@ namespace AZTU_Akademik.Controllers
         public async Task Post(EducationForm _educationForm)
         {
             _educationForm.CreateDate = GetDate;
-            await aztuAkademik.EducationForm.AddAsync(_educationForm);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("EducationForm", "", _educationForm.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.EducationForm.AddAsync(_educationForm).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("EducationForm", "", _educationForm.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
         //PUT
@@ -68,8 +68,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_educationForm).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 aztuAkademik.Entry(_educationForm).Property(x => x.CreateDate).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("EducationForm", "", _educationForm.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("EducationForm", "", _educationForm.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 return 1;
             }
 
@@ -81,12 +81,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(short id)
         {
-            EducationForm educationForm = await aztuAkademik.EducationForm.FirstOrDefaultAsync(x => x.Id == id);
+            EducationForm educationForm = await aztuAkademik.EducationForm.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             educationForm.DeleteDate = GetDate;
             educationForm.StatusId = 0;
 
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("EducationForm", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("EducationForm", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 

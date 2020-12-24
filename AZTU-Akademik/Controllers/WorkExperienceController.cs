@@ -63,9 +63,9 @@ namespace AZTU_Akademik.Controllers
             _researcherPosition.CreateDate = GetDate;
             _researcherPosition.ResearcherId = User_Id;
 
-            await aztuAkademik.ResearcherPosition.AddAsync(_researcherPosition);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("ResearcherPosition", "", _researcherPosition.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.ResearcherPosition.AddAsync(_researcherPosition).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("ResearcherPosition", "", _researcherPosition.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
         [HttpPost("ManagementExperience")]
@@ -74,9 +74,9 @@ namespace AZTU_Akademik.Controllers
             _managementExperience.CreateDate = GetDate;
             _managementExperience.ResearcherId = User_Id;
 
-            await aztuAkademik.ManagementExperience.AddAsync(_managementExperience);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("ManagementExperience", "", _managementExperience.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.ManagementExperience.AddAsync(_managementExperience).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("ManagementExperience", "", _managementExperience.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
@@ -95,8 +95,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_researcherPosition).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_researcherPosition).Property(x => x.ResearcherId).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("ResearcherPosition", "", _researcherPosition.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("ResearcherPosition", "", _researcherPosition.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -114,8 +114,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_managementExperience).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_managementExperience).Property(x => x.ResearcherId).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("ManagementExperience", "", _managementExperience.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("ManagementExperience", "", _managementExperience.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -129,21 +129,21 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete("PedagogicalExperience")]
         public async Task PedagogicalExperienceDelete(int id)
         {
-            ResearcherPosition researcherPosition = await aztuAkademik.ResearcherPosition.FirstOrDefaultAsync(x => x.Id == id);
+            ResearcherPosition researcherPosition = await aztuAkademik.ResearcherPosition.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             researcherPosition.DeleteDate = GetDate;
             researcherPosition.StatusId = 0;
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("ResearcherPosition", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("ResearcherPosition", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
         [HttpDelete("ManagementExperience")]
         public async Task ManagementExperienceDelete(int id)
         {
-            ManagementExperience managementExperience = await aztuAkademik.ManagementExperience.FirstOrDefaultAsync(x => x.Id == id);
+            ManagementExperience managementExperience = await aztuAkademik.ManagementExperience.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             managementExperience.DeleteDate = GetDate;
             managementExperience.StatusId = 0;
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("ManagementExperience", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("ManagementExperience", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 

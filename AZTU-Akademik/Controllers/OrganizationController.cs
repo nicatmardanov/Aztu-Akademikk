@@ -60,9 +60,9 @@ namespace AZTU_Akademik.Controllers
         {
             _educationOrganization.CreateDate = GetDate;
 
-            await aztuAkademik.EducationOrganization.AddAsync(_educationOrganization);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("EducationOrganization", "", _educationOrganization.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.EducationOrganization.AddAsync(_educationOrganization).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("EducationOrganization", "", _educationOrganization.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
         //PUT
@@ -76,8 +76,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_educationOrganization).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 aztuAkademik.Entry(_educationOrganization).Property(x => x.CreateDate).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("EducationOrganization", "", _educationOrganization.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("EducationOrganization", "", _educationOrganization.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -89,12 +89,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            EducationOrganization organization = await aztuAkademik.EducationOrganization.FirstOrDefaultAsync(x => x.Id == id);
+            EducationOrganization organization = await aztuAkademik.EducationOrganization.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             organization.DeleteDate = GetDate;
             organization.StatusId = 0;
             
-            await Classes.TLog.Log("EducationOrganization", "", id, 3, User_Id, IpAdress, AInformation);
-            await aztuAkademik.SaveChangesAsync();
+            await Classes.TLog.Log("EducationOrganization", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
         }
 
     }

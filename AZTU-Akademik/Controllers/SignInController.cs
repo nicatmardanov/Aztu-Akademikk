@@ -40,7 +40,7 @@ namespace AZTU_Akademik.Controllers
         [HttpPost]
         public async Task<int> Post([FromQuery] string email, [FromQuery] string password)
         {
-            User valid_user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
+            User valid_user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email && x.Password == password).ConfigureAwait(false);
             
             if (!valid_user.Email.Contains("@aztu.edu.az"))
                 return 0;
@@ -71,12 +71,12 @@ namespace AZTU_Akademik.Controllers
                 
                 var principial = new ClaimsPrincipal(claimsIdentity);
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principial, authProperty);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principial, authProperty).ConfigureAwait(false);
                 
                 valid_user.LastSeen = GetDate;
-                await aztuAkademik.SaveChangesAsync();
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
-                await Classes.TLog.Log("User", "", valid_user.Id, 4, valid_user.Id, IpAdress, AInformation);
+                await Classes.TLog.Log("User", "", valid_user.Id, 4, valid_user.Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }

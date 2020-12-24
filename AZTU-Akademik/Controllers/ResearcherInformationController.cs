@@ -70,8 +70,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_user).Property(x => x.RoleId).IsModified = false;
                 aztuAkademik.Entry(_user).Property(x => x.StatusId).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("User", "", _user.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("User", "", _user.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
             }
         }
 
@@ -80,14 +80,14 @@ namespace AZTU_Akademik.Controllers
         {
             if (ModelState.IsValid)
             {
-                User _user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == User_Id && !x.DeleteDate.HasValue);
+                User _user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == User_Id && !x.DeleteDate.HasValue).ConfigureAwait(false);
                 _user.UpdateDate = GetDate;
 
                 if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
-                    _user.ImageAddress = await Classes.FileSave.Save(Request.Form.Files[0], 4);
+                    _user.ImageAddress = await Classes.FileSave.Save(Request.Form.Files[0], 4).ConfigureAwait(false);
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("User", "Only Image", _user.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("User", "Only Image", _user.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
             }
         }
 
@@ -96,12 +96,12 @@ namespace AZTU_Akademik.Controllers
         {
             if (ModelState.IsValid)
             {
-                User _user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == User_Id && !x.DeleteDate.HasValue);
+                User _user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == User_Id && !x.DeleteDate.HasValue).ConfigureAwait(false);
                 _user.UpdateDate = GetDate;
                 _user.ImageAddress = string.Empty;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("User", "Only Image", _user.Id, 3, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("User", "Only Image", _user.Id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
             }
         }
 
@@ -110,12 +110,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete("UserDelete")]
         public async Task UserDelete(int id)
         {
-            User user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == id);
+            User user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             user.DeleteDate = GetDate;
             user.StatusId = 0;
 
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("User", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("User", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
     }
 }

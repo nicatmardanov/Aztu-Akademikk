@@ -24,8 +24,8 @@ namespace AZTU_Akademik.Classes
                 OperationId = operation
             };
 
-            await aztuAkademik.Log.AddAsync(_log);
-            await aztuAkademik.SaveChangesAsync();
+            await aztuAkademik.Log.AddAsync(_log).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
         }
 
 
@@ -48,8 +48,8 @@ namespace AZTU_Akademik.Classes
                     OperationId = operation
                 };
 
-                await aztuAkademik.Log.AddAsync(_log);
-                await aztuAkademik.SaveChangesAsync();
+                await aztuAkademik.Log.AddAsync(_log).ConfigureAwait(false);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             }
 
         }
@@ -73,8 +73,8 @@ namespace AZTU_Akademik.Classes
                     OperationId = operation
                 };
 
-                await aztuAkademik.Log.AddAsync(_log);
-                await aztuAkademik.SaveChangesAsync();
+                await aztuAkademik.Log.AddAsync(_log).ConfigureAwait(false);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             }
 
         }

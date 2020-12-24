@@ -54,9 +54,9 @@ namespace AZTU_Akademik.Controllers
             _user.CreateDate = GetDate;
 
 
-            await aztuAkademik.User.AddAsync(_user);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("User", "", _user.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.User.AddAsync(_user).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("User", "", _user.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
             return 1;
         }

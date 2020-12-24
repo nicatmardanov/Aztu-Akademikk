@@ -58,9 +58,9 @@ namespace AZTU_Akademik.Controllers
         public async Task Post(Country _country)
         {
             _country.CreateDate = GetDate;
-            await aztuAkademik.Country.AddAsync(_country);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Country", "", _country.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.Country.AddAsync(_country).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Country", "", _country.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
@@ -75,8 +75,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_country).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 aztuAkademik.Entry(_country).Property(x => x.CreateDate).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Country", "", _country.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Country", "", _country.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 return 1;
             }
 
@@ -88,12 +88,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(short id)
         {
-            Country country = await aztuAkademik.Country.FirstOrDefaultAsync(x => x.Id == id);
+            Country country = await aztuAkademik.Country.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             country.DeleteDate = GetDate;
             country.StatusId = 0;
 
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Country", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Country", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
     }

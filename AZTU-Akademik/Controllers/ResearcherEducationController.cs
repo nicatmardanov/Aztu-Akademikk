@@ -57,9 +57,9 @@ namespace AZTU_Akademik.Controllers
             _researcherEducation.CreateDate = GetDate;
             _researcherEducation.ResearcherId = User_Id;
 
-            await aztuAkademik.ResearcherEducation.AddAsync(_researcherEducation);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("ResearcherEducation", "", _researcherEducation.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.ResearcherEducation.AddAsync(_researcherEducation).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("ResearcherEducation", "", _researcherEducation.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
         //PUT
@@ -74,8 +74,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_researcherEducation).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_researcherEducation).Property(x => x.ResearcherId).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("ResearcherEducation", "", _researcherEducation.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("ResearcherEducation", "", _researcherEducation.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -87,11 +87,11 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(long id)
         {
-            ResearcherEducation researcherEducation = await aztuAkademik.ResearcherEducation.FirstOrDefaultAsync(x => x.Id == id);
+            ResearcherEducation researcherEducation = await aztuAkademik.ResearcherEducation.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             researcherEducation.DeleteDate = GetDate;
             researcherEducation.StatusId = 0;
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("ResearcherEducation", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("ResearcherEducation", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace AZTU_Akademik.Controllers
             OrderByDescending(x => x.Id).
             Include(x => x.Project).ThenInclude(x => x.Organization).
             Include(x => x.Project).ThenInclude(x => x.Researcher).
-            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x=>x.Organization));
+            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization));
 
         //[HttpGet("AllProjects")]
         //public JsonResult AllProjects() => Json(aztuAkademik.Project.Where(x => !x.DeleteDate.HasValue).
@@ -63,21 +63,21 @@ namespace AZTU_Akademik.Controllers
         {
             _project.CreateDate = GetDate;
             _project.ResearcherId = User_Id;
-            await aztuAkademik.Project.AddAsync(_project);
-            await aztuAkademik.SaveChangesAsync();
+            await aztuAkademik.Project.AddAsync(_project).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
 
             await _relProjectResearcher.ForEachAsync(x =>
             {
                 x.CreateDate = GetDate;
                 x.ProjectId = _project.Id;
-            });
+            }).ConfigureAwait(false);
 
 
-            await aztuAkademik.RelProjectResearcher.AddRangeAsync(_relProjectResearcher);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Project", "", _project.Id, 1, User_Id, IpAdress, AInformation);
-            await Classes.TLog.Log("RelProjectResearcher", "", _relProjectResearcher.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.RelProjectResearcher.AddRangeAsync(_relProjectResearcher).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Project", "", _project.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("RelProjectResearcher", "", _relProjectResearcher.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
 
             //bool condition = intAuthors.Length > extAuthors.Length;
@@ -160,7 +160,7 @@ namespace AZTU_Akademik.Controllers
 
                 var entry = aztuAkademik.RelProjectResearcher.Where(x => _deletedResearchers.Contains(x.Id));
                 aztuAkademik.RelProjectResearcher.RemoveRange(entry);
-                await Classes.TLog.Log("RelProjectResearcher", "", _deletedResearchers, 3, User_Id, IpAdress, AInformation);
+                await Classes.TLog.Log("RelProjectResearcher", "", _deletedResearchers, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 await _relProjectResearchers.ForEachAsync(async x =>
                 {
@@ -169,21 +169,21 @@ namespace AZTU_Akademik.Controllers
                     if (x.Id == 0)
                     {
                         x.CreateDate = GetDate;
-                        await Classes.TLog.Log("RelProjectResearcher", "", x.Id, 1, User_Id, IpAdress, AInformation);
+                        await Classes.TLog.Log("RelProjectResearcher", "", x.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                     }
 
                     else
                     {
                         x.CreateDate = aztuAkademik.Project.FirstOrDefault(y => y.Id == x.Id).CreateDate;
                         x.UpdateDate = GetDate;
-                        await Classes.TLog.Log("RelProjectResearcher", "", x.Id, 2, User_Id, IpAdress, AInformation);
+                        await Classes.TLog.Log("RelProjectResearcher", "", x.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                     }
 
-                });
+                }).ConfigureAwait(false);
 
                 aztuAkademik.RelProjectResearcher.UpdateRange(_relProjectResearchers);
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Project", "", _project.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Project", "", _project.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -196,13 +196,13 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int projectId)
         {
-            Project project = await aztuAkademik.Project.Include(x=>x.RelProjectResearcher).FirstOrDefaultAsync(x => x.Id == projectId);
+            Project project = await aztuAkademik.Project.Include(x => x.RelProjectResearcher).FirstOrDefaultAsync(x => x.Id == projectId).ConfigureAwait(false);
             project.DeleteDate = GetDate;
             project.StatusId = 0;
-            await project.RelProjectResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate);
+            await project.RelProjectResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate).ConfigureAwait(false);
 
-            await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Project", "", projectId, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Project", "", projectId, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 

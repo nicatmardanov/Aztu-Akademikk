@@ -63,7 +63,7 @@ namespace AZTU_Akademik.Controllers
             {
                 File _file = new File
                 {
-                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 0),
+                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 0).ConfigureAwait(false),
                     Type = 1,
                     CreateDate = GetDate,
                     StatusId = 1,
@@ -71,18 +71,18 @@ namespace AZTU_Akademik.Controllers
                 };
 
 
-                await aztuAkademik.File.AddAsync(_file);
-                await aztuAkademik.SaveChangesAsync();
+                await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
 
 
                 _dissertation.FileId = _file.Id;
                 _dissertation.CreateDate = GetDate;
 
-                await aztuAkademik.Dissertation.AddAsync(_dissertation);
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Dissertation", "", _dissertation.Id, 1, User_Id, IpAdress, AInformation);
-                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation);
+                await aztuAkademik.Dissertation.AddAsync(_dissertation).ConfigureAwait(false);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Dissertation", "", _dissertation.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
             }
 
         }
@@ -96,20 +96,20 @@ namespace AZTU_Akademik.Controllers
             {
                 if (fileChange)
                 {
-                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == _dissertation.FileId);
+                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == _dissertation.FileId).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(_file.Name))
                         System.IO.File.Delete(_file.Name[1..]);
 
-                    _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 0);
+                    _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 0).ConfigureAwait(false);
                     _file.UpdateDate = GetDate;
-                    await Classes.TLog.Log("File", "", _file.Id, 2, User_Id, IpAdress, AInformation);
+                    await Classes.TLog.Log("File", "", _file.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 }
                 _dissertation.UpdateDate = GetDate;
                 aztuAkademik.Entry(_dissertation).State = EntityState.Modified;
                 aztuAkademik.Entry(_dissertation).Property(x => x.CreateDate).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Dissertation", "", _dissertation.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Dissertation", "", _dissertation.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 return 1;
             }
             return 0;
@@ -119,12 +119,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            Dissertation dissertation = await aztuAkademik.Dissertation.FirstOrDefaultAsync(x => x.Id == id);
+            Dissertation dissertation = await aztuAkademik.Dissertation.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             dissertation.DeleteDate = GetDate;
             dissertation.StatusId = 0;
 
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Dissertation", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Dissertation", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 

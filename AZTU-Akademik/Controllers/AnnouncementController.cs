@@ -55,9 +55,9 @@ namespace AZTU_Akademik.Controllers
         {
             _announcement.CreateDate = GetDate;
             _announcement.ResearcherId = User_Id;
-            await aztuAkademik.Announcement.AddAsync(_announcement);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Announcement", "", _announcement.Id, 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.Announcement.AddAsync(_announcement).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Announcement", "", _announcement.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
         //PUT
@@ -68,12 +68,12 @@ namespace AZTU_Akademik.Controllers
             {
                 _announcement.UpdateDate = GetDate;
                 aztuAkademik.Attach(_announcement);
-                aztuAkademik.Entry(_announcement).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                aztuAkademik.Entry(_announcement).State = EntityState.Modified;
                 aztuAkademik.Entry(_announcement).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_announcement).Property(x => x.ResearcherId).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Announcement", "", _announcement.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Announcement", "", _announcement.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -85,12 +85,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(long id)
         {
-            Announcement announcement = await aztuAkademik.Announcement.FirstOrDefaultAsync(x => x.Id == id);
+            Announcement announcement = await aztuAkademik.Announcement.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             announcement.DeleteDate = GetDate;
             announcement.StatusId = 0;
 
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Announcement", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Announcement", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 

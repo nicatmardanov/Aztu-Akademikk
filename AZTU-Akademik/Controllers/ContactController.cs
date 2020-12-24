@@ -56,11 +56,11 @@ namespace AZTU_Akademik.Controllers
              {
                  x.CreateDate = GetDate;
                  x.ResearcherId = User_Id;
-             });
+             }).ConfigureAwait(false);
 
-            await aztuAkademik.Contact.AddRangeAsync(_contact);
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Contact", "", _contact.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation);
+            await aztuAkademik.Contact.AddRangeAsync(_contact).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Contact", "", _contact.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
         //PUT
@@ -74,9 +74,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_contact).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_contact).Property(x => x.ResearcherId).IsModified = false;
 
-                await aztuAkademik.SaveChangesAsync();
-                await aztuAkademik.SaveChangesAsync();
-                await Classes.TLog.Log("Contact", "", _contact.Id, 2, User_Id, IpAdress, AInformation);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Contact", "", _contact.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -88,12 +87,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            Contact contact = await aztuAkademik.Contact.FirstOrDefaultAsync(x => x.Id == id);
+            Contact contact = await aztuAkademik.Contact.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             contact.DeleteDate = GetDate;
             contact.StatusId = 0;
 
-            await aztuAkademik.SaveChangesAsync();
-            await Classes.TLog.Log("Contact", "", id, 3, User_Id, IpAdress, AInformation);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Contact", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
     }

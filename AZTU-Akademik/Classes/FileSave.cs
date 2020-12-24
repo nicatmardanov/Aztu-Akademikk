@@ -37,7 +37,7 @@ namespace AZTU_Akademik.Classes
 
             using (var stream = new FileStream(path, FileMode.Create))
             {
-                await attached_file.CopyToAsync(stream);
+                await attached_file.CopyToAsync(stream).ConfigureAwait(false);
             }
 
             return $"/{folder_path}/{file_path}";
