@@ -45,11 +45,11 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("Level")]
         [AllowAnonymous]
-        public JsonResult Level(short id) => Json(aztuAkademik.LanguageLevels.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+        public JsonResult Level(short id) => Json(aztuAkademik.LanguageLevels.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
         [HttpGet("AllLevels")]
         [AllowAnonymous]
-        public JsonResult AllLevels() => Json(aztuAkademik.LanguageLevels.Where(x => !x.DeleteDate.HasValue));
+        public JsonResult AllLevels() => Json(aztuAkademik.LanguageLevels.Where(x => !x.DeleteDate.HasValue).AsNoTracking());
 
 
         //POST

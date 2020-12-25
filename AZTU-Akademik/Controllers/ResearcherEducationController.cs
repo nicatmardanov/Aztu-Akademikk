@@ -47,7 +47,7 @@ namespace AZTU_Akademik.Controllers
         [AllowAnonymous]
         public JsonResult ResearcherEducation(int user_id) => Json(aztuAkademik.ResearcherEducation.Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
             Include(x => x.Researcher).Include(x => x.Form).Include(x => x.Level).Include(x => x.Organization).
-            Include(x=>x.Country).Include(x=>x.Language).Include(x=>x.Profession).OrderByDescending(x=>x.Id));
+            Include(x=>x.Country).Include(x=>x.Language).Include(x=>x.Profession).OrderByDescending(x=>x.Id).AsNoTracking());
 
 
         //POST

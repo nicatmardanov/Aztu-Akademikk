@@ -44,12 +44,12 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("Country")]
         [AllowAnonymous]
-        public JsonResult Country(short id) => Json(aztuAkademik.Country.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+        public JsonResult Country(short id) => Json(aztuAkademik.Country.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
 
         [HttpGet("AllCountries")]
         [AllowAnonymous]
-        public JsonResult AllCountries() => Json(aztuAkademik.Country.Where(x => !x.DeleteDate.HasValue));
+        public JsonResult AllCountries() => Json(aztuAkademik.Country.Where(x => !x.DeleteDate.HasValue).AsNoTracking());
 
 
 

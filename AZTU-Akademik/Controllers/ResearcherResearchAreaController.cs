@@ -44,7 +44,7 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("Area")]
         [AllowAnonymous]
-        public JsonResult Area(int user_id) => Json(aztuAkademik.RelResearcherResearcherArea.Where(x => x.ResearcherId == user_id).Include(x => x.Area));
+        public JsonResult Area(int user_id) => Json(aztuAkademik.RelResearcherResearcherArea.Where(x => x.ResearcherId == user_id).Include(x => x.Area).AsNoTracking());
 
 
         //Post

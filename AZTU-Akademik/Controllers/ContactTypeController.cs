@@ -46,7 +46,11 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("Type")]
         [AllowAnonymous]
-        public JsonResult Type(short id) => Json(aztuAkademik.ContactType.FirstOrDefault(x => x.Id == id));
+        public JsonResult Type(short id) => Json(aztuAkademik.ContactType.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+
+        [HttpGet("AllTypes")]
+        [AllowAnonymous]
+        public JsonResult AllTypes() => Json(aztuAkademik.ContactType.AsNoTracking().Where(x => !x.DeleteDate.HasValue));
 
         //POST
         [HttpPost]

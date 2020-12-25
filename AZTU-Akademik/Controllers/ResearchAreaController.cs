@@ -44,11 +44,11 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("ResearchArea")]
         [AllowAnonymous]
-        public JsonResult ResearchArea(int id) => Json(aztuAkademik.ResearchArea.FirstOrDefault(x => x.Id == id));
+        public JsonResult ResearchArea(int id) => Json(aztuAkademik.ResearchArea.AsNoTracking().FirstOrDefault(x => x.Id == id));
 
         [HttpGet("AllResearchAreas")]
         [AllowAnonymous]
-        public JsonResult AllResearchAreas() => Json(aztuAkademik.ResearchArea);
+        public JsonResult AllResearchAreas() => Json(aztuAkademik.ResearchArea.AsNoTracking());
 
 
         //POST

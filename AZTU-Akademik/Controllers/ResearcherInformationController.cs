@@ -51,7 +51,7 @@ namespace AZTU_Akademik.Controllers
         [AllowAnonymous]
         public JsonResult Information(int user_id) => Json(aztuAkademik.User.
             Include(x => x.Nationality).Include(x => x.Citizenship).
-            FirstOrDefault(x => x.Id == user_id && !x.DeleteDate.HasValue));
+            AsNoTracking().FirstOrDefault(x => x.Id == user_id && !x.DeleteDate.HasValue));
 
 
 

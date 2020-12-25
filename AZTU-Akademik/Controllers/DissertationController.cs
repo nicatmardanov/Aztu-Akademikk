@@ -47,7 +47,7 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("Dissertation")]
         [AllowAnonymous]
-        public JsonResult Dissertation(int user_id) => Json(aztuAkademik.ResearcherEducation.Include(x => x.Dissertation).Where(x => x.ResearcherId == user_id).Select(x => x.Dissertation));
+        public JsonResult Dissertation(int user_id) => Json(aztuAkademik.ResearcherEducation.Include(x => x.Dissertation).Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).AsNoTracking().Select(x => x.Dissertation));
 
 
         //[HttpGet("AddDissertation")]

@@ -50,7 +50,7 @@ namespace AZTU_Akademik.Controllers
             OrderByDescending(x => x.Id).
             Include(x => x.Project).ThenInclude(x => x.Organization).
             Include(x => x.Project).ThenInclude(x => x.Researcher).
-            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization));
+            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization).AsNoTracking());
 
         //[HttpGet("AllProjects")]
         //public JsonResult AllProjects() => Json(aztuAkademik.Project.Where(x => !x.DeleteDate.HasValue).

@@ -46,12 +46,12 @@ namespace AZTU_Akademik.Controllers
         [HttpGet("PedagogicalExperience")]
         [AllowAnonymous]
         public JsonResult PedagogicalExperience(int user_id) => Json(aztuAkademik.ResearcherPosition.Where(x => x.ResearcherId == user_id).
-            Include(x => x.Researcher).Include(x => x.Organization).Include(x => x.Position).Include(x => x.Department));
+            Include(x => x.Researcher).Include(x => x.Organization).Include(x => x.Position).Include(x => x.Department).AsNoTracking());
 
         [HttpGet("ManagementExperience")]
         [AllowAnonymous]
         public JsonResult ManagementExperience(int user_id) => Json(aztuAkademik.ManagementExperience.Where(x => x.ResearcherId == user_id).
-            Include(x => x.Researcher).Include(x => x.Organization));
+            Include(x => x.Researcher).Include(x => x.Organization).AsNoTracking());
 
 
 

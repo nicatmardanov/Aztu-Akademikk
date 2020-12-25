@@ -26,8 +26,9 @@ namespace AZTU_Akademik.Controllers
         [HttpGet]
         public async Task<JsonResult> Get([FromQuery] string hash, [FromQuery] string email)
         {
-            User user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email).ConfigureAwait(false);
-            PasswordReset passwordReset = await aztuAkademik.PasswordReset.
+            User user = await aztuAkademik.User.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email).ConfigureAwait(false);
+
+            PasswordReset passwordReset = await aztuAkademik.PasswordReset.AsNoTracking().
                 LastOrDefaultAsync(x => x.Hash == hash && x.UserId == user.Id && 
                 GetDate.Subtract(x.CreateDate.Value).Days >= 0 && GetDate.Subtract(x.CreateDate.Value).Days < 1).ConfigureAwait(false);
 

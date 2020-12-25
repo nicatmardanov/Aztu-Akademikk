@@ -49,7 +49,7 @@ namespace AZTU_Akademik.Controllers
             Include(x => x.Article).ThenInclude(x => x.Creator).
             Include(x => x.Article).ThenInclude(x => x.File).
             Include(x => x.Article).ThenInclude(x => x.Journal).
-            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization));
+            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization).AsNoTracking());
 
 
 

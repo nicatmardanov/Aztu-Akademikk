@@ -48,7 +48,7 @@ namespace AZTU_Akademik.Controllers
             OrderByDescending(x => x.Id).
             Include(x => x.Patent).ThenInclude(x => x.Researcher).
             Include(x => x.Patent).ThenInclude(x => x.Organization).
-            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization));
+            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization).AsNoTracking());
 
 
 

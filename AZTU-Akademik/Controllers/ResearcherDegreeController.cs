@@ -47,7 +47,7 @@ namespace AZTU_Akademik.Controllers
         [HttpGet("DegreeForUser")]
         [AllowAnonymous]
         public JsonResult DegreeForUser(int user_id) => Json(aztuAkademik.RelResearcherDegree.Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
-            Include(x => x.Degree).Include(x => x.Researcher));
+            Include(x => x.Degree).Include(x => x.Researcher).AsNoTracking());
 
         //POST
         [HttpPost]

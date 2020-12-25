@@ -45,11 +45,11 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("EducationDegree")]
         [AllowAnonymous]
-        public JsonResult EducationDegree(int id) => Json(aztuAkademik.EducationDegree.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+        public JsonResult EducationDegree(int id) => Json(aztuAkademik.EducationDegree.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
         [HttpGet("AllEducationDegrees")]
         [AllowAnonymous]
-        public JsonResult AllEducationDegrees() => Json(aztuAkademik.EducationDegree.FirstOrDefault(x => !x.DeleteDate.HasValue));
+        public JsonResult AllEducationDegrees() => Json(aztuAkademik.EducationDegree.Where(x => !x.DeleteDate.HasValue).AsNoTracking());
 
 
         //POST

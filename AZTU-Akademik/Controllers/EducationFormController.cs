@@ -44,7 +44,7 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("EducationForm")]
         [AllowAnonymous]
-        public JsonResult EducationForm(short id) => Json(aztuAkademik.EducationForm.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+        public JsonResult EducationForm(short id) => Json(aztuAkademik.EducationForm.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
 
         //POST

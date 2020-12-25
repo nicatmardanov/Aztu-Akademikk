@@ -46,11 +46,11 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("Profession")]
         [AllowAnonymous]
-        public JsonResult Profession(int id) => Json(aztuAkademik.Profession.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+        public JsonResult Profession(int id) => Json(aztuAkademik.Profession.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
         [HttpGet("AllProfessions")]
         [AllowAnonymous]
-        public JsonResult AllProfessions() => Json(aztuAkademik.Profession.Where(x => !x.DeleteDate.HasValue));
+        public JsonResult AllProfessions() => Json(aztuAkademik.Profession.Where(x => !x.DeleteDate.HasValue).AsNoTracking());
 
         //POST
         [HttpPost]

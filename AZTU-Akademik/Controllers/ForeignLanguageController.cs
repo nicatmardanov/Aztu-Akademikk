@@ -44,11 +44,11 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("Language")]
         [AllowAnonymous]
-        public JsonResult Language(int id) => Json(aztuAkademik.Language.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+        public JsonResult Language(int id) => Json(aztuAkademik.Language.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
         [HttpGet("AllLanguages")]
         [AllowAnonymous]
-        public JsonResult AllLanguages() => Json(aztuAkademik.Language.Where(x => !x.DeleteDate.HasValue));
+        public JsonResult AllLanguages() => Json(aztuAkademik.Language.Where(x => !x.DeleteDate.HasValue).AsNoTracking());
 
 
 

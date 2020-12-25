@@ -48,7 +48,7 @@ namespace AZTU_Akademik.Controllers
         public JsonResult Thesis(int user_id) => Json(aztuAkademik.RelThesisResearcher.Where(x => (x.IntAuthorId == user_id || x.ExtAuthorId == user_id) && !x.DeleteDate.HasValue).
             OrderByDescending(x => x.Id).
             Include(x => x.Thesis).ThenInclude(x => x.Publisher).
-            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization));
+            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization).AsNoTracking());
 
 
         //POST

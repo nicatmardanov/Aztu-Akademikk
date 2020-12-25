@@ -44,11 +44,11 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("Position")]
         [AllowAnonymous]
-        public JsonResult Position(int id) => Json(aztuAkademik.Position.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+        public JsonResult Position(int id) => Json(aztuAkademik.Position.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
         [HttpGet("AllPositions")]
         [AllowAnonymous]
-        public JsonResult AllPositions() => Json(aztuAkademik.Position.Where(x => !x.DeleteDate.HasValue));
+        public JsonResult AllPositions() => Json(aztuAkademik.Position.Where(x => !x.DeleteDate.HasValue).AsNoTracking());
 
 
         //POST
