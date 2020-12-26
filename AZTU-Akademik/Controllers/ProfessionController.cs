@@ -44,7 +44,7 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("Profession")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Profession(int id) => Json(aztuAkademik.Profession.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 

@@ -42,7 +42,7 @@ namespace AZTU_Akademik.Controllers
         }
 
         //GET
-        [HttpGet("Article")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Article(int user_id) => Json(aztuAkademik.RelArticleResearcher.Where(x => (x.IntAuthorId == user_id || x.ExtAuthorId == user_id) && !x.DeleteDate.HasValue).
             OrderByDescending(x => x.Id).

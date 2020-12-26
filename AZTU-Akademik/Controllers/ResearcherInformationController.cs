@@ -43,11 +43,11 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet]
+        [HttpGet("EditInformation")]
         [AllowAnonymous]
-        public int EditInformationPage() => User_Id;
+        public int EditInformation() => User.Identity.IsAuthenticated ? User_Id : 0;
 
-        [HttpGet("Information")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Information(int user_id) => Json(aztuAkademik.User.
             Include(x => x.Nationality).Include(x => x.Citizenship).

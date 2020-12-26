@@ -44,13 +44,13 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("Type")]
+        [HttpGet]
         [AllowAnonymous]
-        public JsonResult Type(short id) => Json(aztuAkademik.ContactType.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+        public JsonResult ContactType(short id) => Json(aztuAkademik.ContactType.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
-        [HttpGet("AllTypes")]
+        [HttpGet("AllContactTypes")]
         [AllowAnonymous]
-        public JsonResult AllTypes() => Json(aztuAkademik.ContactType.AsNoTracking().Where(x => !x.DeleteDate.HasValue));
+        public JsonResult AllContactTypes() => Json(aztuAkademik.ContactType.AsNoTracking().Where(x => !x.DeleteDate.HasValue));
 
         //POST
         [HttpPost]

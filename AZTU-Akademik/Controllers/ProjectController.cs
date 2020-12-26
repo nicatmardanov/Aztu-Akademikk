@@ -44,7 +44,7 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("Project")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Project(int user_id) => Json(aztuAkademik.RelProjectResearcher.Where(x => (x.IntAuthorId == user_id || x.ExtAuthorId == user_id) && !x.DeleteDate.HasValue).
             OrderByDescending(x => x.Id).

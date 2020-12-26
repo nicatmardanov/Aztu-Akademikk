@@ -43,7 +43,7 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("Level")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Level(short id) => Json(aztuAkademik.LanguageLevels.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 

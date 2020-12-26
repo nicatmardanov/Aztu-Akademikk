@@ -42,7 +42,7 @@ namespace AZTU_Akademik.Controllers
         }
 
         //GET
-        [HttpGet("Position")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Position(int id) => Json(aztuAkademik.Position.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 

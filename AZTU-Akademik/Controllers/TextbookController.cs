@@ -43,7 +43,7 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("Textbook")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Textbook(int user_id) => Json(aztuAkademik.RelTextbookResearcher.Where(x => (x.IntAuthorId == user_id || x.ExtAuthorId == user_id) && !x.DeleteDate.HasValue).
             OrderByDescending(x => x.Id).

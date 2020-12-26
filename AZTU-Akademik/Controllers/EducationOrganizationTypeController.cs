@@ -43,7 +43,7 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("EducationOrganizationType")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult EducationOrganizationType(byte id) => Json(aztuAkademik.EducationOrganizationType.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 

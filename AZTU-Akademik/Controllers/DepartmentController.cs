@@ -43,7 +43,7 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("Department")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Department(int id) => Json(aztuAkademik.Department.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 

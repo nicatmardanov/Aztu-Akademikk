@@ -43,7 +43,7 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("Contact")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Contact(int user_id) => Json(aztuAkademik.Contact.Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).Include(x => x.Type).AsNoTracking());
 

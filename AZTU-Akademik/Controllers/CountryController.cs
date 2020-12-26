@@ -42,7 +42,7 @@ namespace AZTU_Akademik.Controllers
         }
 
         //GET
-        [HttpGet("Country")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Country(short id) => Json(aztuAkademik.Country.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 

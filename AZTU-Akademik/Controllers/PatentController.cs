@@ -42,7 +42,7 @@ namespace AZTU_Akademik.Controllers
         }
 
         //GET
-        [HttpGet("Patent")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Patent(int user_id) => Json(aztuAkademik.RelPatentResearcher.Where(x => (x.IntAuthorId == user_id || x.ExtAuthorId == user_id) && !x.DeleteDate.HasValue).
             OrderByDescending(x => x.Id).

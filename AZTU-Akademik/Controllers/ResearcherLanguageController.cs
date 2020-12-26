@@ -42,7 +42,7 @@ namespace AZTU_Akademik.Controllers
         }
 
         //GET
-        [HttpGet("ResearcherLanguages")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult ResearcherLanguages(int user_id) => Json(aztuAkademik.ResearcherLanguage.
             Include(x => x.Researcher).Include(x => x.Language).Include(x => x.Level).Include(x => x.File).

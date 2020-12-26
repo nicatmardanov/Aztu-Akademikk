@@ -42,7 +42,7 @@ namespace AZTU_Akademik.Controllers
         }
 
         //GET
-        [HttpGet("Language")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Language(int id) => Json(aztuAkademik.Language.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 

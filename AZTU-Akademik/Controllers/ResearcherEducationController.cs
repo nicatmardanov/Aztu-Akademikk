@@ -43,7 +43,7 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("ResearcherEducation")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult ResearcherEducation(int user_id) => Json(aztuAkademik.ResearcherEducation.Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
             Include(x => x.Researcher).Include(x => x.Form).Include(x => x.Level).Include(x => x.Organization).

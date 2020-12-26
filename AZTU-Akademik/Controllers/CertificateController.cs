@@ -44,7 +44,7 @@ namespace AZTU_Akademik.Controllers
 
 
         //GET
-        [HttpGet("Certificate")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Certificate(int user_id) => Json(aztuAkademik.Certificate.
             Include(x => x.File).Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).AsNoTracking());

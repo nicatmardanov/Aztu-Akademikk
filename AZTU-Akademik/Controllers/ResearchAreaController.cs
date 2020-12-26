@@ -42,7 +42,7 @@ namespace AZTU_Akademik.Controllers
         }
 
         //GET
-        [HttpGet("ResearchArea")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult ResearchArea(int id) => Json(aztuAkademik.ResearchArea.AsNoTracking().FirstOrDefault(x => x.Id == id));
 

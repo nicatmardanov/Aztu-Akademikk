@@ -42,7 +42,7 @@ namespace AZTU_Akademik.Controllers
         }
 
         //GET
-        [HttpGet("Faculty")]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult Faculty(int id) => Json(aztuAkademik.Faculty.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
