@@ -46,7 +46,8 @@ namespace AZTU_Akademik.Controllers
         [AllowAnonymous]
         public JsonResult ResearcherLanguages(int user_id) => Json(aztuAkademik.ResearcherLanguage.
             Include(x => x.Researcher).Include(x => x.Language).Include(x => x.Level).Include(x => x.File).
-            Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).AsNoTracking());
+            Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
+            OrderByDescending(x => x.Id).AsNoTracking());
 
 
 

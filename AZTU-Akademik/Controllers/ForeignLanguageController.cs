@@ -48,7 +48,7 @@ namespace AZTU_Akademik.Controllers
 
         [HttpGet("AllLanguages")]
         [AllowAnonymous]
-        public JsonResult AllLanguages() => Json(aztuAkademik.Language.Where(x => !x.DeleteDate.HasValue).AsNoTracking());
+        public JsonResult AllLanguages() => Json(aztuAkademik.Language.Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id).AsNoTracking());
 
 
 

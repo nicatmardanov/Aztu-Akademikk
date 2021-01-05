@@ -55,8 +55,8 @@ namespace AZTU_Akademik.Controllers
             {
                 AztuAkademikContext aztuAkademik = new AztuAkademikContext();
                 var _user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Id == UserId).ConfigureAwait(false);
-
                 _user.LastSeen = GetDate;
+
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
                 Json(new { isAuth = true, role = UserRole, id = UserId, fullName = UserFullName });
             }

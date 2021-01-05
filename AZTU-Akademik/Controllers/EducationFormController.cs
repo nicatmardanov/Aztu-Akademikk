@@ -49,7 +49,7 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("AllEducationForms")]
         [AllowAnonymous]
-        public JsonResult AllEducationForms() => Json(aztuAkademik.EducationForm.AsNoTracking().Where(x => !x.DeleteDate.HasValue));
+        public JsonResult AllEducationForms() => Json(aztuAkademik.EducationForm.AsNoTracking().Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id));
 
 
         //POST

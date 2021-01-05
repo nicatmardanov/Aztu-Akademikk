@@ -46,7 +46,8 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult Announcement(int user_id) => Json(aztuAkademik.Announcement.Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).AsNoTracking());
+        public JsonResult Announcement(int user_id) => Json(aztuAkademik.Announcement.Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
+            OrderByDescending(x=>x.Id).AsNoTracking());
 
 
         //POST

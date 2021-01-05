@@ -49,7 +49,7 @@ namespace AZTU_Akademik.Controllers
 
         [HttpGet("AllEducationDegrees")]
         [AllowAnonymous]
-        public JsonResult AllEducationDegrees() => Json(aztuAkademik.EducationDegree.Where(x => !x.DeleteDate.HasValue).AsNoTracking());
+        public JsonResult AllEducationDegrees() => Json(aztuAkademik.EducationDegree.Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id).AsNoTracking());
 
 
         //POST

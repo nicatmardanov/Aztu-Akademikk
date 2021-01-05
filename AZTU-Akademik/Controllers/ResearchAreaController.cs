@@ -48,7 +48,7 @@ namespace AZTU_Akademik.Controllers
 
         [HttpGet("AllResearchAreas")]
         [AllowAnonymous]
-        public JsonResult AllResearchAreas() => Json(aztuAkademik.ResearchArea.AsNoTracking());
+        public JsonResult AllResearchAreas() => Json(aztuAkademik.ResearchArea.Where(x=>!x.DeleteDate.HasValue).OrderByDescending(x => x.Id).AsNoTracking());
 
 
         //POST

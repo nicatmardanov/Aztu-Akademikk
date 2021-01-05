@@ -47,7 +47,7 @@ namespace AZTU_Akademik.Controllers
         [HttpGet]
         [AllowAnonymous]
         public JsonResult ManagementExperience(int user_id) => Json(aztuAkademik.ManagementExperience.Where(x => x.ResearcherId == user_id).
-           Include(x => x.Researcher).Include(x => x.Organization).AsNoTracking());
+           Include(x => x.Researcher).Include(x => x.Organization).OrderByDescending(x => x.Id).AsNoTracking());
 
 
         //POST

@@ -45,11 +45,13 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult EducationOrganizationType(byte id) => Json(aztuAkademik.EducationOrganizationType.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
+        public JsonResult EducationOrganizationType(byte id) => Json(aztuAkademik.EducationOrganizationType.AsNoTracking().
+            FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
         [HttpGet("AllEducationOrganizationTypes")]
         [AllowAnonymous]
-        public JsonResult AllEducationOrganizationTypes() => Json(aztuAkademik.EducationOrganizationType.Where(x => !x.DeleteDate.HasValue).AsNoTracking());
+        public JsonResult AllEducationOrganizationTypes() => Json(aztuAkademik.EducationOrganizationType.Where(x => !x.DeleteDate.HasValue).
+            OrderByDescending(x => x.Id).AsNoTracking());
 
 
         //POST

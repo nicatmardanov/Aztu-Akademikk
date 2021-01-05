@@ -48,7 +48,7 @@ namespace AZTU_Akademik.Controllers
 
         [HttpGet("AllFaculties")]
         [AllowAnonymous]
-        public JsonResult AllFaculties() => Json(aztuAkademik.Faculty.Where(x => !x.DeleteDate.HasValue).AsNoTracking());
+        public JsonResult AllFaculties() => Json(aztuAkademik.Faculty.Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id).AsNoTracking());
 
 
 

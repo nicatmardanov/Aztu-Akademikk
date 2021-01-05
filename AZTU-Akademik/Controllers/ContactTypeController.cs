@@ -50,7 +50,7 @@ namespace AZTU_Akademik.Controllers
 
         [HttpGet("AllContactTypes")]
         [AllowAnonymous]
-        public JsonResult AllContactTypes() => Json(aztuAkademik.ContactType.AsNoTracking().Where(x => !x.DeleteDate.HasValue));
+        public JsonResult AllContactTypes() => Json(aztuAkademik.ContactType.AsNoTracking().Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id));
 
         //POST
         [HttpPost]

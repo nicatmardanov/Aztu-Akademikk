@@ -46,7 +46,8 @@ namespace AZTU_Akademik.Controllers
         [HttpGet]
         [AllowAnonymous]
         public JsonResult PedagogicalExperience(int user_id) => Json(aztuAkademik.ResearcherPosition.Where(x => x.ResearcherId == user_id).
-            Include(x => x.Researcher).Include(x => x.Organization).Include(x => x.Position).Include(x => x.Department).AsNoTracking());
+            Include(x => x.Researcher).Include(x => x.Organization).Include(x => x.Position).Include(x => x.Department).
+            OrderByDescending(x => x.Id).AsNoTracking());
 
 
 
