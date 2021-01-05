@@ -87,7 +87,7 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            RelResearcherDegree relResearcherDegree = await aztuAkademik.RelResearcherDegree.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+            RelResearcherDegree relResearcherDegree = await aztuAkademik.RelResearcherDegree.FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId==User_Id).ConfigureAwait(false);
             relResearcherDegree.DeleteDate = GetDate;
             relResearcherDegree.StatusId = 0;
 

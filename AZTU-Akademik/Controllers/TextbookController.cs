@@ -129,7 +129,10 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int textbookId)
         {
-            Textbook textbook = await aztuAkademik.Textbook.Include(x=>x.RelTextbookResearcher).FirstOrDefaultAsync(x => x.Id == textbookId).ConfigureAwait(false);
+            Textbook textbook = await aztuAkademik.Textbook.Include(x=>x.RelTextbookResearcher).
+                FirstOrDefaultAsync(x => x.Id == textbookId && x.CreatorId==User_Id).
+                ConfigureAwait(false);
+
             textbook.DeleteDate = GetDate;
             textbook.StatusId = 0;
             await textbook.RelTextbookResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate).ConfigureAwait(false);

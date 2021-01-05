@@ -128,7 +128,10 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int thesisId)
         {
-            Thesis thesis = await aztuAkademik.Thesis.Include(x=>x.RelThesisResearcher).FirstOrDefaultAsync(x => x.Id == thesisId).ConfigureAwait(false);
+            Thesis thesis = await aztuAkademik.Thesis.Include(x => x.RelThesisResearcher).
+                FirstOrDefaultAsync(x => x.Id == thesisId && x.CreatorId == User_Id).
+                ConfigureAwait(false);
+            
             thesis.DeleteDate = GetDate;
             thesis.StatusId = 0;
             await thesis.RelThesisResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate).ConfigureAwait(false);

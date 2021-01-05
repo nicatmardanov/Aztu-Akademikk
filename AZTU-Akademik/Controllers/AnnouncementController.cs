@@ -85,7 +85,7 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(long id)
         {
-            Announcement announcement = await aztuAkademik.Announcement.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+            Announcement announcement = await aztuAkademik.Announcement.FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId==User_Id).ConfigureAwait(false);
             announcement.DeleteDate = GetDate;
             announcement.StatusId = 0;
 

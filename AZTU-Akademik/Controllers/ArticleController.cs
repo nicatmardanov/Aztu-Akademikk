@@ -164,7 +164,7 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int articleId)
         {
-            Article article = await aztuAkademik.Article.Include(x=>x.RelArticleResearcher).FirstOrDefaultAsync(x => x.Id == articleId).ConfigureAwait(false);
+            Article article = await aztuAkademik.Article.Include(x=>x.RelArticleResearcher).FirstOrDefaultAsync(x => x.Id == articleId && x.CreatorId==User_Id).ConfigureAwait(false);
             article.DeleteDate = GetDate;
             article.StatusId = 0;
 

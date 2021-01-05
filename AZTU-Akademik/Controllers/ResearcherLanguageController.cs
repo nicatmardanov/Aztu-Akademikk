@@ -114,7 +114,8 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            ResearcherLanguage researcherLanguage = await aztuAkademik.ResearcherLanguage.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+            ResearcherLanguage researcherLanguage = await aztuAkademik.ResearcherLanguage.FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId==User_Id).
+                ConfigureAwait(false);
             researcherLanguage.DeleteDate = GetDate;
             researcherLanguage.StatusId = 0;
 

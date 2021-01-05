@@ -13,7 +13,7 @@ namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class OrganizationController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();

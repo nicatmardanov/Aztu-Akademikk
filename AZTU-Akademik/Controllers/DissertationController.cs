@@ -119,7 +119,7 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            Dissertation dissertation = await aztuAkademik.Dissertation.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+            Dissertation dissertation = await aztuAkademik.Dissertation.FirstOrDefaultAsync(x => x.Id == id && x.Education.ResearcherId==User_Id).ConfigureAwait(false);
             dissertation.DeleteDate = GetDate;
             dissertation.StatusId = 0;
 

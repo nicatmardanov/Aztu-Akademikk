@@ -88,7 +88,9 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            ManagementExperience managementExperience = await aztuAkademik.ManagementExperience.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+            ManagementExperience managementExperience = await aztuAkademik.ManagementExperience.FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId==User_Id).
+                ConfigureAwait(false);
+
             managementExperience.DeleteDate = GetDate;
             managementExperience.StatusId = 0;
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
