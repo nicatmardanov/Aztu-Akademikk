@@ -87,32 +87,32 @@ namespace AZTU_Akademik.Controllers
         [HttpPost]
         public async Task Post(Dissertation _dissertation)
         {
-
-            if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
-            {
-                File _file = new File
-                {
-                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 0).ConfigureAwait(false),
-                    Type = 1,
-                    CreateDate = GetDate,
-                    StatusId = 1,
-                    UserId = User_Id
-                };
-
-
-                await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
-                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            
+           // if (Request.Form.Files.Count > 0)
+            //{
+            //    File _file = new File
+            //    {
+            //        Name = await Classes.FileSave.Save(Request.Form.Files[0], 0).ConfigureAwait(false),
+            //        Type = 1,
+            //        CreateDate = GetDate,
+            //        StatusId = 1,
+            //        UserId = User_Id
+            //    };
 
 
+                //await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
+                //await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
-                _dissertation.FileId = _file.Id;
+
+
+                //_dissertation.FileId = _file.Id;
                 _dissertation.CreateDate = GetDate;
 
                 await aztuAkademik.Dissertation.AddAsync(_dissertation).ConfigureAwait(false);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
                 await Classes.TLog.Log("Dissertation", "", _dissertation.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-            }
+              //  await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            //}
 
         }
 
