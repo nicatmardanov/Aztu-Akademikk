@@ -50,7 +50,8 @@ namespace AZTU_Akademik.Controllers
         public JsonResult Dissertation(int user_id) => Json(aztuAkademik.Dissertation.Where(x => x.Education.ResearcherId == user_id).
             Include(x => x.Education).ThenInclude(x => x.Organization).
             Include(x => x.Education).ThenInclude(x => x.Profession).ThenInclude(x => x.Department).
-            Select(x=>new
+            Include(x => x.File).
+            Select(x => new
             {
                 x.Id,
                 x.Name,
@@ -74,6 +75,10 @@ namespace AZTU_Akademik.Controllers
                             x.Education.Profession.Department.Name,
                         }
                     }
+                },
+                File = new
+                {
+                    x.File.Name
                 }
             }));
 
