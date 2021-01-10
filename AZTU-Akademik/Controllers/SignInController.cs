@@ -38,7 +38,7 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task<JsonResult> Post([FromQuery] string email, [FromQuery] string password)
+        public async Task<JsonResult> Post(string email, string password)
         {
             User valid_user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email && x.Password == password).ConfigureAwait(false);
             
