@@ -18,9 +18,9 @@ namespace AZTU_Akademik.Controllers
         public string Password { get; set; }
     }
 
+
     [Route("api/[controller]")]
     [ApiController]
-
     public class SignInController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();

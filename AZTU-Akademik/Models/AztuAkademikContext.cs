@@ -70,6 +70,9 @@ namespace AZTU_Akademik.Models
         {
             modelBuilder.Entity<Announcement>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Announcement_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -102,6 +105,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Article>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Article_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -158,6 +164,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Certificate>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Certificate_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -203,6 +212,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Contact>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Contact_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -240,6 +252,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<ContactType>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_ContactType_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -265,6 +280,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Country>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Country_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -288,6 +306,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Department>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Department_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -322,6 +343,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Dissertation>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Dissertation_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -357,6 +381,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<EducationDegree>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_EducationDegree_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -380,6 +407,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<EducationForm>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_EducationForm_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -405,6 +435,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<EducationLevel>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_EducationLevel_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -430,6 +463,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<EducationOrganization>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_EducationOrganization_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -464,6 +500,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<EducationOrganizationType>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_EducationOrganizationType_DeleteDate");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .ValueGeneratedOnAdd();
@@ -489,6 +528,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<ExternalResearcher>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_ExternalResearcher_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -517,6 +559,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Faculty>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Faculty_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -544,6 +589,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<File>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_File_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -574,6 +622,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Journal>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Journal_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -597,6 +648,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Language>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Language_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -624,6 +678,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<LanguageLevels>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_LanguageLevels_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -651,6 +708,12 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Log>(entity =>
             {
+                entity.HasIndex(e => e.TableName)
+                    .HasName("IX_Log_TableName");
+
+                entity.HasIndex(e => e.UserId)
+                    .HasName("IX_Log_UserId");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.AdditionalInformation)
@@ -691,6 +754,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<ManagementExperience>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_ManagementExperience_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -747,11 +813,21 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<PasswordReset>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_PasswordReset_DeleteDate");
+
+                entity.HasIndex(e => e.Hash)
+                    .HasName("IX_PasswordReset_Hash");
+
+                entity.HasIndex(e => e.UserId)
+                    .HasName("IX_PasswordReset_UserId");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Code)
                     .HasColumnName("code")
-                    .HasMaxLength(100);
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnName("create_date")
@@ -761,7 +837,10 @@ namespace AZTU_Akademik.Models
                     .HasColumnName("delete_date")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Hash).HasColumnName("hash");
+                entity.Property(e => e.Hash)
+                    .HasColumnName("hash")
+                    .HasMaxLength(128)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.StatusId).HasColumnName("status_id");
 
@@ -779,6 +858,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Patent>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Patent_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.ApplyDate)
@@ -822,6 +904,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Position>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Position_DeleteDate");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .ValueGeneratedNever();
@@ -845,6 +930,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Profession>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Profession_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -875,6 +963,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Project>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Project_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -922,6 +1013,9 @@ namespace AZTU_Akademik.Models
             {
                 entity.ToTable("Rel_ArticleResearcher");
 
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Rel_ArticleResearcher_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.ArticleId).HasColumnName("article_id");
@@ -965,6 +1059,9 @@ namespace AZTU_Akademik.Models
             modelBuilder.Entity<RelPatentResearcher>(entity =>
             {
                 entity.ToTable("Rel_PatentResearcher");
+
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Rel_PatentResearcher_DeleteDate");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -1010,6 +1107,9 @@ namespace AZTU_Akademik.Models
             {
                 entity.ToTable("Rel_ProjectResearcher");
 
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Rel_ProjectResearcher_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -1054,6 +1154,9 @@ namespace AZTU_Akademik.Models
             {
                 entity.ToTable("Rel_ResearcherDegree");
 
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Rel_ResearcherDegree_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -1089,6 +1192,9 @@ namespace AZTU_Akademik.Models
             {
                 entity.ToTable("Rel_Researcher_ResearcherArea");
 
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Rel_Researcher_ResearcherArea_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.AreaId).HasColumnName("area_id");
@@ -1123,6 +1229,9 @@ namespace AZTU_Akademik.Models
             modelBuilder.Entity<RelTextbookResearcher>(entity =>
             {
                 entity.ToTable("Rel_TextbookResearcher");
+
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Rel_TextbookResearcher_DeleteDate");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -1168,6 +1277,9 @@ namespace AZTU_Akademik.Models
             {
                 entity.ToTable("Rel_ThesisResearcher");
 
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Rel_ThesisResearcher_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -1210,6 +1322,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<ResearchArea>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_ResearchArea_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -1233,9 +1348,10 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<ResearcherEducation>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_ResearcherEducation_DeleteDate");
+
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CountryId).HasColumnName("country_id");
 
@@ -1311,6 +1427,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<ResearcherLanguage>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_ResearcherLanguage_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -1358,6 +1477,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<ResearcherPosition>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_ResearcherPosition_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -1413,6 +1535,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Textbook>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Textbook_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -1454,6 +1579,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Thesis>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Thesis_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -1495,6 +1623,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<User>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_User_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CitizenshipId).HasColumnName("citizenship_id");
