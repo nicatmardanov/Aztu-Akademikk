@@ -50,7 +50,14 @@ namespace AZTU_Akademik.Controllers
         public JsonResult Dissertation(int user_id) => Json(aztuAkademik.ResearcherEducation.Include(x => x.Dissertation).
             Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
             AsNoTracking().OrderByDescending(x => x.Id).
-            Select(x => x.Dissertation));
+            Select(x => new
+            {
+                x.Id,
+                x.StartDate,
+                x.EndDate,
+                Organization = new { x.Organization.Id, x.Organization.Name },
+                Profession = new { x.Profession.Id, x.Profession.Name, Department = new { x.Profession.Department.Id, x.Profession.Department.Name } }
+            }));
 
 
         //[HttpGet("AddDissertation")]
@@ -122,7 +129,7 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            Dissertation dissertation = await aztuAkademik.Dissertation.FirstOrDefaultAsync(x => x.Id == id && x.Education.ResearcherId==User_Id).ConfigureAwait(false);
+            Dissertation dissertation = await aztuAkademik.Dissertation.FirstOrDefaultAsync(x => x.Id == id && x.Education.ResearcherId == User_Id).ConfigureAwait(false);
             dissertation.DeleteDate = GetDate;
             dissertation.StatusId = 0;
 

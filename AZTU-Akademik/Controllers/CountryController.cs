@@ -49,7 +49,13 @@ namespace AZTU_Akademik.Controllers
 
         [HttpGet("AllCountries")]
         [AllowAnonymous]
-        public JsonResult AllCountries() => Json(aztuAkademik.Country.Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id).AsNoTracking());
+        public JsonResult AllCountries() => Json(aztuAkademik.Country.
+            Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id).AsNoTracking().
+            Select(x => new
+            {
+                x.Id,
+                x.Name
+            }));
 
 
 

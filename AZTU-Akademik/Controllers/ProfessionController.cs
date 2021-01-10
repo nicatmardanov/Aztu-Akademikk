@@ -50,7 +50,25 @@ namespace AZTU_Akademik.Controllers
 
         [HttpGet("AllProfessions")]
         [AllowAnonymous]
-        public JsonResult AllProfessions() => Json(aztuAkademik.Profession.Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id).AsNoTracking());
+        public JsonResult AllProfessions() => Json(aztuAkademik.Profession.
+            Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id).AsNoTracking().
+            Select(x => new
+            {
+                x.Id,
+                x.Name,
+                Department = new
+                {
+                    x.Department.Id,
+                    x.Department.Name,
+                    x.Department.ShortName,
+                    Faculty = new
+                    {
+                        x.Department.Faculty.Id,
+                        x.Department.Faculty.Name,
+                        x.Department.Faculty.ShortName
+                    }
+                }
+            }));
 
         //POST
         [HttpPost]

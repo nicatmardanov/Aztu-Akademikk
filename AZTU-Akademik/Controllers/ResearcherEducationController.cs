@@ -47,7 +47,18 @@ namespace AZTU_Akademik.Controllers
         [AllowAnonymous]
         public JsonResult ResearcherEducation(int user_id) => Json(aztuAkademik.ResearcherEducation.Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
             Include(x => x.Researcher).Include(x => x.Form).Include(x => x.Level).Include(x => x.Organization).
-            Include(x=>x.Country).Include(x=>x.Language).Include(x=>x.Profession).OrderByDescending(x=>x.Id).AsNoTracking());
+            Include(x => x.Country).Include(x => x.Language).Include(x => x.Profession).OrderByDescending(x => x.Id).AsNoTracking().
+            Select(x => new
+            {
+                x.Id,
+                x.StartDate,
+                x.EndDate,
+                Form = new { x.Form.Id, x.Form.Name },
+                Level = new { x.Level.Id, x.Level.Name },
+                Organization = new { x.Organization.Id, x.Organization.Name },
+                Profession = new { x.Profession.Id, x.Profession.Name },
+                Country=new {x.Country.Id, x.Country.Name }
+            }));
 
 
         //POST
@@ -87,7 +98,7 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(long id)
         {
-            ResearcherEducation researcherEducation = await aztuAkademik.ResearcherEducation.FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId==User_Id).
+            ResearcherEducation researcherEducation = await aztuAkademik.ResearcherEducation.FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId == User_Id).
                 ConfigureAwait(false);
             researcherEducation.DeleteDate = GetDate;
             researcherEducation.StatusId = 0;

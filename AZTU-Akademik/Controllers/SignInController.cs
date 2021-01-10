@@ -38,12 +38,13 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task<int> Post([FromQuery] string email, [FromQuery] string password)
+        public async Task<JsonResult> Post([FromQuery] string email, [FromQuery] string password)
         {
             User valid_user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email && x.Password == password).ConfigureAwait(false);
             
-            if (!valid_user.Email.Contains("@aztu.edu.az"))
-                return 0;
+
+            if (valid_user==null || !valid_user.Email.Contains("@aztu.edu.az"))
+                return Json(string.Empty);
 
 
 
@@ -78,10 +79,13 @@ namespace AZTU_Akademik.Controllers
 
                 await Classes.TLog.Log("User", "", valid_user.Id, 4, valid_user.Id, IpAdress, AInformation).ConfigureAwait(false);
 
-                return 1;
+                return Json(new {
+                    id=valid_user.Id, firstName=valid_user.FirstName, lastName=valid_user.LastName, patronymic=valid_user.Patronymic, 
+                    email=valid_user.Email, image=valid_user.ImageAddress
+                });
             }
 
-            return 0;
+            return Json(string.Empty);
 
         }
 

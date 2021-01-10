@@ -50,7 +50,14 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet("AllEducationLevels")]
         [AllowAnonymous]
-        public JsonResult AllEducationLevels() => Json(aztuAkademik.EducationLevel.AsNoTracking().Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id));
+        public JsonResult AllEducationLevels() => Json(aztuAkademik.EducationLevel.AsNoTracking().
+            Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id).
+            Select(x => new
+            {
+                x.Id,
+                x.Name,
+                x.Description
+            }));
 
         //POST
         [HttpPost]

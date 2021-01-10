@@ -48,7 +48,13 @@ namespace AZTU_Akademik.Controllers
 
         [HttpGet("AllLanguages")]
         [AllowAnonymous]
-        public JsonResult AllLanguages() => Json(aztuAkademik.Language.Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id).AsNoTracking());
+        public JsonResult AllLanguages() => Json(aztuAkademik.Language.
+            Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id).AsNoTracking().
+            Select(x => new
+            {
+                x.Id,
+                x.Name
+            }));
 
 
 
@@ -91,7 +97,7 @@ namespace AZTU_Akademik.Controllers
             Language language = await aztuAkademik.Language.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             language.DeleteDate = GetDate;
             language.StatusId = 0;
-            
+
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             await Classes.TLog.Log("Language", "", id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }

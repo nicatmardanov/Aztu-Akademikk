@@ -47,7 +47,20 @@ namespace AZTU_Akademik.Controllers
         public JsonResult ResearcherLanguages(int user_id) => Json(aztuAkademik.ResearcherLanguage.
             Include(x => x.Researcher).Include(x => x.Language).Include(x => x.Level).Include(x => x.File).
             Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
-            OrderByDescending(x => x.Id).AsNoTracking());
+            OrderByDescending(x => x.Id).AsNoTracking().
+            Select(x => new {
+                x.Id,
+                Language = new
+                {
+                    x.Language.Id,
+                    x.Language.Name
+                },
+                Level = new
+                {
+                    x.Level.Id,
+                    x.Level.Name
+                }
+            }));
 
 
 
@@ -115,7 +128,7 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            ResearcherLanguage researcherLanguage = await aztuAkademik.ResearcherLanguage.FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId==User_Id).
+            ResearcherLanguage researcherLanguage = await aztuAkademik.ResearcherLanguage.FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId == User_Id).
                 ConfigureAwait(false);
             researcherLanguage.DeleteDate = GetDate;
             researcherLanguage.StatusId = 0;

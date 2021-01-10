@@ -49,7 +49,13 @@ namespace AZTU_Akademik.Controllers
         [HttpGet("AllEducationOrganizations")]
         [AllowAnonymous]
         public JsonResult AllEducationOrganizations() => Json(aztuAkademik.EducationOrganization.Where(x => !x.DeleteDate.HasValue).
-            Include(x => x.Type).OrderByDescending(x => x.Id).AsNoTracking());
+            Include(x => x.Type).OrderByDescending(x => x.Id).AsNoTracking().
+            Select(x => new
+            {
+                x.Id,
+                x.Name,
+                x.ShortName
+            }));
 
         //POST
         [HttpPost]

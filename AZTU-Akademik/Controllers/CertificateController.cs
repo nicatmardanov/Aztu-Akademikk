@@ -48,8 +48,15 @@ namespace AZTU_Akademik.Controllers
         [AllowAnonymous]
         public JsonResult Certificate(int user_id) => Json(aztuAkademik.Certificate.
             Include(x => x.File).Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
-            OrderByDescending(x=>x.Id).
-            AsNoTracking());
+            OrderByDescending(x=>x.Id).AsNoTracking().
+            Select(x=>new
+            {
+                x.Id,
+                x.Name,
+                x.Description,
+                x.StartDate,
+                x.EndDate
+            }));
 
 
         //POST
