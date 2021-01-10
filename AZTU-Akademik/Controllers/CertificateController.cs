@@ -63,32 +63,32 @@ namespace AZTU_Akademik.Controllers
         [HttpPost]
         public async Task Post(Certificate _certificate)
         {
-            if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
-            {
-                File _file = new File
-                {
-                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 2).ConfigureAwait(false),
-                    Type = 3,
-                    CreateDate = GetDate,
-                    StatusId = 1,
-                    UserId = User_Id
-                };
+            //if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
+            //{
+            //    File _file = new File
+            //    {
+            //        Name = await Classes.FileSave.Save(Request.Form.Files[0], 2).ConfigureAwait(false),
+            //        Type = 3,
+            //        CreateDate = GetDate,
+            //        StatusId = 1,
+            //        UserId = User_Id
+            //    };
 
 
-                await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
-                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            //    await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
+            //    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
                 _certificate.CreateDate = GetDate;
                 _certificate.ResearcherId = User_Id;
-                _certificate.FileId = _file.Id;
+                //_certificate.FileId = _file.Id;
 
                 await aztuAkademik.Certificate.AddAsync(_certificate).ConfigureAwait(false);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
                 await Classes.TLog.Log("Certificate", "", _certificate.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                //await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
-            }
+            //}
         }
 
         //PUT
