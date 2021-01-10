@@ -47,21 +47,35 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult Dissertation(int user_id) => Json(aztuAkademik.ResearcherEducation.Include(x => x.Dissertation).
-            Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
-            AsNoTracking().OrderByDescending(x => x.Id).
-            Select(x => new
+        public JsonResult Dissertation(int user_id) => Json(aztuAkademik.Dissertation.Where(x => x.Education.ResearcherId == user_id).
+            Include(x => x.Education).ThenInclude(x => x.Organization).
+            Include(x => x.Education).ThenInclude(x => x.Profession).ThenInclude(x => x.Department).
+            Select(x=>new
             {
                 x.Id,
-                x.StartDate,
-                x.EndDate,
-                Organization = new { x.Organization.Id, x.Organization.Name },
-                Profession = new { x.Profession.Id, x.Profession.Name, Department = new { x.Profession.Department.Id, x.Profession.Department.Name } }
+                x.Name,
+                Education = new
+                {
+                    x.Education.Id,
+                    x.Education.StartDate,
+                    x.Education.EndDate,
+                    Organization = new
+                    {
+                        x.Education.Organization.Id,
+                        x.Education.Organization.Name,
+                    },
+                    Profession = new
+                    {
+                        x.Education.Profession.Id,
+                        x.Education.Profession.Name,
+                        Department = new
+                        {
+                            x.Education.Profession.Department.Id,
+                            x.Education.Profession.Department.Name,
+                        }
+                    }
+                }
             }));
-
-
-        //[HttpGet("AddDissertation")]
-        //public JsonResult AddDissertation(int research_education_id) => Json(research_education_id);
 
 
         //POST
