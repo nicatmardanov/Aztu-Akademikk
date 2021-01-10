@@ -12,8 +12,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AZTU_Akademik.Controllers
 {
+    public class SignIn
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+
     [Route("api/[controller]")]
     [ApiController]
+
     public class SignInController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -38,9 +45,9 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task<JsonResult> Post([FromBody] string email, [FromBody] string password)
+        public async Task<JsonResult> Post(SignIn _userData)
         {
-            User valid_user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email && x.Password == password).ConfigureAwait(false);
+            User valid_user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == _userData.Email && x.Password == _userData.Password).ConfigureAwait(false);
             
 
             if (valid_user==null || !valid_user.Email.Contains("@aztu.edu.az"))
