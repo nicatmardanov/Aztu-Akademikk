@@ -16,6 +16,12 @@ namespace AZTU_Akademik.Controllers
     [Authorize(Roles = "Admin")]
     public class ContactTypeController : Controller
     {
+        public class ContactTypeModel
+        {
+            public ContactType Type { get; set; } 
+            public bool FileChange { get; set; }
+        }
+
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
         {
@@ -54,7 +60,7 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task Post(ContactType _type)
+        public async Task Post([FromForm]ContactType _type)
         {
             if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
                 _type.Icon = await Classes.FileSave.Save(Request.Form.Files[0], 3).ConfigureAwait(false);
@@ -69,24 +75,24 @@ namespace AZTU_Akademik.Controllers
 
         //PUT
         [HttpPut]
-        public async Task<int> Put([FromQuery]ContactType _type, [FromQuery] bool fileChange)
+        public async Task<int> Put([FromForm]ContactTypeModel contactTypeModel)
         {
             if (ModelState.IsValid)
             {
-                if (fileChange)
+                if (contactTypeModel.FileChange)
                 {
-                    if (!string.IsNullOrEmpty(_type.Icon))
-                        System.IO.File.Delete(_type.Icon[1..]);
+                    if (!string.IsNullOrEmpty(contactTypeModel.Type.Icon))
+                        System.IO.File.Delete(contactTypeModel.Type.Icon[1..]);
 
-                    _type.Icon = await Classes.FileSave.Save(Request.Form.Files[0], 3).ConfigureAwait(false);
+                    contactTypeModel.Type.Icon = await Classes.FileSave.Save(Request.Form.Files[0], 3).ConfigureAwait(false);
 
                 }
-                _type.UpdateDate = GetDate;
-                aztuAkademik.Entry(_type).State = EntityState.Modified;
-                aztuAkademik.Entry(_type).Property(x => x.CreateDate).IsModified = false;
+                contactTypeModel.Type.UpdateDate = GetDate;
+                aztuAkademik.Entry(contactTypeModel.Type).State = EntityState.Modified;
+                aztuAkademik.Entry(contactTypeModel.Type).Property(x => x.CreateDate).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-                await Classes.TLog.Log("ContactType", "", _type.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                await Classes.TLog.Log("ContactType", "", contactTypeModel.Type.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 return 1;
             }
             return 0;

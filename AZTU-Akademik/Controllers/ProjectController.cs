@@ -16,6 +16,12 @@ namespace AZTU_Akademik.Controllers
     [Authorize]
     public class ProjectController : Controller
     {
+        public class ProjectModel
+        {
+            public Project Project { get; set; }
+            public IQueryable<RelProjectResearcher> RelProjectResearchers { get; set; }
+            public long[] DeletedResearchers { get; set; }
+        }
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
         {
@@ -59,112 +65,48 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task Post([FromQuery] Project _project, [FromQuery] IQueryable<RelProjectResearcher> _relProjectResearcher)
+        public async Task Post(ProjectModel projectModel)
         {
-            _project.CreateDate = GetDate;
-            _project.ResearcherId = User_Id;
-            await aztuAkademik.Project.AddAsync(_project).ConfigureAwait(false);
+            projectModel.Project.CreateDate = GetDate;
+            projectModel.Project.ResearcherId = User_Id;
+            await aztuAkademik.Project.AddAsync(projectModel.Project).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
 
-            await _relProjectResearcher.ForEachAsync(x =>
+            await projectModel.RelProjectResearchers.ForEachAsync(x =>
             {
                 x.CreateDate = GetDate;
-                x.ProjectId = _project.Id;
+                x.ProjectId = projectModel.Project.Id;
             }).ConfigureAwait(false);
 
 
-            await aztuAkademik.RelProjectResearcher.AddRangeAsync(_relProjectResearcher).ConfigureAwait(false);
+            await aztuAkademik.RelProjectResearcher.AddRangeAsync(projectModel.RelProjectResearchers).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-            await Classes.TLog.Log("Project", "", _project.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-            await Classes.TLog.Log("RelProjectResearcher", "", _relProjectResearcher.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-
-
-            //bool condition = intAuthors.Length > extAuthors.Length;
-            //int length = condition ? intAuthors.Length : extAuthors.Length;
-
-            //RelProjectResearcher relProjectResearcher;
-
-            //for (int i = 0; i < length; i++)
-            //{
-            //    if (condition)
-            //    {
-            //        relProjectResearcher = new RelProjectResearcher
-            //        {
-            //            ProjectId = _project.Id,
-            //            IntAuthorId = intAuthors[i],
-            //            Type = leadAuthorsId.Contains(intAuthors[i]) ? (byte)1 : (byte)0,
-            //            CreateDate = GetDate
-            //        };
-
-            //        await aztuAkademik.RelProjectResearcher.AddAsync(relProjectResearcher);
-            //        await aztuAkademik.SaveChangesAsync();
-
-            //        if (i < extAuthors.Length)
-            //        {
-            //            relProjectResearcher = new RelProjectResearcher
-            //            {
-            //                ProjectId = _project.Id,
-            //                ExtAuthorId = extAuthors[i],
-            //                Type = leadAuthorsId.Contains(intAuthors[i]) ? (byte)1 : (byte)0,
-            //                CreateDate = GetDate
-            //            };
-
-            //            await aztuAkademik.RelProjectResearcher.AddAsync(relProjectResearcher);
-            //            await aztuAkademik.SaveChangesAsync();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        relProjectResearcher = new RelProjectResearcher
-            //        {
-            //            ProjectId = _project.Id,
-            //            ExtAuthorId = extAuthors[i],
-            //            Type = leadAuthorsId.Contains(intAuthors[i]) ? (byte)1 : (byte)0,
-            //            CreateDate = GetDate
-            //        };
-
-            //        await aztuAkademik.RelProjectResearcher.AddAsync(relProjectResearcher);
-            //        await aztuAkademik.SaveChangesAsync();
-
-            //        if (i < intAuthors.Length)
-            //        {
-            //            relProjectResearcher = new RelProjectResearcher
-            //            {
-            //                ProjectId = _project.Id,
-            //                IntAuthorId = intAuthors[i],
-            //                Type = leadAuthorsId.Contains(intAuthors[i]) ? (byte)1 : (byte)0,
-            //                CreateDate = GetDate
-            //            };
-
-            //            await aztuAkademik.RelProjectResearcher.AddAsync(relProjectResearcher);
-            //            await aztuAkademik.SaveChangesAsync();
-            //        }
-            //    }
-            //}
+            await Classes.TLog.Log("Project", "", projectModel.Project.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("RelProjectResearcher", "", projectModel.RelProjectResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
         //PUT
         [HttpPut]
-        public async Task<int> Put([FromQuery] Project _project, [FromQuery] IQueryable<RelProjectResearcher> _relProjectResearchers, [FromQuery] long[] _deletedResearchers)
+        public async Task<int> Put(ProjectModel projectModel )
         {
             if (ModelState.IsValid)
             {
 
-                aztuAkademik.Attach(_project);
-                aztuAkademik.Entry(_project).State = EntityState.Modified;
-                aztuAkademik.Entry(_project).Property(x => x.CreateDate).IsModified = false;
-                aztuAkademik.Entry(_project).Property(x => x.ResearcherId).IsModified = false;
+                aztuAkademik.Attach(projectModel.Project);
+                aztuAkademik.Entry(projectModel.Project).State = EntityState.Modified;
+                aztuAkademik.Entry(projectModel.Project).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(projectModel.Project).Property(x => x.ResearcherId).IsModified = false;
 
 
-                var entry = aztuAkademik.RelProjectResearcher.Where(x => _deletedResearchers.Contains(x.Id));
+                var entry = aztuAkademik.RelProjectResearcher.Where(x => projectModel.DeletedResearchers.Contains(x.Id));
                 aztuAkademik.RelProjectResearcher.RemoveRange(entry);
-                await Classes.TLog.Log("RelProjectResearcher", "", _deletedResearchers, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                await Classes.TLog.Log("RelProjectResearcher", "", projectModel.DeletedResearchers, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
-                await _relProjectResearchers.ForEachAsync(async x =>
+                await projectModel.RelProjectResearchers.ForEachAsync(async x =>
                 {
-                    x.ProjectId = _project.Id;
+                    x.ProjectId = projectModel.Project.Id;
 
                     if (x.Id == 0)
                     {
@@ -181,9 +123,9 @@ namespace AZTU_Akademik.Controllers
 
                 }).ConfigureAwait(false);
 
-                aztuAkademik.RelProjectResearcher.UpdateRange(_relProjectResearchers);
+                aztuAkademik.RelProjectResearcher.UpdateRange(projectModel.RelProjectResearchers);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-                await Classes.TLog.Log("Project", "", _project.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                await Classes.TLog.Log("Project", "", projectModel.Project.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -196,7 +138,7 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int projectId)
         {
-            Project project = await aztuAkademik.Project.Include(x => x.RelProjectResearcher).FirstOrDefaultAsync(x => x.Id == projectId && x.ResearcherId==User_Id).
+            Project project = await aztuAkademik.Project.Include(x => x.RelProjectResearcher).FirstOrDefaultAsync(x => x.Id == projectId && x.ResearcherId == User_Id).
                 ConfigureAwait(false);
             project.DeleteDate = GetDate;
             project.StatusId = 0;

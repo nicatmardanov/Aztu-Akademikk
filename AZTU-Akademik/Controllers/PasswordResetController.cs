@@ -14,6 +14,12 @@ namespace AZTU_Akademik.Controllers
     [ApiController]
     public class PasswordResetController : Controller
     {
+        public class PasswordResetModel
+        {
+            public string Hash { get; set; }
+            public string Email { get; set; }
+            public string NewPassword { get; set; }
+        }
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
         {
@@ -24,12 +30,12 @@ namespace AZTU_Akademik.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> Get([FromQuery] string hash, [FromQuery] string email)
+        public async Task<JsonResult> Get(PasswordResetModel passwordResetModel)
         {
-            User user = await aztuAkademik.User.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email).ConfigureAwait(false);
+            User user = await aztuAkademik.User.AsNoTracking().FirstOrDefaultAsync(x => x.Email == passwordResetModel.Email).ConfigureAwait(false);
 
             PasswordReset passwordReset = await aztuAkademik.PasswordReset.AsNoTracking().
-                LastOrDefaultAsync(x => x.Hash == hash && x.UserId == user.Id && 
+                LastOrDefaultAsync(x => x.Hash == passwordResetModel.Hash && x.UserId == user.Id && 
                 GetDate.Subtract(x.CreateDate.Value).Days >= 0 && GetDate.Subtract(x.CreateDate.Value).Days < 1).ConfigureAwait(false);
 
 
@@ -66,17 +72,17 @@ namespace AZTU_Akademik.Controllers
 
 
         [HttpPut("PasswordChange")]
-        public async Task<byte> PasswordChange([FromQuery] string hash, [FromQuery] string email, [FromQuery] string newPassword)
+        public async Task<byte> PasswordChange(PasswordResetModel passwordResetModel)
         {
-            User user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == email).ConfigureAwait(false);
+            User user = await aztuAkademik.User.FirstOrDefaultAsync(x => x.Email == passwordResetModel.Email).ConfigureAwait(false);
             PasswordReset passwordReset = await aztuAkademik.PasswordReset.
-                LastOrDefaultAsync(x => x.Hash == hash && x.UserId == user.Id && 
+                LastOrDefaultAsync(x => x.Hash == passwordResetModel.Hash && x.UserId == user.Id && 
                 GetDate.Subtract(x.CreateDate.Value).Days >= 0 && GetDate.Subtract(x.CreateDate.Value).Days < 1).ConfigureAwait(false);
 
             if (user == null && passwordReset == null)
                 return 0;
 
-            user.Password = newPassword;
+            user.Password = passwordResetModel.NewPassword;
             user.UpdateDate = GetDate;
             passwordReset.DeleteDate = GetDate;
 

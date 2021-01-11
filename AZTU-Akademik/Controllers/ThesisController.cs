@@ -16,6 +16,12 @@ namespace AZTU_Akademik.Controllers
     [Authorize]
     public class ThesisController : Controller
     {
+        public class ThesisModel
+        {
+            public Thesis Thesis { get; set; }
+            public IQueryable<RelThesisResearcher> RelThesisResearchers { get; set; }
+            public long[] DeletedResearchers { get; set; }
+        }
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
         {
@@ -53,25 +59,25 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task Post([FromQuery] Thesis _thesis, [FromQuery] IQueryable<RelThesisResearcher> _relThesisResearcher)
+        public async Task Post(ThesisModel thesisModel)
         {
-            _thesis.CreateDate = GetDate;
-            _thesis.CreatorId = User_Id;
-            await aztuAkademik.Thesis.AddAsync(_thesis).ConfigureAwait(false);
+            thesisModel.Thesis.CreateDate = GetDate;
+            thesisModel.Thesis.CreatorId = User_Id;
+            await aztuAkademik.Thesis.AddAsync(thesisModel.Thesis).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
 
-            await _relThesisResearcher.ForEachAsync(x =>
+            await thesisModel.RelThesisResearchers.ForEachAsync(x =>
             {
                 x.CreateDate = GetDate;
-                x.ThesisId = _thesis.Id;
+                x.ThesisId = thesisModel.Thesis.Id;
             }).ConfigureAwait(false);
 
 
-            await aztuAkademik.RelThesisResearcher.AddRangeAsync(_relThesisResearcher).ConfigureAwait(false);
+            await aztuAkademik.RelThesisResearcher.AddRangeAsync(thesisModel.RelThesisResearchers).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-            await Classes.TLog.Log("Thesis", "", _thesis.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-            await Classes.TLog.Log("RelThesisResearcher", "", _relThesisResearcher.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("Thesis", "", thesisModel.Thesis.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("RelThesisResearcher", "", thesisModel.RelThesisResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
@@ -79,25 +85,25 @@ namespace AZTU_Akademik.Controllers
 
         //PUT
         [HttpPut]
-        public async Task<int> Put([FromQuery] Thesis _thesis, [FromQuery] IQueryable<RelThesisResearcher> _relThesisResearchers, [FromQuery] long[] _deletedResearchers)
+        public async Task<int> Put(ThesisModel thesisModel)
         {
             if (ModelState.IsValid)
             {
 
-                aztuAkademik.Attach(_thesis);
-                aztuAkademik.Entry(_thesis).State = EntityState.Modified;
-                aztuAkademik.Entry(_thesis).Property(x => x.CreateDate).IsModified = false;
-                aztuAkademik.Entry(_thesis).Property(x => x.CreatorId).IsModified = false;
-                aztuAkademik.Entry(_thesis).Property(x => x.PublisherId).IsModified = false;
+                aztuAkademik.Attach(thesisModel.Thesis);
+                aztuAkademik.Entry(thesisModel.Thesis).State = EntityState.Modified;
+                aztuAkademik.Entry(thesisModel.Thesis).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(thesisModel.Thesis).Property(x => x.CreatorId).IsModified = false;
+                aztuAkademik.Entry(thesisModel.Thesis).Property(x => x.PublisherId).IsModified = false;
 
 
-                var entry = aztuAkademik.RelThesisResearcher.Where(x => _deletedResearchers.Contains(x.Id));
+                var entry = aztuAkademik.RelThesisResearcher.Where(x => thesisModel.DeletedResearchers.Contains(x.Id));
                 aztuAkademik.RelThesisResearcher.RemoveRange(entry);
-                await Classes.TLog.Log("RelThesisResearcher", "", _deletedResearchers, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                await Classes.TLog.Log("RelThesisResearcher", "", thesisModel.DeletedResearchers, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
-                await _relThesisResearchers.ForEachAsync(async x =>
+                await thesisModel.RelThesisResearchers.ForEachAsync(async x =>
                 {
-                    x.ThesisId = _thesis.Id;
+                    x.ThesisId = thesisModel.Thesis.Id;
 
                     if (x.Id == 0)
                     {
@@ -114,9 +120,9 @@ namespace AZTU_Akademik.Controllers
 
                 }).ConfigureAwait(false);
 
-                aztuAkademik.RelThesisResearcher.UpdateRange(_relThesisResearchers);
+                aztuAkademik.RelThesisResearcher.UpdateRange(thesisModel.RelThesisResearchers);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-                await Classes.TLog.Log("Thesis", "", _thesis.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                await Classes.TLog.Log("Thesis", "", thesisModel.Thesis.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 return 1;
             }
@@ -131,7 +137,7 @@ namespace AZTU_Akademik.Controllers
             Thesis thesis = await aztuAkademik.Thesis.Include(x => x.RelThesisResearcher).
                 FirstOrDefaultAsync(x => x.Id == thesisId && x.CreatorId == User_Id).
                 ConfigureAwait(false);
-            
+
             thesis.DeleteDate = GetDate;
             thesis.StatusId = 0;
             await thesis.RelThesisResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate).ConfigureAwait(false);

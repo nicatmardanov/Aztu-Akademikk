@@ -63,7 +63,7 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task Post(ArticleModel articleModel)
+        public async Task Post([FromForm]ArticleModel articleModel)
         {
 
             if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
@@ -110,7 +110,7 @@ namespace AZTU_Akademik.Controllers
 
         //PUT
         [HttpPut]
-        public async Task<int> Put(ArticleModel articleModel)
+        public async Task<int> Put([FromForm]ArticleModel articleModel)
         {
             if (ModelState.IsValid)
             {

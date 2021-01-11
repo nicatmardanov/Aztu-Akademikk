@@ -16,6 +16,10 @@ namespace AZTU_Akademik.Controllers
     [Authorize]
     public class ResearcherLanguageController : Controller
     {
+        public class ResearcherLanguageModel{
+            public ResearcherLanguage ResearcherLanguage { get; set; }
+            public bool FileChange { get; set; }
+        }
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
         {
@@ -97,13 +101,13 @@ namespace AZTU_Akademik.Controllers
 
         //PUT
         [HttpPut]
-        public async Task<int> Put([FromQuery]ResearcherLanguage _researcherLanguage, [FromQuery] bool fileChange)
+        public async Task<int> Put([FromForm]ResearcherLanguageModel researcherLanguageModel)
         {
             if (ModelState.IsValid)
             {
-                if (fileChange)
+                if (researcherLanguageModel.FileChange)
                 {
-                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == _researcherLanguage.FileId).ConfigureAwait(false);
+                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == researcherLanguageModel.ResearcherLanguage.FileId).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(_file.Name))
                         System.IO.File.Delete(_file.Name[1..]);
 
@@ -112,13 +116,13 @@ namespace AZTU_Akademik.Controllers
                     await Classes.TLog.Log("File", "", _file.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 }
 
-                _researcherLanguage.UpdateDate = GetDate;
-                aztuAkademik.Entry(_researcherLanguage).State = EntityState.Modified;
-                aztuAkademik.Entry(_researcherLanguage).Property(x => x.CreateDate).IsModified = false;
-                aztuAkademik.Entry(_researcherLanguage).Property(x => x.ResearcherId).IsModified = false;
+                researcherLanguageModel.ResearcherLanguage.UpdateDate = GetDate;
+                aztuAkademik.Entry(researcherLanguageModel.ResearcherLanguage).State = EntityState.Modified;
+                aztuAkademik.Entry(researcherLanguageModel.ResearcherLanguage).Property(x => x.CreateDate).IsModified = false;
+                aztuAkademik.Entry(researcherLanguageModel.ResearcherLanguage).Property(x => x.ResearcherId).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-                await Classes.TLog.Log("ResearcherLanguage", "", _researcherLanguage.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                await Classes.TLog.Log("ResearcherLanguage", "", researcherLanguageModel.ResearcherLanguage.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 return 1;
             }
 
