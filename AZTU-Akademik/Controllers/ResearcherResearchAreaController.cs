@@ -50,17 +50,15 @@ namespace AZTU_Akademik.Controllers
 
         //Post
         [HttpPost]
-        public async Task Post(List<RelResearcherResearcherArea> _relResearcherResearcherArea)
+        public async Task Post(RelResearcherResearcherArea _relResearcherResearcherArea)
         {
-            _relResearcherResearcherArea.ForEach(x =>
-            {
-                x.CreateDate = GetDate;
-                x.ResearcherId = User_Id;
-            });
+            _relResearcherResearcherArea.CreateDate = GetDate;
+            _relResearcherResearcherArea.ResearcherId = User_Id;
+
 
             await aztuAkademik.RelResearcherResearcherArea.AddRangeAsync(_relResearcherResearcherArea).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-            await Classes.TLog.Log("RelResearcherResearcherArea", "", _relResearcherResearcherArea.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("RelResearcherResearcherArea", "", _relResearcherResearcherArea.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
@@ -88,9 +86,9 @@ namespace AZTU_Akademik.Controllers
         public async Task Delete(int id)
         {
             RelResearcherResearcherArea relResearcherResearcherArea = await aztuAkademik.RelResearcherResearcherArea.
-                FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId==User_Id).
+                FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId == User_Id).
                 ConfigureAwait(false);
-            
+
             relResearcherResearcherArea.DeleteDate = GetDate;
             relResearcherResearcherArea.StatusId = 0;
 
