@@ -52,17 +52,14 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task Post(List<Contact> _contact)
+        public async Task Post(Contact _contact)
         {
-            _contact.ForEach(x =>
-            {
-                x.CreateDate = GetDate;
-                x.ResearcherId = User_Id;
-            });
+            _contact.CreateDate = GetDate;
+            _contact.ResearcherId = User_Id;
 
             await aztuAkademik.Contact.AddRangeAsync(_contact).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-            await Classes.TLog.Log("Contact", "", _contact.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("Contact", "", _contact.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
         //PUT
