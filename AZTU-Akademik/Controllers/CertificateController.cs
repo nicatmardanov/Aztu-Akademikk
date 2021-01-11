@@ -48,8 +48,8 @@ namespace AZTU_Akademik.Controllers
         [AllowAnonymous]
         public JsonResult Certificate(int user_id) => Json(aztuAkademik.Certificate.
             Include(x => x.File).Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
-            OrderByDescending(x=>x.Id).AsNoTracking().
-            Select(x=>new
+            OrderByDescending(x => x.Id).AsNoTracking().
+            Select(x => new
             {
                 x.Id,
                 x.Name,
@@ -61,34 +61,35 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task Post(Certificate _certificate)
+        public async Task Post([FromForm] Certificate _certificate)
         {
-            //if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
-            //{
-            //    File _file = new File
-            //    {
-            //        Name = await Classes.FileSave.Save(Request.Form.Files[0], 2).ConfigureAwait(false),
-            //        Type = 3,
-            //        CreateDate = GetDate,
-            //        StatusId = 1,
-            //        UserId = User_Id
-            //    };
+            if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
+            {
+                File _file = new File
+                {
+                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 2).ConfigureAwait(false),
+                    Type = 3,
+                    CreateDate = GetDate,
+                    StatusId = 1,
+                    UserId = User_Id
+                };
 
 
-            //    await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
-            //    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-
-                _certificate.CreateDate = GetDate;
-                _certificate.ResearcherId = User_Id;
-                //_certificate.FileId = _file.Id;
-
-                await aztuAkademik.Certificate.AddAsync(_certificate).ConfigureAwait(false);
+                await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                _certificate.FileId = _file.Id;
 
-                await Classes.TLog.Log("Certificate", "", _certificate.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-                //await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
-            //}
+            }
+
+            _certificate.CreateDate = GetDate;
+            _certificate.ResearcherId = User_Id;
+
+            await aztuAkademik.Certificate.AddAsync(_certificate).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+
+            await Classes.TLog.Log("Certificate", "", _certificate.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
         //PUT
@@ -125,7 +126,7 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            Certificate certificate = await aztuAkademik.Certificate.FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId==User_Id).ConfigureAwait(false);
+            Certificate certificate = await aztuAkademik.Certificate.FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId == User_Id).ConfigureAwait(false);
             certificate.DeleteDate = GetDate;
             certificate.StatusId = 0;
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);

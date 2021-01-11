@@ -45,10 +45,11 @@ namespace AZTU_Akademik.Controllers
         [HttpGet]
         [AllowAnonymous]
         public JsonResult ResearcherLanguages(int user_id) => Json(aztuAkademik.ResearcherLanguage.
-            Include(x => x.Researcher).Include(x => x.Language).Include(x => x.Level).Include(x => x.File).
             Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
+            Include(x => x.Researcher).Include(x => x.Language).Include(x => x.Level).Include(x => x.File).
             OrderByDescending(x => x.Id).AsNoTracking().
-            Select(x => new {
+            Select(x => new
+            {
                 x.Id,
                 Language = new
                 {
@@ -66,9 +67,9 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task Post(ResearcherLanguage _researcherLanguage)
+        public async Task Post([FromForm]ResearcherLanguage _researcherLanguage)
         {
-            if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
+            if (Request.Form.Files.Count > 0)
             {
                 File _file = new File
                 {
@@ -81,17 +82,17 @@ namespace AZTU_Akademik.Controllers
 
                 await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-
-                _researcherLanguage.CreateDate = GetDate;
                 _researcherLanguage.FileId = _file.Id;
-                _researcherLanguage.ResearcherId = User_Id;
 
-
-                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-                await Classes.TLog.Log("ResearcherLanguage", "", _researcherLanguage.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-
             }
+
+            _researcherLanguage.CreateDate = GetDate;
+            _researcherLanguage.ResearcherId = User_Id;
+
+            await aztuAkademik.ResearcherLanguage.AddAsync(_researcherLanguage).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("ResearcherLanguage", "", _researcherLanguage.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
         //PUT
