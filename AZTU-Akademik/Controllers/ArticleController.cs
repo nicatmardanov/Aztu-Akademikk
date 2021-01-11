@@ -19,8 +19,8 @@ namespace AZTU_Akademik.Controllers
         public class ArticleModel
         {
             public Article Article { get; set; }
-            public IQueryable<RelArticleResearcher> RelArticleResearchers { get; set; }
-            public long[] DeletedResearchers { get; set; } 
+            public List<RelArticleResearcher> RelArticleResearchers { get; set; }
+            public long[] DeletedResearchers { get; set; }
             public bool FileChange { get; set; }
         }
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -93,18 +93,18 @@ namespace AZTU_Akademik.Controllers
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
 
-            await articleModel.RelArticleResearchers.ForEachAsync(x =>
+            articleModel.RelArticleResearchers.ForEach(x =>
             {
                 x.CreateDate = GetDate;
                 x.ArticleId = articleModel.Article.Id;
-            }).ConfigureAwait(false);
+            });
 
 
-            await aztuAkademik.RelArticleResearcher.AddRangeAsync( articleModel.RelArticleResearchers).ConfigureAwait(false);
-            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);    
+            await aztuAkademik.RelArticleResearcher.AddRangeAsync(articleModel.RelArticleResearchers).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
             await Classes.TLog.Log("Article", "", articleModel.Article.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-            await Classes.TLog.Log("RelArticleResearcher", "",  articleModel.RelArticleResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("RelArticleResearcher", "", articleModel.RelArticleResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
         }
 
@@ -135,11 +135,11 @@ namespace AZTU_Akademik.Controllers
 
 
                 IQueryable<RelArticleResearcher> entry = aztuAkademik.RelArticleResearcher.Where(x => articleModel.DeletedResearchers.Contains(x.Id));
-                aztuAkademik.RelArticleResearcher.RemoveRange( articleModel.RelArticleResearchers);
+                aztuAkademik.RelArticleResearcher.RemoveRange(entry);
                 await Classes.TLog.Log("RelArticleResearcher", "", articleModel.DeletedResearchers, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
 
-                await  articleModel.RelArticleResearchers.ForEachAsync(async x =>
+                articleModel.RelArticleResearchers.ForEach(async x =>
                 {
                     x.ArticleId = articleModel.Article.Id;
 
@@ -155,9 +155,9 @@ namespace AZTU_Akademik.Controllers
                         x.UpdateDate = GetDate;
                         await Classes.TLog.Log("RelArticleResearcher", "", x.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                     }
-                }).ConfigureAwait(false);
+                });
 
-                aztuAkademik.RelArticleResearcher.UpdateRange( articleModel.RelArticleResearchers);
+                aztuAkademik.RelArticleResearcher.UpdateRange(articleModel.RelArticleResearchers);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
                 await Classes.TLog.Log("Article", "", articleModel.Article.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
@@ -171,11 +171,12 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int articleId)
         {
-            Article article = await aztuAkademik.Article.Include(x=>x.RelArticleResearcher).FirstOrDefaultAsync(x => x.Id == articleId && x.CreatorId==User_Id).ConfigureAwait(false);
+            Article article = await aztuAkademik.Article.Include(x => x.RelArticleResearcher).
+                FirstOrDefaultAsync(x => x.Id == articleId && x.CreatorId == User_Id).ConfigureAwait(false);
             article.DeleteDate = GetDate;
             article.StatusId = 0;
 
-            await article.RelArticleResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate).ConfigureAwait(false);
+            article.RelArticleResearcher.ToList().ForEach(x => x.DeleteDate = GetDate);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             await Classes.TLog.Log("Article", "", articleId, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }

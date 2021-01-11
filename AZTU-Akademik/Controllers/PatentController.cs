@@ -19,7 +19,7 @@ namespace AZTU_Akademik.Controllers
         public class PatentModel
         {
             public Patent Patent { get; set; }
-            public IQueryable<RelPatentResearcher> RelPatentResearchers { get; set; }
+            public List<RelPatentResearcher> RelPatentResearchers { get; set; }
             public long[] DeletedResearchers { get; set; }
         }
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -68,11 +68,11 @@ namespace AZTU_Akademik.Controllers
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
 
-            await patentModel.RelPatentResearchers.ForEachAsync(x =>
+            patentModel.RelPatentResearchers.ForEach(x =>
             {
                 x.CreateDate = GetDate;
                 x.PatentId = patentModel.Patent.Id;
-            }).ConfigureAwait(false);
+            });
 
 
             await aztuAkademik.RelPatentResearcher.AddRangeAsync(patentModel.RelPatentResearchers).ConfigureAwait(false);
@@ -99,7 +99,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.RelPatentResearcher.RemoveRange(entry);
                 await Classes.TLog.Log("RelPatentResearcher", "", patentModel.DeletedResearchers, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
-                await patentModel.RelPatentResearchers.ForEachAsync(async x =>
+                patentModel.RelPatentResearchers.ForEach(async x =>
                 {
                     x.PatentId = patentModel.Patent.Id;
 
@@ -116,7 +116,7 @@ namespace AZTU_Akademik.Controllers
                         await Classes.TLog.Log("RelPatentResearcher", "", x.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                     }
 
-                }).ConfigureAwait(false);
+                });
 
                 aztuAkademik.RelPatentResearcher.UpdateRange(patentModel.RelPatentResearchers);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
@@ -136,9 +136,10 @@ namespace AZTU_Akademik.Controllers
         {
             Patent patent = await aztuAkademik.Patent.Include(x => x.RelPatentResearcher).FirstOrDefaultAsync(x => x.Id == patentId && x.ResearcherId == User_Id).
                 ConfigureAwait(false);
+
             patent.DeleteDate = GetDate;
             patent.StatusId = 0;
-            await patent.RelPatentResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate).ConfigureAwait(false);
+            patent.RelPatentResearcher.ToList().ForEach(x => x.DeleteDate = GetDate);
 
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             await Classes.TLog.Log("Patent", "", patentId, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);

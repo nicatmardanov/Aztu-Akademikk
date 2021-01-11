@@ -19,7 +19,7 @@ namespace AZTU_Akademik.Controllers
         public class TextbookModel
         {
             public Textbook Textbook { get; set; }
-            public IQueryable<RelTextbookResearcher> RelTextbookResearchers { get; set; }
+            public List<RelTextbookResearcher> RelTextbookResearchers { get; set; }
             public long[] DeletedResearchers { get; set; }
         }
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -68,11 +68,11 @@ namespace AZTU_Akademik.Controllers
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
 
-            await textbookModel.RelTextbookResearchers.ForEachAsync(x =>
+            textbookModel.RelTextbookResearchers.ForEach(x =>
             {
                 x.CreateDate = GetDate;
                 x.TextbookId = textbookModel.Textbook.Id;
-            }).ConfigureAwait(false);
+            });
 
 
             await aztuAkademik.RelTextbookResearcher.AddRangeAsync(textbookModel.RelTextbookResearchers).ConfigureAwait(false);
@@ -102,7 +102,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.RelTextbookResearcher.RemoveRange(entry);
                 await Classes.TLog.Log("RelTextbookResearcher", "", textbookModel.DeletedResearchers, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
-                await textbookModel.RelTextbookResearchers.ForEachAsync(async x =>
+                textbookModel.RelTextbookResearchers.ForEach(async x =>
                 {
                     x.TextbookId = textbookModel.Textbook.Id;
 
@@ -119,7 +119,7 @@ namespace AZTU_Akademik.Controllers
                         await Classes.TLog.Log("RelTextbookResearcher", "", x.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                     }
 
-                }).ConfigureAwait(false);
+                });
 
                 aztuAkademik.RelTextbookResearcher.UpdateRange(textbookModel.RelTextbookResearchers);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
@@ -141,7 +141,7 @@ namespace AZTU_Akademik.Controllers
 
             textbook.DeleteDate = GetDate;
             textbook.StatusId = 0;
-            await textbook.RelTextbookResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate).ConfigureAwait(false);
+            textbook.RelTextbookResearcher.ToList().ForEach(x => x.DeleteDate = GetDate);
 
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             await Classes.TLog.Log("Textbook", "", textbookId, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);

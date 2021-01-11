@@ -50,13 +50,14 @@ namespace AZTU_Akademik.Controllers
 
         //Post
         [HttpPost]
-        public async Task Post(IQueryable<RelResearcherResearcherArea> _relResearcherResearcherArea)
+        public async Task Post(List<RelResearcherResearcherArea> _relResearcherResearcherArea)
         {
-            await _relResearcherResearcherArea.ForEachAsync(x =>
+            _relResearcherResearcherArea.ForEach(x =>
             {
                 x.CreateDate = GetDate;
                 x.ResearcherId = User_Id;
-            }).ConfigureAwait(false);
+            });
+
             await aztuAkademik.RelResearcherResearcherArea.AddRangeAsync(_relResearcherResearcherArea).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             await Classes.TLog.Log("RelResearcherResearcherArea", "", _relResearcherResearcherArea.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);

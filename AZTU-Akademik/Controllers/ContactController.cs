@@ -46,19 +46,19 @@ namespace AZTU_Akademik.Controllers
         [HttpGet]
         [AllowAnonymous]
         public JsonResult Contact(int user_id) => Json(aztuAkademik.Contact.Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
-            OrderByDescending(x=>x.Id).
+            OrderByDescending(x => x.Id).
             Include(x => x.Type).AsNoTracking());
 
 
         //POST
         [HttpPost]
-        public async Task Post(IQueryable<Contact> _contact)
+        public async Task Post(List<Contact> _contact)
         {
-            await _contact.ForEachAsync(x =>
-             {
-                 x.CreateDate = GetDate;
-                 x.ResearcherId = User_Id;
-             }).ConfigureAwait(false);
+            _contact.ForEach(x =>
+            {
+                x.CreateDate = GetDate;
+                x.ResearcherId = User_Id;
+            });
 
             await aztuAkademik.Contact.AddRangeAsync(_contact).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
@@ -89,7 +89,7 @@ namespace AZTU_Akademik.Controllers
         [HttpDelete]
         public async Task Delete(int id)
         {
-            Contact contact = await aztuAkademik.Contact.FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId==User_Id).ConfigureAwait(false);
+            Contact contact = await aztuAkademik.Contact.FirstOrDefaultAsync(x => x.Id == id && x.ResearcherId == User_Id).ConfigureAwait(false);
             contact.DeleteDate = GetDate;
             contact.StatusId = 0;
 

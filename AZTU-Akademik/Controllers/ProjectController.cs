@@ -19,7 +19,7 @@ namespace AZTU_Akademik.Controllers
         public class ProjectModel
         {
             public Project Project { get; set; }
-            public IQueryable<RelProjectResearcher> RelProjectResearchers { get; set; }
+            public List<RelProjectResearcher> RelProjectResearchers { get; set; }
             public long[] DeletedResearchers { get; set; }
         }
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -73,11 +73,11 @@ namespace AZTU_Akademik.Controllers
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
 
-            await projectModel.RelProjectResearchers.ForEachAsync(x =>
+            projectModel.RelProjectResearchers.ForEach(x =>
             {
                 x.CreateDate = GetDate;
                 x.ProjectId = projectModel.Project.Id;
-            }).ConfigureAwait(false);
+            });
 
 
             await aztuAkademik.RelProjectResearcher.AddRangeAsync(projectModel.RelProjectResearchers).ConfigureAwait(false);
@@ -104,7 +104,7 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.RelProjectResearcher.RemoveRange(entry);
                 await Classes.TLog.Log("RelProjectResearcher", "", projectModel.DeletedResearchers, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
-                await projectModel.RelProjectResearchers.ForEachAsync(async x =>
+                projectModel.RelProjectResearchers.ForEach(async x =>
                 {
                     x.ProjectId = projectModel.Project.Id;
 
@@ -121,7 +121,7 @@ namespace AZTU_Akademik.Controllers
                         await Classes.TLog.Log("RelProjectResearcher", "", x.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                     }
 
-                }).ConfigureAwait(false);
+                });
 
                 aztuAkademik.RelProjectResearcher.UpdateRange(projectModel.RelProjectResearchers);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
@@ -142,7 +142,7 @@ namespace AZTU_Akademik.Controllers
                 ConfigureAwait(false);
             project.DeleteDate = GetDate;
             project.StatusId = 0;
-            await project.RelProjectResearcher.AsQueryable().ForEachAsync(x => x.DeleteDate = GetDate).ConfigureAwait(false);
+            project.RelProjectResearcher.ToList().ForEach(x => x.DeleteDate = GetDate);
 
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             await Classes.TLog.Log("Project", "", projectId, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
