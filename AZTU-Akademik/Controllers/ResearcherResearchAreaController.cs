@@ -45,7 +45,16 @@ namespace AZTU_Akademik.Controllers
         [HttpGet]
         [AllowAnonymous]
         public JsonResult Area(int user_id) => Json(aztuAkademik.RelResearcherResearcherArea.Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
-            Include(x => x.Area).OrderByDescending(x => x.Id).AsNoTracking());
+            Include(x => x.Area).OrderByDescending(x => x.Id).AsNoTracking().
+            Select(x => new
+            {
+                x.Id,
+                Area = new
+                {
+                    x.Area.Id,
+                    x.Area.Name
+                }
+            }));
 
 
         //Post

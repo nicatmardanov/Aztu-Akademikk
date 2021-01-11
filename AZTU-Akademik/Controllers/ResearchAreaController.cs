@@ -44,11 +44,17 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult ResearchArea(int id) => Json(aztuAkademik.ResearchArea.AsNoTracking().FirstOrDefault(x => x.Id == id));
+        public JsonResult ResearchArea(int id) => Json(aztuAkademik.ResearchArea.AsNoTracking().FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
 
         [HttpGet("AllResearchAreas")]
         [AllowAnonymous]
-        public JsonResult AllResearchAreas() => Json(aztuAkademik.ResearchArea.Where(x=>!x.DeleteDate.HasValue).OrderByDescending(x => x.Id).AsNoTracking());
+        public JsonResult AllResearchAreas() => Json(aztuAkademik.ResearchArea.Where(x => !x.DeleteDate.HasValue).
+            OrderByDescending(x => x.Id).AsNoTracking().
+            Select(x => new
+            {
+                x.Id,
+                x.Name
+            }));
 
 
         //POST
