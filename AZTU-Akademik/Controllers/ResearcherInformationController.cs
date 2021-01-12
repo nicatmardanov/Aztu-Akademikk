@@ -156,6 +156,7 @@ namespace AZTU_Akademik.Controllers
             //    _user.ImageAddress = await Classes.FileSave.Save(Request.Form.Files[0], 4);
             if (ModelState.IsValid)
             {
+                _user.Id = User_Id;
                 _user.UpdateDate = GetDate;
                 aztuAkademik.Attach(_user);
                 aztuAkademik.Entry(_user).State = EntityState.Modified;
@@ -184,7 +185,10 @@ namespace AZTU_Akademik.Controllers
             }
         }
 
-        [HttpPut("ImageDelete")]
+
+
+        //DELETE
+        [HttpDelete("ImageDelete")]
         public async Task ImageDelete()
         {
             if (ModelState.IsValid)
@@ -197,9 +201,6 @@ namespace AZTU_Akademik.Controllers
                 await Classes.TLog.Log("User", "Only Image", _user.Id, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
             }
         }
-
-
-        //DELETE
         [HttpDelete("UserDelete")]
         public async Task UserDelete(int id)
         {

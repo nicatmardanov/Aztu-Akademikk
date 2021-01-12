@@ -32,7 +32,11 @@ namespace AZTU_Akademik
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(x => x.LoginPath = "/Login");
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(x =>
+            {
+                x.LoginPath = "/Login";
+                x.Cookie.HttpOnly = false;
+            });
 
             services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("///").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
 
