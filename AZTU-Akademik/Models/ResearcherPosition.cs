@@ -21,5 +21,6 @@ namespace AZTU_Akademik.Models
         public virtual EducationOrganization Organization { get; set; }
         public virtual Position Position { get; set; }
         public virtual User Researcher { get; set; }
+        public string Name { get; internal set; }
     }
 }

@@ -46,8 +46,20 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult ManagementExperience(int user_id) => Json(aztuAkademik.ManagementExperience.Where(x => x.ResearcherId == user_id).
-           Include(x => x.Researcher).Include(x => x.Organization).OrderByDescending(x => x.Id).AsNoTracking());
+        public JsonResult ManagementExperience(int user_id) => Json(aztuAkademik.ManagementExperience.Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
+           Include(x => x.Researcher).Include(x => x.Organization).OrderByDescending(x => x.Id).AsNoTracking().
+            Select(x=>new
+            {
+                x.Id,
+                x.Name,
+                x.StartDate,
+                x.EndDate,
+                Organization = new
+                {
+                    x.Organization.Id,
+                    x.Organization.Name
+                }
+            }));
 
 
         //POST

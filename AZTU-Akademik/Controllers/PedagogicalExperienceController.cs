@@ -47,7 +47,28 @@ namespace AZTU_Akademik.Controllers
         [AllowAnonymous]
         public JsonResult PedagogicalExperience(int user_id) => Json(aztuAkademik.ResearcherPosition.Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
             Include(x => x.Researcher).Include(x => x.Organization).Include(x => x.Position).Include(x => x.Department).
-            OrderByDescending(x => x.Id).AsNoTracking());
+            OrderByDescending(x => x.Id).AsNoTracking().
+            Select(x=>new
+            {
+                x.Id,
+                x.StartDate,
+                x.EndDate,
+                Organization = new
+                {
+                    x.Organization.Id,
+                    x.Organization.Name
+                },
+                Department = new
+                {
+                    x.Department.Id,
+                    x.Department.Name
+                },
+                Position = new
+                {
+                    x.Position.Id,
+                    x.Position.Name
+                }
+            }));
 
 
 

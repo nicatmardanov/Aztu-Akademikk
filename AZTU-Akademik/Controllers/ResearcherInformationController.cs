@@ -16,6 +16,18 @@ namespace AZTU_Akademik.Controllers
     [Authorize]
     public class ResearcherInformationController : Controller
     {
+        public class ExperienceModel
+        {
+            public static int Id { get; set; }
+            public static string Name { get; set; }
+        }
+
+        public class DepartmentModel
+        {
+            public static int Id { get; set; }
+            public static string Name { get; set; }
+        }
+
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
         {
@@ -49,9 +61,90 @@ namespace AZTU_Akademik.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult Information(int user_id) => Json(aztuAkademik.User.
-            Include(x => x.Nationality).Include(x => x.Citizenship).
-            AsNoTracking().FirstOrDefault(x => x.Id == user_id && !x.DeleteDate.HasValue));
+        public async Task<JsonResult> Information(int user_id)
+        {
+            User _user = aztuAkademik.User.
+            AsNoTracking().FirstOrDefault(x => x.Id == user_id && !x.DeleteDate.HasValue);
+
+            var researcherPosition = await aztuAkademik.ResearcherPosition.AsNoTracking().Where(x => !x.EndDate.HasValue && !x.DeleteDate.HasValue).
+                Include(x => x.Organization).Include(x => x.Department).
+                Select(x => new
+                {
+                    x.Organization.Id,
+                    x.Organization.Name,
+                    x.StartDate,
+                    DepartmentId = x.Department.Id,
+                    DepartmentName = x.Department.Name,
+                }).
+                OrderByDescending(x => x.Id).
+                FirstOrDefaultAsync().
+                ConfigureAwait(false);
+
+            var managementExperience = await aztuAkademik.ManagementExperience.AsNoTracking().Where(x => !x.EndDate.HasValue && !x.DeleteDate.HasValue).
+                Include(x => x.Organization).
+                Select(x => new
+                {
+                    x.Organization.Id,
+                    x.Organization.Name,
+                    x.StartDate
+                }).
+                OrderByDescending(x => x.Id).
+                FirstOrDefaultAsync().
+                ConfigureAwait(false);
+
+
+            if (managementExperience == null && researcherPosition != null)
+            {
+                ExperienceModel.Id = researcherPosition.Id;
+                ExperienceModel.Name = researcherPosition.Name;
+            }
+            else if (managementExperience != null && researcherPosition == null)
+            {
+                ExperienceModel.Id = managementExperience.Id;
+                ExperienceModel.Name = managementExperience.Name;
+            }
+            else if (managementExperience != null && researcherPosition != null)
+            {
+                bool e_check = managementExperience.StartDate.Value.CompareTo(researcherPosition.StartDate.Value) == 1 ? true : false;
+
+                if (managementExperience.StartDate.Value.CompareTo(researcherPosition.StartDate.Value) == 1)
+                {
+                    ExperienceModel.Id = managementExperience.Id;
+                    ExperienceModel.Name = managementExperience.Name;
+                }
+                else
+                {
+                    ExperienceModel.Id = researcherPosition.Id;
+                    ExperienceModel.Name = researcherPosition.Name;
+                }
+            }
+
+            DepartmentModel.Id = researcherPosition!=null ? researcherPosition.DepartmentId : 0;
+            DepartmentModel.Name = researcherPosition!=null ? researcherPosition.DepartmentName : null;
+
+
+
+            return Json(new
+            {
+                _user.Id,
+                _user.FirstName,
+                _user.LastName,
+                _user.Patronymic,
+                _user.ImageAddress,
+                _user.Email,
+                Organization = new
+                {
+                    ExperienceModel.Id,
+                    ExperienceModel.Name
+                },
+                Department = new
+                {
+                    DepartmentModel.Id,
+                    DepartmentModel.Name
+                }
+            });
+
+        }
 
 
 
