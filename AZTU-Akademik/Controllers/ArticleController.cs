@@ -306,7 +306,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             await Classes.TLog.Log("Article", "", articleId, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-            await Classes.TLog.Log("RelArticleResearcher", "", relArticleResearchers.Select(x => x.Id).ToArray(), 6, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("RelArticleResearcher", "", relArticleResearchers.Select(x => x.Id).ToArray(), 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
