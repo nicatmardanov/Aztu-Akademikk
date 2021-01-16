@@ -18,9 +18,11 @@ namespace AZTU_Akademik.Controllers
 
         //GET
         [HttpGet]
-        public JsonResult Get(int id) => Json(aztuAkademik.Journal.FirstOrDefault(x => x.Id == id && !x.DeleteDate.HasValue));
-
-        [HttpGet("AllJournals")]
-        public JsonResult AllJournals() => Json(aztuAkademik.Journal.Where(x => !x.DeleteDate.HasValue));
+        public JsonResult Get(bool indexed) => Json(aztuAkademik.Journal.Where(x => x.Indexed==indexed && !x.DeleteDate.HasValue).
+            Select(x=>new
+            {
+                x.Id,
+                x.Name
+            }));
     }
 }
