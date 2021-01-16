@@ -35,7 +35,7 @@ namespace AZTU_Akademik.Controllers
         public class ArticleModel
         {
             public Article Article { get; set; }
-            public List<ArticleUrl> ArticleUrl { get; set; }
+            public List<ArticleUrl> Urls { get; set; }
             public List<RelArticleResearcher> RelArticleResearchers { get; set; }  //
             public long[] DeletedResearchers { get; set; }
             public bool FileChange { get; set; }
@@ -100,28 +100,28 @@ namespace AZTU_Akademik.Controllers
                 };
 
 
-                if (!string.IsNullOrEmpty(articleModel.Journal))
-                {
-                    Journal journal = new Journal
-                    {
-                        Name = articleModel.Journal,
-                        Indexed = articleModel.Indexed,
-                        CreateDate = GetDate,
-                        StatusId = 1
-                    };
-
-                    await aztuAkademik.Journal.AddAsync(journal).ConfigureAwait(false);
-                    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-                    await Classes.TLog.Log("Journal", "", journal.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-                    
-                    articleModel.Article.Journal = journal.Id;
-                }
-
                 await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
                 await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
                 articleModel.Article.FileId = _file.Id;
+            }
+
+            if (!string.IsNullOrEmpty(articleModel.Journal))
+            {
+                Journal journal = new Journal
+                {
+                    Name = articleModel.Journal,
+                    Indexed = articleModel.Indexed,
+                    CreateDate = GetDate,
+                    StatusId = 1
+                };
+
+                await aztuAkademik.Journal.AddAsync(journal).ConfigureAwait(false);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Journal", "", journal.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+
+                articleModel.Article.Journal = journal.Id;
             }
 
 
@@ -130,29 +130,45 @@ namespace AZTU_Akademik.Controllers
             articleModel.Article.CreatorId = User_Id;
             await aztuAkademik.Article.AddAsync(articleModel.Article).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-
-
-
-            int userLength = articleModel.Researchers.Externals.Count > articleModel.Researchers.Internals.Count ?
-                articleModel.Researchers.Externals.Count :
-                articleModel.Researchers.Internals.Count;
-
-
-            
-
-
-            //articleModel.RelArticleResearchers.ForEach(x =>
-            //{
-            //    x.CreateDate = GetDate;
-            //    x.ArticleId = articleModel.Article.Id;
-            //});
-
-
-            //await aztuAkademik.RelArticleResearcher.AddRangeAsync(articleModel.RelArticleResearchers).ConfigureAwait(false);
-            //await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-
             await Classes.TLog.Log("Article", "", articleModel.Article.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-            //await Classes.TLog.Log("RelArticleResearcher", "", articleModel.RelArticleResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+
+
+            RelArticleResearcher relArticleResearcher;
+
+            if (articleModel.Researchers.Internals != null)
+                for (int i = 0; i < articleModel.Researchers.Internals.Count; i++)
+                {
+                    relArticleResearcher = new RelArticleResearcher
+                    {
+                        ArticleId = articleModel.Article.Id,
+                        IntAuthorId = articleModel.Researchers.Internals[i].Id,
+                        CreateDate = GetDate,
+                        StatusId = 1,
+                        Type = articleModel.Researchers.Internals[i].Type
+                    };
+
+                    await aztuAkademik.RelArticleResearcher.AddAsync(relArticleResearcher).ConfigureAwait(false);
+                    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                    await Classes.TLog.Log("RelArticleResearcher", "", relArticleResearcher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                }
+
+            if (articleModel.Researchers.Externals != null)
+                for (int i = 0; i < articleModel.Researchers.Externals.Count; i++)
+                {
+                    relArticleResearcher = new RelArticleResearcher
+                    {
+                        ArticleId = articleModel.Article.Id,
+                        ExtAuthorId = articleModel.Researchers.Externals[i].Id,
+                        CreateDate = GetDate,
+                        StatusId = 1,
+                        Type = articleModel.Researchers.Externals[i].Type
+                    };
+
+                    await aztuAkademik.RelArticleResearcher.AddAsync(relArticleResearcher).ConfigureAwait(false);
+                    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                    await Classes.TLog.Log("RelArticleResearcher", "", relArticleResearcher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                }
+
 
         }
 
@@ -229,7 +245,7 @@ namespace AZTU_Akademik.Controllers
 
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             await Classes.TLog.Log("Article", "", articleId, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-            await Classes.TLog.Log("RelArticleResearcher", "", relArticleResearchers.Select(x=>x.Id).ToArray(), 6, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("RelArticleResearcher", "", relArticleResearchers.Select(x => x.Id).ToArray(), 6, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
