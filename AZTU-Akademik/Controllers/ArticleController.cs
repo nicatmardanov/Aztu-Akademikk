@@ -36,7 +36,6 @@ namespace AZTU_Akademik.Controllers
         {
             public Article Article { get; set; }
             public List<ArticleUrl> Urls { get; set; }
-            public List<RelArticleResearcher> RelArticleResearchers { get; set; }  //
             public long[] DeletedResearchers { get; set; }
             public bool FileChange { get; set; }
             public string Journal { get; set; }
@@ -74,12 +73,65 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult Article(int user_id) => Json(aztuAkademik.RelArticleResearcher.Where(x => (x.IntAuthorId == user_id || x.ExtAuthorId == user_id) && !x.DeleteDate.HasValue).
-            OrderByDescending(x => x.Id).
-            Include(x => x.Article).ThenInclude(x => x.Creator).
-            Include(x => x.Article).ThenInclude(x => x.File).
-            Include(x => x.Article).ThenInclude(x => x.Journal).
-            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization).AsNoTracking());
+        public JsonResult Article(int user_id)
+        {
+            IQueryable<Article> article = aztuAkademik.Article.
+                Where(x => x.CreatorId == user_id && !x.DeleteDate.HasValue).
+                OrderByDescending(x => x.Id).AsNoTracking().
+                Include(x => x.RelArticleResearcher).
+                Include(x => x.File).
+                Include(x => x.JournalNavigation).
+                Include(x => x.ArticleUrl);
+
+
+
+            //IQueryable<RelArticleResearcher> externalResearchers = article.RelArticleResearcher.AsQueryable().Where(x => x.ExtAuthorId > 0).
+            //    Include(x => x.ExtAuthor);
+
+
+
+            return Json(article.Select(x => new
+            {
+                x.Id,
+                x.Name,
+                x.Description,
+                x.Date,
+                x.Volume,
+                x.PageStart,
+                x.PageEnd,
+                Journal = new
+                {
+                    x.JournalNavigation.Id,
+                    x.JournalNavigation.Name,
+                },
+                Urls = x.ArticleUrl.Select(y => new
+                {
+                    y.UrlType,
+                    y.Url
+                }),
+                File = x.File.Name,
+                Researchers = new
+                {
+                    Internal = x.RelArticleResearcher.Where(y => y.IntAuthorId > 0).
+                    Select(y => new
+                    {
+                        y.IntAuthor.Id,
+                        y.IntAuthor.FirstName,
+                        y.IntAuthor.LastName,
+                        y.IntAuthor.Patronymic,
+                        y.Type
+                    }),
+
+                    External = x.RelArticleResearcher.Where(y =>y.ExtAuthorId > 0).
+                    Select(y => new
+                    {
+                        y.ExtAuthor.Id,
+                        y.ExtAuthor.Name,
+                        y.Type
+                    })
+                }
+            }));
+        }
 
 
 
@@ -183,61 +235,61 @@ namespace AZTU_Akademik.Controllers
 
         //PUT
         [HttpPut]
-        public async Task<int> Put([FromForm]ArticleModel articleModel)
-        {
-            if (ModelState.IsValid)
-            {
-                if (articleModel.FileChange)
-                {
-                    File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == articleModel.Article.FileId).ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(_file.Name))
-                        System.IO.File.Delete(_file.Name[1..]);
+        //public async Task<int> Put([FromForm]ArticleModel articleModel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (articleModel.FileChange)
+        //        {
+        //            File _file = await aztuAkademik.File.FirstOrDefaultAsync(x => x.Id == articleModel.Article.FileId).ConfigureAwait(false);
+        //            if (!string.IsNullOrEmpty(_file.Name))
+        //                System.IO.File.Delete(_file.Name[1..]);
 
-                    _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 5).ConfigureAwait(false);
-                    _file.UpdateDate = GetDate;
-                    await Classes.TLog.Log("File", "", _file.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-                }
-
-
-                aztuAkademik.Attach(articleModel.Article);
-                aztuAkademik.Entry(articleModel.Article).State = EntityState.Modified;
-                aztuAkademik.Entry(articleModel.Article).Property(x => x.CreateDate).IsModified = false;
-                aztuAkademik.Entry(articleModel.Article).Property(x => x.CreatorId).IsModified = false;
-                aztuAkademik.Entry(articleModel.Article).Property(x => x.FileId).IsModified = false;
+        //            _file.Name = await Classes.FileSave.Save(Request.Form.Files[0], 5).ConfigureAwait(false);
+        //            _file.UpdateDate = GetDate;
+        //            await Classes.TLog.Log("File", "", _file.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+        //        }
 
 
+        //        aztuAkademik.Attach(articleModel.Article);
+        //        aztuAkademik.Entry(articleModel.Article).State = EntityState.Modified;
+        //        aztuAkademik.Entry(articleModel.Article).Property(x => x.CreateDate).IsModified = false;
+        //        aztuAkademik.Entry(articleModel.Article).Property(x => x.CreatorId).IsModified = false;
+        //        aztuAkademik.Entry(articleModel.Article).Property(x => x.FileId).IsModified = false;
 
-                IQueryable<RelArticleResearcher> entry = aztuAkademik.RelArticleResearcher.Where(x => articleModel.DeletedResearchers.Contains(x.Id));
-                aztuAkademik.RelArticleResearcher.RemoveRange(entry);
-                await Classes.TLog.Log("RelArticleResearcher", "", articleModel.DeletedResearchers, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
 
-                articleModel.RelArticleResearchers.ForEach(async x =>
-                {
-                    x.ArticleId = articleModel.Article.Id;
+        //        IQueryable<RelArticleResearcher> entry = aztuAkademik.RelArticleResearcher.Where(x => articleModel.DeletedResearchers.Contains(x.Id));
+        //        aztuAkademik.RelArticleResearcher.RemoveRange(entry);
+        //        await Classes.TLog.Log("RelArticleResearcher", "", articleModel.DeletedResearchers, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
-                    if (x.Id == 0)
-                    {
-                        x.CreateDate = GetDate;
-                        await Classes.TLog.Log("RelArticleResearcher", "", x.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-                    }
 
-                    else
-                    {
-                        x.CreateDate = aztuAkademik.Project.FirstOrDefault(y => y.Id == x.Id).CreateDate;
-                        x.UpdateDate = GetDate;
-                        await Classes.TLog.Log("RelArticleResearcher", "", x.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-                    }
-                });
+        //        articleModel.RelArticleResearchers.ForEach(async x =>
+        //        {
+        //            x.ArticleId = articleModel.Article.Id;
 
-                aztuAkademik.RelArticleResearcher.UpdateRange(articleModel.RelArticleResearchers);
-                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+        //            if (x.Id == 0)
+        //            {
+        //                x.CreateDate = GetDate;
+        //                await Classes.TLog.Log("RelArticleResearcher", "", x.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+        //            }
 
-                await Classes.TLog.Log("Article", "", articleModel.Article.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-                return 1;
-            }
-            return 0;
-        }
+        //            else
+        //            {
+        //                x.CreateDate = aztuAkademik.Project.FirstOrDefault(y => y.Id == x.Id).CreateDate;
+        //                x.UpdateDate = GetDate;
+        //                await Classes.TLog.Log("RelArticleResearcher", "", x.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+        //            }
+        //        });
+
+        //        aztuAkademik.RelArticleResearcher.UpdateRange(articleModel.RelArticleResearchers);
+        //        await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+
+        //        await Classes.TLog.Log("Article", "", articleModel.Article.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+        //        return 1;
+        //    }
+        //    return 0;
+        //}
 
 
         //DELETE

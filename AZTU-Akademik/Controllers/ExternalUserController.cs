@@ -6,13 +6,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AZTU_Akademik.Models;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Microsoft.AspNetCore.Authorization.Authorize]
-    public class ExternalUserController : ControllerBase
+    public class ExternalUserController : Controller
     {
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
@@ -37,6 +38,20 @@ namespace AZTU_Akademik.Controllers
         {
             IpAdress = !string.IsNullOrEmpty(accessor.HttpContext.Connection.RemoteIpAddress.ToString()) ? accessor.HttpContext.Connection.RemoteIpAddress.ToString() : "";
             AInformation = accessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
+        //GET
+        [HttpGet]
+        public JsonResult Get(string userName)
+        {
+            string[] user_array = userName.Split(' ');
+
+            IQueryable<ExternalResearcher> users = aztuAkademik.ExternalResearcher.Where(x => x.Name.Contains(user_array[0])).AsNoTracking();
+
+            if (user_array.Length == 2)
+                users = users.Where(x => x.Name.Contains(user_array[1]));
+
+            return Json(users);
         }
 
         //POST
