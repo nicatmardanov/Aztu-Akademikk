@@ -7,6 +7,7 @@ namespace AZTU_Akademik.Models
     {
         public Article()
         {
+            ArticleUrl = new HashSet<ArticleUrl>();
             RelArticleResearcher = new HashSet<RelArticleResearcher>();
         }
 
@@ -24,11 +25,12 @@ namespace AZTU_Akademik.Models
         public byte? StatusId { get; set; }
         public int? CreatorId { get; set; }
         public long? FileId { get; set; }
-        public int? JournalId { get; set; }
+        public int? Journal { get; set; }
 
         public virtual User Creator { get; set; }
         public virtual File File { get; set; }
-        public virtual Journal Journal { get; set; }
+        public virtual Journal JournalNavigation { get; set; }
+        public virtual ICollection<ArticleUrl> ArticleUrl { get; set; }
         public virtual ICollection<RelArticleResearcher> RelArticleResearcher { get; set; }
     }
 }

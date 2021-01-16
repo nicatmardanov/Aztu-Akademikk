@@ -22,6 +22,8 @@ namespace AZTU_Akademik.Controllers
             public List<RelArticleResearcher> RelArticleResearchers { get; set; }
             public long[] DeletedResearchers { get; set; }
             public bool FileChange { get; set; }
+            public string Journal { get; set; }
+            public bool Indexed { get; set; }
         }
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
@@ -76,6 +78,23 @@ namespace AZTU_Akademik.Controllers
                     StatusId = 1,
                     UserId = User_Id
                 };
+
+                Journal journal;
+
+                if (!string.IsNullOrEmpty(articleModel.Journal))
+                {
+                    journal = new Journal
+                    {
+                        Name = articleModel.Journal,
+                        Indexed = articleModel.Indexed,
+                        CreateDate = GetDate,
+                        StatusId = 1
+                    };
+                    await aztuAkademik.Journal.AddAsync(journal).ConfigureAwait(false);
+                    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+
+                    await Classes.TLog.Log("Journal", "", journal.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                }
 
                 await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);

@@ -17,6 +17,7 @@ namespace AZTU_Akademik.Models
 
         public virtual DbSet<Announcement> Announcement { get; set; }
         public virtual DbSet<Article> Article { get; set; }
+        public virtual DbSet<ArticleUrl> ArticleUrl { get; set; }
         public virtual DbSet<Certificate> Certificate { get; set; }
         public virtual DbSet<Contact> Contact { get; set; }
         public virtual DbSet<ContactType> ContactType { get; set; }
@@ -128,7 +129,7 @@ namespace AZTU_Akademik.Models
 
                 entity.Property(e => e.FileId).HasColumnName("file_id");
 
-                entity.Property(e => e.JournalId).HasColumnName("journal_id");
+                entity.Property(e => e.Journal).HasColumnName("journal");
 
                 entity.Property(e => e.Name).HasColumnName("name");
 
@@ -156,10 +157,46 @@ namespace AZTU_Akademik.Models
                     .HasForeignKey(d => d.FileId)
                     .HasConstraintName("FK_Article_File");
 
-                entity.HasOne(d => d.Journal)
+                entity.HasOne(d => d.JournalNavigation)
                     .WithMany(p => p.Article)
-                    .HasForeignKey(d => d.JournalId)
+                    .HasForeignKey(d => d.Journal)
                     .HasConstraintName("FK_Article_Journal");
+            });
+
+            modelBuilder.Entity<ArticleUrl>(entity =>
+            {
+                entity.ToTable("ArticleURL");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ArticleId).HasColumnName("article_id");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnName("create_date")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("delete_date")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.StatusId).HasColumnName("status_id");
+
+                entity.Property(e => e.UpdateDate)
+                    .HasColumnName("update_date")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Url)
+                    .HasColumnName("url")
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.UrlType)
+                    .HasColumnName("url_type")
+                    .HasMaxLength(200);
+
+                entity.HasOne(d => d.Article)
+                    .WithMany(p => p.ArticleUrl)
+                    .HasForeignKey(d => d.ArticleId)
+                    .HasConstraintName("FK_ArticleURL_Article");
             });
 
             modelBuilder.Entity<Certificate>(entity =>

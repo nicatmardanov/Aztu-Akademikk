@@ -12,7 +12,7 @@ namespace AZTU_Akademik.Models
 
         public int Id { get; set; }
         public string Name { get; set; }
-        public byte? Indexed { get; set; }
+        public bool? Indexed { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public DateTime? DeleteDate { get; set; }
