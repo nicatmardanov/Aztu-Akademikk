@@ -163,6 +163,8 @@ namespace AZTU_Akademik.Controllers
                 aztuAkademik.Entry(_user).Property(x => x.CreateDate).IsModified = false;
                 aztuAkademik.Entry(_user).Property(x => x.RoleId).IsModified = false;
                 aztuAkademik.Entry(_user).Property(x => x.StatusId).IsModified = false;
+                aztuAkademik.Entry(_user).Property(x => x.ImageAddress).IsModified = false;
+                aztuAkademik.Entry(_user).Property(x => x.Email).IsModified = false;
 
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
                 await Classes.TLog.Log("User", "", _user.Id, 2, User_Id, IpAdress, AInformation).ConfigureAwait(false);

@@ -16,15 +16,36 @@ namespace AZTU_Akademik.Controllers
     [Authorize]
     public class ArticleController : Controller
     {
+        public class Internal
+        {
+            public int Id { get; set; }
+            public bool Type { get; set; }
+        }
+
+        public class External
+        {
+            public int Id { get; set; }
+            public bool Type { get; set; }
+        }
+        public class Researchers
+        {
+            public List<Internal> Internals { get; set; }
+            public List<External> Externals { get; set; }
+        }
         public class ArticleModel
         {
             public Article Article { get; set; }
-            public List<RelArticleResearcher> RelArticleResearchers { get; set; }
+            public List<ArticleUrl> ArticleUrl { get; set; }
+            public List<RelArticleResearcher> RelArticleResearchers { get; set; }  //
             public long[] DeletedResearchers { get; set; }
             public bool FileChange { get; set; }
             public string Journal { get; set; }
             public bool Indexed { get; set; }
+            public Researchers Researchers { get; set; }
         }
+
+
+
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
         {
@@ -67,7 +88,6 @@ namespace AZTU_Akademik.Controllers
         [HttpPost]
         public async Task Post([FromForm]ArticleModel articleModel)
         {
-
             if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
             {
                 File _file = new File
@@ -79,27 +99,27 @@ namespace AZTU_Akademik.Controllers
                     UserId = User_Id
                 };
 
-                Journal journal;
 
                 if (!string.IsNullOrEmpty(articleModel.Journal))
                 {
-                    journal = new Journal
+                    Journal journal = new Journal
                     {
                         Name = articleModel.Journal,
                         Indexed = articleModel.Indexed,
                         CreateDate = GetDate,
                         StatusId = 1
                     };
+
                     await aztuAkademik.Journal.AddAsync(journal).ConfigureAwait(false);
                     await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-
                     await Classes.TLog.Log("Journal", "", journal.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                    
+                    articleModel.Article.Journal = journal.Id;
                 }
 
                 await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
                 await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-
 
                 articleModel.Article.FileId = _file.Id;
             }
@@ -112,18 +132,27 @@ namespace AZTU_Akademik.Controllers
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
 
-            articleModel.RelArticleResearchers.ForEach(x =>
-            {
-                x.CreateDate = GetDate;
-                x.ArticleId = articleModel.Article.Id;
-            });
+
+            int userLength = articleModel.Researchers.Externals.Count > articleModel.Researchers.Internals.Count ?
+                articleModel.Researchers.Externals.Count :
+                articleModel.Researchers.Internals.Count;
 
 
-            await aztuAkademik.RelArticleResearcher.AddRangeAsync(articleModel.RelArticleResearchers).ConfigureAwait(false);
-            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            
+
+
+            //articleModel.RelArticleResearchers.ForEach(x =>
+            //{
+            //    x.CreateDate = GetDate;
+            //    x.ArticleId = articleModel.Article.Id;
+            //});
+
+
+            //await aztuAkademik.RelArticleResearcher.AddRangeAsync(articleModel.RelArticleResearchers).ConfigureAwait(false);
+            //await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
 
             await Classes.TLog.Log("Article", "", articleModel.Article.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-            await Classes.TLog.Log("RelArticleResearcher", "", articleModel.RelArticleResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            //await Classes.TLog.Log("RelArticleResearcher", "", articleModel.RelArticleResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
         }
 
@@ -195,9 +224,12 @@ namespace AZTU_Akademik.Controllers
             article.DeleteDate = GetDate;
             article.StatusId = 0;
 
-            article.RelArticleResearcher.ToList().ForEach(x => x.DeleteDate = GetDate);
+            List<RelArticleResearcher> relArticleResearchers = article.RelArticleResearcher.ToList();
+            relArticleResearchers.ForEach(x => x.DeleteDate = GetDate);
+
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             await Classes.TLog.Log("Article", "", articleId, 3, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("RelArticleResearcher", "", relArticleResearchers.Select(x=>x.Id).ToArray(), 6, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
