@@ -132,6 +132,15 @@ namespace AZTU_Akademik.Controllers
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             await Classes.TLog.Log("Article", "", articleModel.Article.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
+            articleModel.Urls.ForEach(x =>
+            {
+                x.ArticleId = articleModel.Article.Id;
+                x.CreateDate = GetDate;
+            });
+            await aztuAkademik.ArticleUrl.AddRangeAsync(articleModel.Urls).ConfigureAwait(false);
+            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("ArticleURL", "", articleModel.Urls.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+
 
             RelArticleResearcher relArticleResearcher;
 
