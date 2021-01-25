@@ -34,7 +34,12 @@ namespace AZTU_Akademik
         {
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(x =>
             {
-                x.LoginPath = "/Login";
+                //x.LoginPath = "/Login";
+                x.Events.OnRedirectToLogin = content =>
+                {
+                    content.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
+                    return Task.CompletedTask;
+                };
                 x.Cookie.HttpOnly = false;
             });
 
