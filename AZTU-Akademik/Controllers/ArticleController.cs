@@ -43,13 +43,6 @@ namespace AZTU_Akademik.Controllers
             public Researchers Researchers { get; set; }
         }
 
-        public class ArticleGetModel
-        {
-            public int UserId { get; set; }
-            public bool Indexed { get; set; }
-        }
-
-
 
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
