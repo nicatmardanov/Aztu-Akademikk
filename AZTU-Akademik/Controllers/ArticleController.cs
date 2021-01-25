@@ -43,6 +43,12 @@ namespace AZTU_Akademik.Controllers
             public Researchers Researchers { get; set; }
         }
 
+        public class ArticleGetModel
+        {
+            public int UserId { get; set; }
+            public bool Indexed { get; set; }
+        }
+
 
 
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
@@ -73,10 +79,10 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult Article(int user_id)
+        public JsonResult Article(ArticleGetModel articleGetModel)
         {
             IQueryable<Article> article = aztuAkademik.Article.
-                Where(x => x.CreatorId == user_id && !x.DeleteDate.HasValue).
+                Where(x => x.CreatorId == articleGetModel.UserId && x.JournalNavigation.Indexed == articleGetModel.Indexed && !x.DeleteDate.HasValue).
                 OrderByDescending(x => x.Id).AsNoTracking().
                 Include(x => x.RelArticleResearcher).
                 Include(x => x.File).
@@ -122,7 +128,7 @@ namespace AZTU_Akademik.Controllers
                         y.Type
                     }),
 
-                    External = x.RelArticleResearcher.Where(y =>y.ExtAuthorId > 0).
+                    External = x.RelArticleResearcher.Where(y => y.ExtAuthorId > 0).
                     Select(y => new
                     {
                         y.ExtAuthor.Id,
