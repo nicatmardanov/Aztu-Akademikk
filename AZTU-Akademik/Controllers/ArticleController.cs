@@ -79,10 +79,10 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult Article(ArticleGetModel articleGetModel)
+        public JsonResult Article([FromQuery] int UserId, [FromQuery]bool Indexed)
         {
             IQueryable<Article> article = aztuAkademik.Article.
-                Where(x => x.CreatorId == articleGetModel.UserId && x.JournalNavigation.Indexed == articleGetModel.Indexed && !x.DeleteDate.HasValue).
+                Where(x => x.CreatorId == UserId && x.JournalNavigation.Indexed == Indexed && !x.DeleteDate.HasValue).
                 OrderByDescending(x => x.Id).AsNoTracking().
                 Include(x => x.RelArticleResearcher).
                 Include(x => x.File).
