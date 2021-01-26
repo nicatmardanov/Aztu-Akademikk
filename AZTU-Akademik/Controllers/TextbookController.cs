@@ -108,7 +108,7 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task Post(TextbookModel textbookModel)
+        public async Task Post([FromForm]TextbookModel textbookModel)
         {
             if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
             {
