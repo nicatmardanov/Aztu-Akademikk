@@ -42,7 +42,7 @@ namespace AZTU_Akademik.Controllers
         }
 
         [HttpGet("AllPublishers")]
-        public JsonResult AllPublishers(int id) => Json(aztuAkademik.Publisher.Where(x => x.Id == id && !x.DeleteDate.HasValue).Select(x=>new
+        public JsonResult AllPublishers() => Json(aztuAkademik.Publisher.Where(x => !x.DeleteDate.HasValue).Select(x=>new
         {
             x.Id,
             x.Name
