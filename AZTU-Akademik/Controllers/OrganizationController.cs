@@ -52,7 +52,12 @@ namespace AZTU_Akademik.Controllers
         [HttpGet("AllOrganizations")]
         [AllowAnonymous]
         public JsonResult AllOrganizations() => Json(aztuAkademik.EducationOrganization.Where(x => !x.DeleteDate.HasValue).
-            OrderByDescending(x => x.Id).AsNoTracking());
+            OrderByDescending(x => x.Id).AsNoTracking().Select(x=>new
+            {
+                x.Id,
+                x.Name,
+                x.ShortName
+            }));
 
 
 

@@ -49,7 +49,14 @@ namespace AZTU_Akademik.Controllers
 
         [HttpGet("AllLevels")]
         [AllowAnonymous]
-        public JsonResult AllLevels() => Json(aztuAkademik.LanguageLevels.Where(x => !x.DeleteDate.HasValue).OrderByDescending(x => x.Id).AsNoTracking());
+        public JsonResult AllLevels() => Json(aztuAkademik.LanguageLevels.Where(x => !x.DeleteDate.HasValue).
+            OrderByDescending(x => x.Id).AsNoTracking().
+            Select(x=>new
+            {
+                x.Id,
+                x.Name,
+                x.ShortName
+            }));
 
 
         //POST
