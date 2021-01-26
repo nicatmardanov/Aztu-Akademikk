@@ -28,6 +28,8 @@ namespace AZTU_Akademik.Classes
                 case 3: folder_path += "ContactType"; break;
                 case 4: folder_path += "ProfilePicture"; break;
                 case 5: folder_path += "Article"; break;
+                case 6: folder_path += "Thesis"; break;
+                case 7: folder_path += "Textbook"; break;
             }
 
 

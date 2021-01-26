@@ -21,6 +21,9 @@ namespace AZTU_Akademik.Controllers
             public Textbook Textbook { get; set; }
             public List<RelTextbookResearcher> RelTextbookResearchers { get; set; }
             public long[] DeletedResearchers { get; set; }
+            public Classes.Researchers Researchers { get; set; }
+            public string Publisher { get; set; }
+            public List<Urls> Urls { get; set; }
         }
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
         private DateTime GetDate
@@ -107,23 +110,92 @@ namespace AZTU_Akademik.Controllers
         [HttpPost]
         public async Task Post(TextbookModel textbookModel)
         {
+            if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
+            {
+                File _file = new File
+                {
+                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 7).ConfigureAwait(false),
+                    Type = 8,
+                    CreateDate = GetDate,
+                    StatusId = 1,
+                    UserId = User_Id
+                };
+
+                await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+
+                textbookModel.Textbook.FileId = _file.Id;
+            }
+
+            if (!string.IsNullOrEmpty(textbookModel.Publisher))
+            {
+                Publisher publisher = new Publisher
+                {
+                    Name = textbookModel.Publisher,
+                };
+
+                await aztuAkademik.Publisher.AddAsync(publisher).ConfigureAwait(false);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Publisher", "", publisher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+
+                textbookModel.Textbook.PublisherId = publisher.Id;
+            }
+
+
             textbookModel.Textbook.CreateDate = GetDate;
             textbookModel.Textbook.CreatorId = User_Id;
             await aztuAkademik.Textbook.AddAsync(textbookModel.Textbook).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Textbook", "", textbookModel.Textbook.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
-
-            textbookModel.RelTextbookResearchers.ForEach(x =>
+            textbookModel.Urls.ForEach(x =>
             {
-                x.CreateDate = GetDate;
                 x.TextbookId = textbookModel.Textbook.Id;
+                x.CreateDate = GetDate;
             });
 
-
-            await aztuAkademik.RelTextbookResearcher.AddRangeAsync(textbookModel.RelTextbookResearchers).ConfigureAwait(false);
+            await aztuAkademik.Urls.AddRangeAsync(textbookModel.Urls).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-            await Classes.TLog.Log("Textbook", "", textbookModel.Textbook.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-            await Classes.TLog.Log("RelTextbookResearcher", "", textbookModel.RelTextbookResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("URLS", "", textbookModel.Urls.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+
+
+            RelTextbookResearcher relTextbookResearcher;
+
+            if (textbookModel.Researchers.Internals != null)
+                for (int i = 0; i < textbookModel.Researchers.Internals.Count; i++)
+                {
+                    relTextbookResearcher = new RelTextbookResearcher
+                    {
+                        TextbookId = textbookModel.Textbook.Id,
+                        IntAuthorId = textbookModel.Researchers.Internals[i].Id,
+                        CreateDate = GetDate,
+                        StatusId = 1,
+                        Type = textbookModel.Researchers.Internals[i].Type
+                    };
+
+                    await aztuAkademik.RelTextbookResearcher.AddAsync(relTextbookResearcher).ConfigureAwait(false);
+                    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                    await Classes.TLog.Log("RelTextbookResearcher", "", relTextbookResearcher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                }
+
+            if (textbookModel.Researchers.Externals != null)
+                for (int i = 0; i < textbookModel.Researchers.Externals.Count; i++)
+                {
+                    relTextbookResearcher = new RelTextbookResearcher
+                    {
+                        TextbookId = textbookModel.Textbook.Id,
+                        ExtAuthorId = textbookModel.Researchers.Externals[i].Id,
+                        CreateDate = GetDate,
+                        StatusId = 1,
+                        Type = textbookModel.Researchers.Externals[i].Type
+                    };
+
+                    await aztuAkademik.RelTextbookResearcher.AddAsync(relTextbookResearcher).ConfigureAwait(false);
+                    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                    await Classes.TLog.Log("RelTextbookResearcher", "", relTextbookResearcher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                }
+
         }
 
 

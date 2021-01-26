@@ -16,29 +16,14 @@ namespace AZTU_Akademik.Controllers
     [Authorize]
     public class ThesisController : Controller
     {
-        protected class Internal
-        {
-            public int Id { get; set; }
-            public bool Type { get; set; }
-        }
-
-        protected class External
-        {
-            public int Id { get; set; }
-            public bool Type { get; set; }
-        }
-        protected class Researchers
-        {
-            public List<Internal> Internals { get; set; }
-            public List<External> Externals { get; set; }
-        }
-
         public class ThesisModel
         {
             public Thesis Thesis { get; set; }
             public List<RelThesisResearcher> RelThesisResearchers { get; set; }
             public long[] DeletedResearchers { get; set; }
-            //public Researchers Researchers { get; set; }
+            public Classes.Researchers Researchers { get; set; }
+            public string Publisher { get; set; }
+            public List<Urls> Urls { get; set; }
         }
 
 
@@ -124,25 +109,94 @@ namespace AZTU_Akademik.Controllers
 
         //POST
         [HttpPost]
-        public async Task Post(ThesisModel thesisModel)
+        public async Task Post([FromForm]ThesisModel thesisModel)
         {
+            if (Request.ContentLength > 0 && Request.Form.Files.Count > 0)
+            {
+                File _file = new File
+                {
+                    Name = await Classes.FileSave.Save(Request.Form.Files[0], 6).ConfigureAwait(false),
+                    Type = 7,
+                    CreateDate = GetDate,
+                    StatusId = 1,
+                    UserId = User_Id
+                };
+
+                await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+
+                thesisModel.Thesis.FileId = _file.Id;
+            }
+
+            if (!string.IsNullOrEmpty(thesisModel.Publisher))
+            {
+                Publisher publisher = new Publisher
+                {
+                    Name = thesisModel.Publisher,
+                };
+
+                await aztuAkademik.Publisher.AddAsync(publisher).ConfigureAwait(false);
+                await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                await Classes.TLog.Log("Publisher", "", publisher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+
+                thesisModel.Thesis.PublisherId = publisher.Id;
+            }
+
+
             thesisModel.Thesis.CreateDate = GetDate;
             thesisModel.Thesis.CreatorId = User_Id;
             await aztuAkademik.Thesis.AddAsync(thesisModel.Thesis).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Thesis", "", thesisModel.Thesis.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
-
-            thesisModel.RelThesisResearchers.ForEach(x =>
+            thesisModel.Urls.ForEach(x =>
             {
-                x.CreateDate = GetDate;
                 x.ThesisId = thesisModel.Thesis.Id;
+                x.CreateDate = GetDate;
             });
 
-
-            await aztuAkademik.RelThesisResearcher.AddRangeAsync(thesisModel.RelThesisResearchers).ConfigureAwait(false);
+            await aztuAkademik.Urls.AddRangeAsync(thesisModel.Urls).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-            await Classes.TLog.Log("Thesis", "", thesisModel.Thesis.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-            await Classes.TLog.Log("RelThesisResearcher", "", thesisModel.RelThesisResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("URLS", "", thesisModel.Urls.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+
+
+            RelThesisResearcher relThesisResearcher;
+
+            if (thesisModel.Researchers.Internals != null)
+                for (int i = 0; i < thesisModel.Researchers.Internals.Count; i++)
+                {
+                    relThesisResearcher = new RelThesisResearcher
+                    {
+                        ThesisId = thesisModel.Thesis.Id,
+                        IntAuthorId = thesisModel.Researchers.Internals[i].Id,
+                        CreateDate = GetDate,
+                        StatusId = 1,
+                        Type = thesisModel.Researchers.Internals[i].Type
+                    };
+
+                    await aztuAkademik.RelThesisResearcher.AddAsync(relThesisResearcher).ConfigureAwait(false);
+                    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                    await Classes.TLog.Log("RelThesisResearcher", "", relThesisResearcher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                }
+
+            if (thesisModel.Researchers.Externals != null)
+                for (int i = 0; i < thesisModel.Researchers.Externals.Count; i++)
+                {
+                    relThesisResearcher = new RelThesisResearcher
+                    {
+                        ThesisId = thesisModel.Thesis.Id,
+                        ExtAuthorId = thesisModel.Researchers.Externals[i].Id,
+                        CreateDate = GetDate,
+                        StatusId = 1,
+                        Type = thesisModel.Researchers.Externals[i].Type
+                    };
+
+                    await aztuAkademik.RelThesisResearcher.AddAsync(relThesisResearcher).ConfigureAwait(false);
+                    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                    await Classes.TLog.Log("RelThesisResearcher", "", relThesisResearcher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                }
+
         }
 
 

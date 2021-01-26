@@ -169,7 +169,7 @@ namespace AZTU_Akademik.Controllers
             });
             await aztuAkademik.Urls.AddRangeAsync(articleModel.Urls).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-            await Classes.TLog.Log("ArticleURL", "", articleModel.Urls.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+            await Classes.TLog.Log("URLS", "", articleModel.Urls.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
 
             RelArticleResearcher relArticleResearcher;

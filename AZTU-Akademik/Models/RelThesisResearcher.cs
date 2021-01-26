@@ -13,7 +13,7 @@ namespace AZTU_Akademik.Models
         public int? ThesisId { get; set; }
         public int? IntAuthorId { get; set; }
         public int? ExtAuthorId { get; set; }
-        public byte? Type { get; set; }
+        public bool? Type { get; set; }
 
         public virtual ExternalResearcher ExtAuthor { get; set; }
         public virtual User IntAuthor { get; set; }
