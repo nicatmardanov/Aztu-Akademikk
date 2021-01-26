@@ -27,10 +27,8 @@ namespace AZTU_Akademik.Models
             ResearcherEducation = new HashSet<ResearcherEducation>();
             ResearcherLanguage = new HashSet<ResearcherLanguage>();
             ResearcherPosition = new HashSet<ResearcherPosition>();
-            TextbookCreator = new HashSet<Textbook>();
-            TextbookPublisher = new HashSet<Textbook>();
-            ThesisCreator = new HashSet<Thesis>();
-            ThesisPublisher = new HashSet<Thesis>();
+            Textbook = new HashSet<Textbook>();
+            Thesis = new HashSet<Thesis>();
         }
 
         public int Id { get; set; }
@@ -72,9 +70,7 @@ namespace AZTU_Akademik.Models
         public virtual ICollection<ResearcherEducation> ResearcherEducation { get; set; }
         public virtual ICollection<ResearcherLanguage> ResearcherLanguage { get; set; }
         public virtual ICollection<ResearcherPosition> ResearcherPosition { get; set; }
-        public virtual ICollection<Textbook> TextbookCreator { get; set; }
-        public virtual ICollection<Textbook> TextbookPublisher { get; set; }
-        public virtual ICollection<Thesis> ThesisCreator { get; set; }
-        public virtual ICollection<Thesis> ThesisPublisher { get; set; }
+        public virtual ICollection<Textbook> Textbook { get; set; }
+        public virtual ICollection<Thesis> Thesis { get; set; }
     }
 }

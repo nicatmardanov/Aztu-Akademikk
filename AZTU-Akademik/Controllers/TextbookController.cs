@@ -51,10 +51,55 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult Textbook(int user_id) => Json(aztuAkademik.RelTextbookResearcher.Where(x => (x.IntAuthorId == user_id || x.ExtAuthorId == user_id) && !x.DeleteDate.HasValue).
-            OrderByDescending(x => x.Id).
-            Include(x => x.Textbook).ThenInclude(x => x.Publisher).
-            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization).AsNoTracking());
+        public JsonResult Textbook(int user_id)
+        {
+            IQueryable<Textbook> textbooks = aztuAkademik.Textbook.
+                Include(x => x.Publisher).
+                Include(x => x.RelTextbookResearcher).
+                Include(x => x.Creator).
+                Include(x => x.Urls).
+                Include(x => x.File).
+                Where(x => x.CreatorId == user_id && !x.DeleteDate.HasValue).
+                OrderByDescending(x => x.Id);
+
+
+            return Json(textbooks.Select(x => new
+            {
+                x.Id,
+                x.Name,
+                x.Description,
+                x.Date,
+                Publisher = new
+                {
+                    x.Publisher.Id,
+                    x.Publisher.Name
+                },
+                Researchers = new
+                {
+                    Internal = x.RelTextbookResearcher.Where(y => y.IntAuthorId > 0).Select(y => new
+                    {
+                        y.IntAuthor.Id,
+                        y.IntAuthor.FirstName,
+                        y.IntAuthor.LastName,
+                        y.IntAuthor.Patronymic,
+                        y.Type
+                    }),
+
+                    External = x.RelTextbookResearcher.Where(y => y.ExtAuthorId > 0).Select(y => new
+                    {
+                        y.ExtAuthor.Id,
+                        y.ExtAuthor.Name,
+                        y.Type
+                    })
+                },
+                Urls = x.Urls.Select(y => new
+                {
+                    y.Url,
+                    y.UrlType
+                }),
+                File = x.File.Name
+            }));
+        }
 
 
 

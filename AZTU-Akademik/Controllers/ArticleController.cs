@@ -16,31 +16,15 @@ namespace AZTU_Akademik.Controllers
     [Authorize]
     public class ArticleController : Controller
     {
-        public class Internal
-        {
-            public int Id { get; set; }
-            public bool Type { get; set; }
-        }
-
-        public class External
-        {
-            public int Id { get; set; }
-            public bool Type { get; set; }
-        }
-        public class Researchers
-        {
-            public List<Internal> Internals { get; set; }
-            public List<External> Externals { get; set; }
-        }
         public class ArticleModel
         {
             public Article Article { get; set; }
-            public List<ArticleUrl> Urls { get; set; }
+            public List<Urls> Urls { get; set; }
             public long[] DeletedResearchers { get; set; }
             public bool FileChange { get; set; }
             public string Journal { get; set; }
             public bool Indexed { get; set; }
-            public Researchers Researchers { get; set; }
+            public Classes.Researchers Researchers { get; set; }
         }
 
 
@@ -72,20 +56,16 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult Article([FromQuery] int UserId, [FromQuery]bool Indexed)
+        public JsonResult Article([FromQuery] int UserId, [FromQuery] bool Indexed)
         {
             IQueryable<Article> article = aztuAkademik.Article.
-                Where(x => x.CreatorId == UserId && x.JournalNavigation.Indexed == Indexed && !x.DeleteDate.HasValue).
-                OrderByDescending(x => x.Id).AsNoTracking().
                 Include(x => x.RelArticleResearcher).
                 Include(x => x.File).
                 Include(x => x.JournalNavigation).
-                Include(x => x.ArticleUrl);
+                Include(x => x.Urls).
+                Where(x => x.CreatorId == UserId && x.JournalNavigation.Indexed == Indexed && !x.DeleteDate.HasValue).
+                OrderByDescending(x => x.Id).AsNoTracking();
 
-
-
-            //IQueryable<RelArticleResearcher> externalResearchers = article.RelArticleResearcher.AsQueryable().Where(x => x.ExtAuthorId > 0).
-            //    Include(x => x.ExtAuthor);
 
 
 
@@ -103,7 +83,7 @@ namespace AZTU_Akademik.Controllers
                     x.JournalNavigation.Id,
                     x.JournalNavigation.Name,
                 },
-                Urls = x.ArticleUrl.Select(y => new
+                Urls = x.Urls.Select(y => new
                 {
                     y.UrlType,
                     y.Url
@@ -150,7 +130,6 @@ namespace AZTU_Akademik.Controllers
                     UserId = User_Id
                 };
 
-
                 await aztuAkademik.File.AddAsync(_file).ConfigureAwait(false);
                 await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
                 await Classes.TLog.Log("File", "", _file.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
@@ -188,7 +167,7 @@ namespace AZTU_Akademik.Controllers
                 x.ArticleId = articleModel.Article.Id;
                 x.CreateDate = GetDate;
             });
-            await aztuAkademik.ArticleUrl.AddRangeAsync(articleModel.Urls).ConfigureAwait(false);
+            await aztuAkademik.Urls.AddRangeAsync(articleModel.Urls).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             await Classes.TLog.Log("ArticleURL", "", articleModel.Urls.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 

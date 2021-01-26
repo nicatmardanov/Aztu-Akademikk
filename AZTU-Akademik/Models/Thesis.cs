@@ -8,6 +8,7 @@ namespace AZTU_Akademik.Models
         public Thesis()
         {
             RelThesisResearcher = new HashSet<RelThesisResearcher>();
+            Urls = new HashSet<Urls>();
         }
 
         public int Id { get; set; }
@@ -19,10 +20,13 @@ namespace AZTU_Akademik.Models
         public DateTime? DeleteDate { get; set; }
         public byte? StatusId { get; set; }
         public int? PublisherId { get; set; }
+        public long? FileId { get; set; }
         public int? CreatorId { get; set; }
 
         public virtual User Creator { get; set; }
-        public virtual User Publisher { get; set; }
+        public virtual File File { get; set; }
+        public virtual Publisher Publisher { get; set; }
         public virtual ICollection<RelThesisResearcher> RelThesisResearcher { get; set; }
+        public virtual ICollection<Urls> Urls { get; set; }
     }
 }

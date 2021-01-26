@@ -17,7 +17,6 @@ namespace AZTU_Akademik.Models
 
         public virtual DbSet<Announcement> Announcement { get; set; }
         public virtual DbSet<Article> Article { get; set; }
-        public virtual DbSet<ArticleUrl> ArticleUrl { get; set; }
         public virtual DbSet<Certificate> Certificate { get; set; }
         public virtual DbSet<Contact> Contact { get; set; }
         public virtual DbSet<ContactType> ContactType { get; set; }
@@ -43,6 +42,7 @@ namespace AZTU_Akademik.Models
         public virtual DbSet<Position> Position { get; set; }
         public virtual DbSet<Profession> Profession { get; set; }
         public virtual DbSet<Project> Project { get; set; }
+        public virtual DbSet<Publisher> Publisher { get; set; }
         public virtual DbSet<RelArticleResearcher> RelArticleResearcher { get; set; }
         public virtual DbSet<RelPatentResearcher> RelPatentResearcher { get; set; }
         public virtual DbSet<RelProjectResearcher> RelProjectResearcher { get; set; }
@@ -56,6 +56,7 @@ namespace AZTU_Akademik.Models
         public virtual DbSet<ResearcherPosition> ResearcherPosition { get; set; }
         public virtual DbSet<Textbook> Textbook { get; set; }
         public virtual DbSet<Thesis> Thesis { get; set; }
+        public virtual DbSet<Urls> Urls { get; set; }
         public virtual DbSet<User> User { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -161,42 +162,6 @@ namespace AZTU_Akademik.Models
                     .WithMany(p => p.Article)
                     .HasForeignKey(d => d.Journal)
                     .HasConstraintName("FK_Article_Journal");
-            });
-
-            modelBuilder.Entity<ArticleUrl>(entity =>
-            {
-                entity.ToTable("ArticleURL");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.ArticleId).HasColumnName("article_id");
-
-                entity.Property(e => e.CreateDate)
-                    .HasColumnName("create_date")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DeleteDate)
-                    .HasColumnName("delete_date")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.StatusId).HasColumnName("status_id");
-
-                entity.Property(e => e.UpdateDate)
-                    .HasColumnName("update_date")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.Url)
-                    .HasColumnName("url")
-                    .HasMaxLength(2000);
-
-                entity.Property(e => e.UrlType)
-                    .HasColumnName("url_type")
-                    .HasMaxLength(200);
-
-                entity.HasOne(d => d.Article)
-                    .WithMany(p => p.ArticleUrl)
-                    .HasForeignKey(d => d.ArticleId)
-                    .HasConstraintName("FK_ArticleURL_Article");
             });
 
             modelBuilder.Entity<Certificate>(entity =>
@@ -1046,6 +1011,15 @@ namespace AZTU_Akademik.Models
                     .HasConstraintName("FK_Project_User");
             });
 
+            modelBuilder.Entity<Publisher>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(700);
+            });
+
             modelBuilder.Entity<RelArticleResearcher>(entity =>
             {
                 entity.ToTable("Rel_ArticleResearcher");
@@ -1593,6 +1567,8 @@ namespace AZTU_Akademik.Models
 
                 entity.Property(e => e.Description).HasColumnName("description");
 
+                entity.Property(e => e.FileId).HasColumnName("file_id");
+
                 entity.Property(e => e.Name).HasColumnName("name");
 
                 entity.Property(e => e.PublisherId).HasColumnName("publisher_id");
@@ -1604,14 +1580,19 @@ namespace AZTU_Akademik.Models
                     .HasColumnType("datetime");
 
                 entity.HasOne(d => d.Creator)
-                    .WithMany(p => p.TextbookCreator)
+                    .WithMany(p => p.Textbook)
                     .HasForeignKey(d => d.CreatorId)
-                    .HasConstraintName("FK_Textbook_User1");
+                    .HasConstraintName("FK_Textbook_User2");
+
+                entity.HasOne(d => d.File)
+                    .WithMany(p => p.Textbook)
+                    .HasForeignKey(d => d.FileId)
+                    .HasConstraintName("FK_Textbook_File");
 
                 entity.HasOne(d => d.Publisher)
-                    .WithMany(p => p.TextbookPublisher)
+                    .WithMany(p => p.Textbook)
                     .HasForeignKey(d => d.PublisherId)
-                    .HasConstraintName("FK_Textbook_User");
+                    .HasConstraintName("FK_Textbook_Publisher");
             });
 
             modelBuilder.Entity<Thesis>(entity =>
@@ -1637,6 +1618,8 @@ namespace AZTU_Akademik.Models
 
                 entity.Property(e => e.Description).HasColumnName("description");
 
+                entity.Property(e => e.FileId).HasColumnName("file_id");
+
                 entity.Property(e => e.Name).HasColumnName("name");
 
                 entity.Property(e => e.PublisherId).HasColumnName("publisher_id");
@@ -1648,14 +1631,67 @@ namespace AZTU_Akademik.Models
                     .HasColumnType("datetime");
 
                 entity.HasOne(d => d.Creator)
-                    .WithMany(p => p.ThesisCreator)
+                    .WithMany(p => p.Thesis)
                     .HasForeignKey(d => d.CreatorId)
-                    .HasConstraintName("FK_Thesis_User");
+                    .HasConstraintName("FK_Thesis_User2");
+
+                entity.HasOne(d => d.File)
+                    .WithMany(p => p.Thesis)
+                    .HasForeignKey(d => d.FileId)
+                    .HasConstraintName("FK_Thesis_File");
 
                 entity.HasOne(d => d.Publisher)
-                    .WithMany(p => p.ThesisPublisher)
+                    .WithMany(p => p.Thesis)
                     .HasForeignKey(d => d.PublisherId)
-                    .HasConstraintName("FK_Thesis_User1");
+                    .HasConstraintName("FK_Thesis_Publisher");
+            });
+
+            modelBuilder.Entity<Urls>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ArticleId).HasColumnName("article_id");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnName("create_date")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DeleteDate)
+                    .HasColumnName("delete_date")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.StatusId).HasColumnName("status_id");
+
+                entity.Property(e => e.TextbookId).HasColumnName("textbook_id");
+
+                entity.Property(e => e.ThesisId).HasColumnName("thesis_id");
+
+                entity.Property(e => e.UpdateDate)
+                    .HasColumnName("update_date")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Url)
+                    .HasColumnName("url")
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.UrlType)
+                    .HasColumnName("url_type")
+                    .HasMaxLength(200);
+
+                entity.HasOne(d => d.Article)
+                    .WithMany(p => p.Urls)
+                    .HasForeignKey(d => d.ArticleId)
+                    .HasConstraintName("FK_ArticleURL_Article");
+
+                entity.HasOne(d => d.Textbook)
+                    .WithMany(p => p.Urls)
+                    .HasForeignKey(d => d.TextbookId)
+                    .HasConstraintName("FK_Urls_Textbook");
+
+                entity.HasOne(d => d.Thesis)
+                    .WithMany(p => p.Urls)
+                    .HasForeignKey(d => d.ThesisId)
+                    .HasConstraintName("FK_Urls_Thesis");
             });
 
             modelBuilder.Entity<User>(entity =>
