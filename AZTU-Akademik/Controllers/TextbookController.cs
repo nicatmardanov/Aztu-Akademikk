@@ -133,6 +133,7 @@ namespace AZTU_Akademik.Controllers
                 Publisher publisher = new Publisher
                 {
                     Name = textbookModel.Publisher,
+                    CreateDate=GetDate
                 };
 
                 await aztuAkademik.Publisher.AddAsync(publisher).ConfigureAwait(false);

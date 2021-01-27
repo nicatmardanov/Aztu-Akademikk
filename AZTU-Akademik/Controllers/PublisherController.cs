@@ -6,27 +6,15 @@ using System.Threading.Tasks;
 using AZTU_Akademik.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AZTU_Akademik.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class PublisherController : Controller
     {
-        private DateTime GetDate
-        {
-            get
-            {
-                return DateTime.UtcNow.AddHours(4);
-            }
-        }
-        private int User_Id
-        {
-            get
-            {
-                return int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
-            }
-        }
         readonly private AztuAkademikContext aztuAkademik = new AztuAkademikContext();
 
 
@@ -42,10 +30,18 @@ namespace AZTU_Akademik.Controllers
         }
 
         [HttpGet("AllPublishers")]
-        public JsonResult AllPublishers() => Json(aztuAkademik.Publisher.Where(x => !x.DeleteDate.HasValue).Select(x=>new
-        {
-            x.Id,
-            x.Name
-        }));
+        public JsonResult AllPublishers(string query) =>
+            string.IsNullOrEmpty(query) ?
+            Json(aztuAkademik.Publisher.Where(x => !x.DeleteDate.HasValue).AsNoTracking().Select(x => new
+            {
+                x.Id,
+                x.Name
+            })) :
+            Json(aztuAkademik.Publisher.Where(x => x.Name.Contains(query) && !x.DeleteDate.HasValue).AsNoTracking().Select(x => new
+            {
+                x.Id,
+                x.Name
+            }));
+
     }
 }

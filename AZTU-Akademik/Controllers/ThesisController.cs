@@ -134,6 +134,7 @@ namespace AZTU_Akademik.Controllers
                 Publisher publisher = new Publisher
                 {
                     Name = thesisModel.Publisher,
+                    CreateDate=GetDate
                 };
 
                 await aztuAkademik.Publisher.AddAsync(publisher).ConfigureAwait(false);

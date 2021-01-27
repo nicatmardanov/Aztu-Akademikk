@@ -50,11 +50,38 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult Patent(int user_id) => Json(aztuAkademik.RelPatentResearcher.Where(x => (x.IntAuthorId == user_id || x.ExtAuthorId == user_id) && !x.DeleteDate.HasValue).
-            OrderByDescending(x => x.Id).
-            Include(x => x.Patent).ThenInclude(x => x.Researcher).
-            Include(x => x.Patent).ThenInclude(x => x.Organization).
-            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization).AsNoTracking());
+        public JsonResult Patent(int user_id) => Json(aztuAkademik.Patent.
+            Include(x => x.RelPatentResearcher).
+            Include(x => x.Organization).
+            Where(x => x.RelPatentResearcher.FirstOrDefault(x => x.IntAuthorId == user_id) != null && !x.DeleteDate.HasValue).
+            AsNoTracking().
+            Select(x => new
+            {
+                x.Id,
+                x.Name,
+                x.ApplyDate,
+                Organzation = new
+                {
+                    x.Organization.Id,
+                    x.Organization.Name
+                },
+                Researchers = new
+                {
+                    Internals = x.RelPatentResearcher.Where(y => y.IntAuthorId > 0).Select(y => new
+                    {
+                        y.IntAuthor.Id,
+                        y.IntAuthor.FirstName,
+                        y.IntAuthor.LastName,
+                        y.IntAuthor.Patronymic
+                    }),
+                    Externals = x.RelPatentResearcher.Where(y => y.ExtAuthorId > 0).Select(y => new
+                    {
+                        y.ExtAuthor.Id,
+                        y.ExtAuthor.Name
+                    })
+                }
+            }));
+
 
 
 

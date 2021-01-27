@@ -52,11 +52,37 @@ namespace AZTU_Akademik.Controllers
         //GET
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult Project(int user_id) => Json(aztuAkademik.RelProjectResearcher.Where(x => (x.IntAuthorId == user_id || x.ExtAuthorId == user_id) && !x.DeleteDate.HasValue).
-            OrderByDescending(x => x.Id).
-            Include(x => x.Project).ThenInclude(x => x.Organization).
-            Include(x => x.Project).ThenInclude(x => x.Researcher).
-            Include(x => x.IntAuthor).Include(x => x.ExtAuthor).ThenInclude(x => x.Organization).AsNoTracking());
+        public JsonResult Project(int user_id) => Json(aztuAkademik.Project.
+            Include(x=>x.RelProjectResearcher).
+            Include(x=>x.Organization).
+            Where(x=>x.RelProjectResearcher.FirstOrDefault(x=>x.IntAuthorId==user_id)!=null && !x.DeleteDate.HasValue).
+            AsNoTracking().
+            Select(x=>new
+            {
+                x.Id,
+                x.Name,
+                x.Description,
+                Organzation = new
+                {
+                    x.Organization.Id,
+                    x.Organization.Name
+                },
+                Researchers = new
+                {
+                    Internals = x.RelProjectResearcher.Where(y => y.IntAuthorId > 0).Select(y => new
+                    {
+                        y.IntAuthor.Id,
+                        y.IntAuthor.FirstName,
+                        y.IntAuthor.LastName,
+                        y.IntAuthor.Patronymic
+                    }),
+                    Externals = x.RelProjectResearcher.Where(y => y.ExtAuthorId > 0).Select(y => new
+                    {
+                        y.ExtAuthor.Id,
+                        y.ExtAuthor.Name
+                    })
+                }
+            }));
 
         //[HttpGet("AllProjects")]
         //public JsonResult AllProjects() => Json(aztuAkademik.Project.Where(x => !x.DeleteDate.HasValue).
