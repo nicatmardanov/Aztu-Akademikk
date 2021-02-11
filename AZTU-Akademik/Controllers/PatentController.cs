@@ -61,6 +61,7 @@ namespace AZTU_Akademik.Controllers
                 x.Id,
                 x.Name,
                 x.ApplyDate,
+                x.RegistrationDate,
                 Organization = new
                 {
                     x.Organization.Id,
@@ -134,11 +135,6 @@ namespace AZTU_Akademik.Controllers
                     await Classes.TLog.Log("RelPatentResearcher", "", relPatentResearcher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 }
             
-
-
-            await aztuAkademik.RelPatentResearcher.AddRangeAsync(patentModel.RelPatentResearchers).ConfigureAwait(false);
-            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-            await Classes.TLog.Log("RelPatentResearcher", "", patentModel.RelPatentResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
 
