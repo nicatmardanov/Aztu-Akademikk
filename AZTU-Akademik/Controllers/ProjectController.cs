@@ -62,6 +62,8 @@ namespace AZTU_Akademik.Controllers
                 x.Id,
                 x.Name,
                 x.Description,
+                x.StartDate,
+                x.EndDate,
                 Organization = new
                 {
                     x.Organization.Id,
