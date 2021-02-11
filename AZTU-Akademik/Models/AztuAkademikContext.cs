@@ -1013,6 +1013,9 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Publisher>(entity =>
             {
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Publisher_DeleteDate");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreateDate)
@@ -1660,6 +1663,21 @@ namespace AZTU_Akademik.Models
 
             modelBuilder.Entity<Urls>(entity =>
             {
+                entity.HasIndex(e => e.ArticleId)
+                    .HasName("IX_Urls_Article");
+
+                entity.HasIndex(e => e.DeleteDate)
+                    .HasName("IX_Urls_DeleteDate");
+
+                entity.HasIndex(e => e.TextbookId)
+                    .HasName("IX_Urls_Textbook");
+
+                entity.HasIndex(e => e.ThesisId)
+                    .HasName("IX_Urls_Thesis");
+
+                entity.HasIndex(e => e.UrlType)
+                    .HasName("IX_Urls_Type");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.ArticleId).HasColumnName("article_id");

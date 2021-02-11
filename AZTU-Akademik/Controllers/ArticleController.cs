@@ -212,7 +212,7 @@ namespace AZTU_Akademik.Controllers
         }
 
         //PUT
-        [HttpPut]
+        //[HttpPut]
         //public async Task<int> Put([FromForm]ArticleModel articleModel)
         //{
         //    if (ModelState.IsValid)

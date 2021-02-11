@@ -9,7 +9,7 @@ namespace AZTU_Akademik.Models
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public DateTime? DeleteDate { get; set; }
-        public byte? Type { get; set; }
+        public bool? Type { get; set; }
         public int? ProjectId { get; set; }
         public int? IntAuthorId { get; set; }
         public int? ExtAuthorId { get; set; }

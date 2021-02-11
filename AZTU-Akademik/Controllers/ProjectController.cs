@@ -19,6 +19,7 @@ namespace AZTU_Akademik.Controllers
         public class ProjectModel
         {
             public Project Project { get; set; }
+            public Classes.Researchers Researchers { get; set; }
             public List<RelProjectResearcher> RelProjectResearchers { get; set; }
             public long[] DeletedResearchers { get; set; }
         }
@@ -97,21 +98,47 @@ namespace AZTU_Akademik.Controllers
         {
             projectModel.Project.CreateDate = GetDate;
             projectModel.Project.ResearcherId = User_Id;
+
             await aztuAkademik.Project.AddAsync(projectModel.Project).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-
-
-            projectModel.RelProjectResearchers.ForEach(x =>
-            {
-                x.CreateDate = GetDate;
-                x.ProjectId = projectModel.Project.Id;
-            });
-
-
-            await aztuAkademik.RelProjectResearcher.AddRangeAsync(projectModel.RelProjectResearchers).ConfigureAwait(false);
-            await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
             await Classes.TLog.Log("Project", "", projectModel.Project.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
-            await Classes.TLog.Log("RelProjectResearcher", "", projectModel.RelProjectResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+
+            
+            RelProjectResearcher relProjectResearcher;
+
+            if (projectModel.Researchers.Internals != null)
+                for (int i = 0; i < projectModel.Researchers.Internals.Count; i++)
+                {
+                    relProjectResearcher = new RelProjectResearcher
+                    {
+                        CreateDate = GetDate,
+                        Type = projectModel.Researchers.Internals[i].Type,
+                        ProjectId = projectModel.Project.Id,
+                        IntAuthorId = projectModel.Researchers.Internals[i].Id,
+                        StatusId = 1
+                    };
+                    await aztuAkademik.RelProjectResearcher.AddAsync(relProjectResearcher).ConfigureAwait(false);
+                    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                    await Classes.TLog.Log("RelProjectResearcher", "", projectModel.RelProjectResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                }
+
+            if (projectModel.Researchers.Externals != null)
+                for (int i = 0; i < projectModel.Researchers.Externals.Count; i++)
+                {
+                    relProjectResearcher = new RelProjectResearcher
+                    {
+                        CreateDate = GetDate,
+                        Type = projectModel.Researchers.Externals[i].Type,
+                        ProjectId = projectModel.Project.Id,
+                        ExtAuthorId = projectModel.Researchers.Externals[i].Id,
+                        StatusId = 1
+                    };
+                    await aztuAkademik.RelProjectResearcher.AddAsync(relProjectResearcher).ConfigureAwait(false);
+                    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                    await Classes.TLog.Log("RelProjectResearcher", "", projectModel.RelProjectResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                }
+
+
         }
 
 
