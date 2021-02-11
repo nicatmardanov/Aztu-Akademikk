@@ -43,7 +43,11 @@ namespace AZTU_Akademik
                 x.Cookie.HttpOnly = false;
             });
 
-            services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("///").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
+            services.AddCors(options => options.AddDefaultPolicy(builder => builder.
+            AllowAnyHeader().
+            AllowAnyMethod().
+            AllowCredentials().
+            AllowAnyOrigin()));
 
 
             services.AddControllers()
