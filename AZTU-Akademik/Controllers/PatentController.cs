@@ -19,6 +19,7 @@ namespace AZTU_Akademik.Controllers
         public class PatentModel
         {
             public Patent Patent { get; set; }
+            public Classes.Researchers Researchers { get; set; }
             public List<RelPatentResearcher> RelPatentResearchers { get; set; }
             public long[] DeletedResearchers { get; set; }
         }
@@ -91,20 +92,52 @@ namespace AZTU_Akademik.Controllers
         {
             patentModel.Patent.CreateDate = GetDate;
             patentModel.Patent.ResearcherId = User_Id;
+
             await aztuAkademik.Patent.AddAsync(patentModel.Patent).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+            await Classes.TLog.Log("Patent", "", patentModel.Patent.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
 
 
-            patentModel.RelPatentResearchers.ForEach(x =>
-            {
-                x.CreateDate = GetDate;
-                x.PatentId = patentModel.Patent.Id;
-            });
+            RelPatentResearcher relPatentResearcher;
+
+            if(patentModel.Researchers.Internals!=null)
+                for (int i = 0; i < patentModel.Researchers.Internals.Count; i++)
+                {
+                    relPatentResearcher = new RelPatentResearcher
+                    {
+                        CreateDate = GetDate,
+                        PatentId = patentModel.Patent.Id,
+                        Type = patentModel.Researchers.Internals[i].Type,
+                        IntAuthorId = patentModel.Researchers.Internals[i].Id,
+                        StatusId = 1
+                    };
+
+                    await aztuAkademik.RelPatentResearcher.AddRangeAsync(relPatentResearcher).ConfigureAwait(false);
+                    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                    await Classes.TLog.Log("RelPatentResearcher", "", relPatentResearcher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                }
+
+            if(patentModel.Researchers.Externals!=null)
+                for (int i = 0; i < patentModel.Researchers.Externals.Count; i++)
+                {
+                    relPatentResearcher = new RelPatentResearcher
+                    {
+                        CreateDate = GetDate,
+                        PatentId = patentModel.Patent.Id,
+                        Type = patentModel.Researchers.Externals[i].Type,
+                        IntAuthorId = patentModel.Researchers.Externals[i].Id,
+                        StatusId = 1
+                    };
+
+                    await aztuAkademik.RelPatentResearcher.AddRangeAsync(relPatentResearcher).ConfigureAwait(false);
+                    await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
+                    await Classes.TLog.Log("RelPatentResearcher", "", relPatentResearcher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                }
+            
 
 
             await aztuAkademik.RelPatentResearcher.AddRangeAsync(patentModel.RelPatentResearchers).ConfigureAwait(false);
             await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-            await Classes.TLog.Log("Patent", "", patentModel.Patent.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
             await Classes.TLog.Log("RelPatentResearcher", "", patentModel.RelPatentResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
         }
 
