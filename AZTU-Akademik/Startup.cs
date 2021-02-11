@@ -43,13 +43,11 @@ namespace AZTU_Akademik
                 x.Cookie.HttpOnly = false;
             });
 
-            //services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("///").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
-            services.AddCors(options => options.AddPolicy("AMASPolicy", x =>
-            {
-                x.AllowAnyOrigin().
-                AllowAnyMethod().
-                AllowAnyHeader();
-            }));
+            services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("///").
+            AllowAnyHeader().
+            AllowAnyMethod().
+            AllowCredentials().
+            SetIsOriginAllowed(y => true)));
 
 
 
@@ -88,7 +86,7 @@ namespace AZTU_Akademik
             });
 
             app.UseRouting();
-            app.UseCors("AMASPolicy");
+            app.UseCors();
 
 
             app.UseAuthentication();
