@@ -60,7 +60,7 @@ namespace AZTU_Akademik.Controllers
                 x.Id,
                 x.Name,
                 x.ApplyDate,
-                Organzation = new
+                Organization = new
                 {
                     x.Organization.Id,
                     x.Organization.Name
