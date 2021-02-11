@@ -53,11 +53,11 @@ namespace AZTU_Akademik.Controllers
         [HttpGet]
         [AllowAnonymous]
         public JsonResult Project(int user_id) => Json(aztuAkademik.Project.
-            Include(x=>x.RelProjectResearcher).
-            Include(x=>x.Organization).
-            Where(x=>x.RelProjectResearcher.FirstOrDefault(x=>x.IntAuthorId==user_id)!=null && !x.DeleteDate.HasValue).
+            Include(x => x.RelProjectResearcher).
+            Include(x => x.Organization).
+            Where(x => x.ResearcherId == user_id && !x.DeleteDate.HasValue).
             AsNoTracking().
-            Select(x=>new
+            Select(x => new
             {
                 x.Id,
                 x.Name,
@@ -115,7 +115,7 @@ namespace AZTU_Akademik.Controllers
 
         //PUT
         [HttpPut]
-        public async Task<int> Put(ProjectModel projectModel )
+        public async Task<int> Put(ProjectModel projectModel)
         {
             if (ModelState.IsValid)
             {

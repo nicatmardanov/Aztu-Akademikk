@@ -53,7 +53,7 @@ namespace AZTU_Akademik.Controllers
         public JsonResult Patent(int user_id) => Json(aztuAkademik.Patent.
             Include(x => x.RelPatentResearcher).
             Include(x => x.Organization).
-            Where(x => x.RelPatentResearcher.FirstOrDefault(x => x.IntAuthorId == user_id) != null && !x.DeleteDate.HasValue).
+            Where(x => x.ResearcherId==user_id && !x.DeleteDate.HasValue).
             AsNoTracking().
             Select(x => new
             {
