@@ -119,7 +119,7 @@ namespace AZTU_Akademik.Controllers
                     };
                     await aztuAkademik.RelProjectResearcher.AddAsync(relProjectResearcher).ConfigureAwait(false);
                     await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-                    await Classes.TLog.Log("RelProjectResearcher", "", projectModel.RelProjectResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                    await Classes.TLog.Log("RelProjectResearcher", "", relProjectResearcher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 }
 
             if (projectModel.Researchers.Externals != null)
@@ -135,7 +135,7 @@ namespace AZTU_Akademik.Controllers
                     };
                     await aztuAkademik.RelProjectResearcher.AddAsync(relProjectResearcher).ConfigureAwait(false);
                     await aztuAkademik.SaveChangesAsync().ConfigureAwait(false);
-                    await Classes.TLog.Log("RelProjectResearcher", "", projectModel.RelProjectResearchers.Select(x => x.Id).ToArray(), 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
+                    await Classes.TLog.Log("RelProjectResearcher", "", relProjectResearcher.Id, 1, User_Id, IpAdress, AInformation).ConfigureAwait(false);
                 }
 
 
